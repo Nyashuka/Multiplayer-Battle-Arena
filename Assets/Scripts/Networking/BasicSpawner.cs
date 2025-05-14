@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Core;
 using Fusion;
+using Fusion.Addons.Physics;
 using Fusion.Sockets;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,16 +15,21 @@ namespace Networking
         private Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
         private NetworkRunner _runner;
         private bool _mouseButton0;
+        private bool _mouseButton1;
         
         private void Update()
         {
             _mouseButton0 |= Input.GetMouseButton(0);
+            _mouseButton1 |= Input.GetMouseButton(1);
         }
 
         private async void StartGame(GameMode mode)
         {
             // Create the Fusion runner and let it know that we will be providing user input
             _runner = gameObject.AddComponent<NetworkRunner>();
+            var runnerSimulatePhysics3D = gameObject.AddComponent<RunnerSimulatePhysics3D>();
+            runnerSimulatePhysics3D.ClientPhysicsSimulation = ClientPhysicsSimulation.SimulateAlways;
+            
             _runner.ProvideInput = true;
 
             // Create the NetworkSceneInfo from the current scene
@@ -149,7 +155,10 @@ namespace Networking
             
             data.buttons.Set( NetworkInputData.MOUSEBUTTON0, _mouseButton0);
             _mouseButton0 = false;
-
+            
+            data.buttons.Set( NetworkInputData.MOUSEBUTTON1, _mouseButton1);
+            _mouseButton1 = false;
+            
             input.Set(data);
         }
     
