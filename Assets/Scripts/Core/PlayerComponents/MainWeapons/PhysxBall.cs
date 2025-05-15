@@ -1,7 +1,7 @@
 using Fusion;
 using UnityEngine;
 
-namespace Core
+namespace Core.PlayerComponents.MainWeapons
 {
     public class PhysxBall : NetworkBehaviour
     {
