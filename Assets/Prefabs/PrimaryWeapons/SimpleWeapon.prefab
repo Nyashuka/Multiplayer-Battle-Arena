@@ -84,7 +84,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5ea3e58ab35468f99d8327582c6e6f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _prefabPhysxBall: {fileID: 4996437006643504151, guid: 8bbb0385f382ebf4090673bfd964dc8f, type: 3}
+  _Owner: {fileID: 0}
+  projectilesLauncher: {fileID: 0}
+  bulletPrefab: {fileID: 7485984408704408302, guid: bde6a80550f0ea94e81c35a0059fa75c, type: 3}
 --- !u!1 &6081041601006590191
 GameObject:
   m_ObjectHideFlags: 0

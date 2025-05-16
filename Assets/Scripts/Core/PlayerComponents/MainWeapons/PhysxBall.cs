@@ -5,17 +5,19 @@ namespace Core.PlayerComponents.MainWeapons
 {
     public class PhysxBall : NetworkBehaviour
     {
-        [Networked] private TickTimer life { get; set; }
+        [SerializeField] private float throwForce = 10f;
+        [SerializeField] private float lifeTime = 5f;
+        [Networked] private TickTimer Life { get; set; }
 
         public void Init(Vector3 forward)
         {
-            life = TickTimer.CreateFromSeconds(Runner, 5.0f);
-            GetComponent<Rigidbody>().velocity = forward;
+            Life = TickTimer.CreateFromSeconds(Runner, lifeTime);
+            GetComponent<Rigidbody>().velocity = forward * throwForce;
         }
 
         public override void FixedUpdateNetwork()
         {
-            if(life.Expired(Runner))
+            if(Life.Expired(Runner))
                 Runner.Despawn(Object);
         }
     }

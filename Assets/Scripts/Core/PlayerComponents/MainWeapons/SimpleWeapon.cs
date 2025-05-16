@@ -1,4 +1,5 @@
 using Core.PlayerComponents.MainWeapons.Abstract;
+using Core.Projectiles;
 using Fusion;
 using UnityEngine;
 
@@ -6,7 +7,8 @@ namespace Core.PlayerComponents.MainWeapons
 {
     public class SimpleWeapon : Weapon
     {
-        [SerializeField] private PhysxBall _prefabPhysxBall; 
+        [SerializeField] private ProjectilesLauncher projectilesLauncher;
+        [SerializeField] private ServerProjectile bulletPrefab; 
         [Networked] private TickTimer delay { get; set; } 
         
         public override void Fire(Vector3 direction, NetworkRunner runner, PlayerRef owner)
@@ -18,14 +20,20 @@ namespace Core.PlayerComponents.MainWeapons
             {
                 delay = TickTimer.CreateFromSeconds(runner, 0.5f);
 
+                var projectileParams = new ProjectileParams();
+                projectileParams.Direction = direction;
+                projectileParams.Speed = 10f;
+                projectileParams.Owner = owner;
+
                 Runner.Spawn(
-                    _prefabPhysxBall,
+                    bulletPrefab,
                     transform.position + transform.forward, // правильна позиція спавну
                     Quaternion.identity,
                     owner,
                     (runner, o) =>
                     {
-                        o.GetComponent<PhysxBall>().Init(10 * transform.forward);
+                        o.GetComponent<IProjectileInitialize>().Init(projectileParams);
+                        // o.GetComponent<PhysxBall>().Init(transform.forward);
                     });
             }
         }

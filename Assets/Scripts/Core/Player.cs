@@ -1,18 +1,24 @@
+using System.Collections;
+using System.Linq;
 using Core.PlayerComponents;
 using Core.PlayerComponents.MainWeapons.Abstract;
+using Core.Projectiles;
 using Data;
 using Fusion;
 using Fusion.Addons.SimpleKCC;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Core
 {
 	[DefaultExecutionOrder(-5)]
 	public sealed class Player : NetworkBehaviour
 	{
-		[Header("Weapons")] [SerializeField] private Transform primaryWeaponPosition;
+		[Header("Weapons")] 
+		[SerializeField] private Transform primaryWeaponPosition;
 		[SerializeField] private NetworkPrefabRef primaryWeaponPrefab;
-		private Weapon _primaryWeapon;
+		[SerializeField] private WeaponBase primaryWeapon;
+		[SerializeField] private ProjectilesLauncher projectilesLauncher;
 
 		[Header("Movement Components")] public SimpleKCC KCC;
 		public PlayerInput Input;
@@ -35,10 +41,13 @@ namespace Core
 		public override void Spawned()
 		{
 			InitializeCamera();
+			
 			if (Object.HasInputAuthority)
 			{
 				RPC_RequestWeapon();
-			}		
+			}
+			
+			StartCoroutine(WaitForWeapon());
 		}
 
 		public override void FixedUpdateNetwork()
@@ -62,7 +71,13 @@ namespace Core
 			}
 			if (Input.CurrentInput.Actions.WasPressed(Input.PreviousInput.Actions, GameplayInput.FIRE_BUTTON) == true)
 			{
-				_primaryWeapon.Fire(KCC.LookDirection, Runner, Object.InputAuthority);
+				if (primaryWeapon != null)
+				{
+					// projectilesLauncher.Launch(primaryWeapon.transform.position + primaryWeapon.transform.forward, 
+					// 		KCC.LookDirection, Quaternion.identity);
+					// primaryWeapon.Fire(KCC.LookDirection, Runner, Object.InputAuthority);
+					primaryWeapon.Fire();
+				}
 			}
 
 			// It feels better when the player falls quicker.
@@ -112,9 +127,21 @@ namespace Core
 		{
 			var weapon = Runner.Spawn(primaryWeaponPrefab,
 				primaryWeaponPosition.position, Quaternion.identity, Object.InputAuthority,
-				(runner, o) => { o.GetComponent<Weapon>().Owner = Object; });
+				(runner, o) => { o.GetComponent<WeaponBase>().Owner = Object; });
 
-			_primaryWeapon = weapon.GetComponent<Weapon>();
+			primaryWeapon = weapon.GetComponent<WeaponBase>();
+		}
+		
+		private IEnumerator WaitForWeapon()
+		{
+			while (!primaryWeapon)
+			{
+				var allWeapons = FindObjectsOfType<WeaponBase>();
+				primaryWeapon = allWeapons.FirstOrDefault(w => w.Owner == Object);
+				yield return null;
+			}
+			
+			Debug.Log("Weapon ready!");
 		}
 
 		private void InitializeCamera()
