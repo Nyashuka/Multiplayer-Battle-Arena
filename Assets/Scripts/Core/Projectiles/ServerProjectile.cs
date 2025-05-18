@@ -4,7 +4,6 @@ using Data;
 using Fusion;
 using Networking;
 using UnityEngine;
-using VFX;
 
 namespace Core.Projectiles
 {
@@ -13,14 +12,13 @@ namespace Core.Projectiles
         private float speed = 20f;
         public float lifetime = 2f;
 
-        private float timer;
-        private Vector3 direction;
+        private float _timer;
+        private Vector3 _direction;
 
-
-        public void Init(ProjectileParams data)
+        public void Init(ProjectileParams projectileParams)
         {
-            speed = data.Speed;
-            direction = data.Direction;
+            speed = projectileParams.Speed;
+            _direction = _direction = (projectileParams.Target - projectileParams.VisualStart).normalized;
         }
 
         public override void FixedUpdateNetwork()
@@ -28,10 +26,10 @@ namespace Core.Projectiles
             if (!HasStateAuthority) return;
 
             Vector3 currentPosition = transform.position;
-            Vector3 displacement = direction * (speed * Runner.DeltaTime);
+            Vector3 displacement = _direction * (speed * Runner.DeltaTime);
             Vector3 nextPosition = currentPosition + displacement;
 
-            if (Runner.GetPhysicsScene().Raycast(currentPosition, direction, out var hit, displacement.magnitude))
+            if (Runner.GetPhysicsScene().Raycast(currentPosition, _direction, out var hit, displacement.magnitude))
             {
                 Explode(hit.point);
                 Runner.Despawn(Object);
@@ -40,8 +38,8 @@ namespace Core.Projectiles
 
             transform.position = nextPosition;
 
-            timer += Runner.DeltaTime;
-            if (timer > lifetime)
+            _timer += Runner.DeltaTime;
+            if (_timer > lifetime)
             {
                 Runner.Despawn(Object);
             }

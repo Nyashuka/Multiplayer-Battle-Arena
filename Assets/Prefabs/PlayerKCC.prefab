@@ -480,6 +480,7 @@ GameObject:
   - component: {fileID: 6112807823872140600}
   - component: {fileID: 8099439676080870667}
   - component: {fileID: 2115559961380696704}
+  - component: {fileID: 6705351624214254461}
   m_Layer: 0
   m_Name: PlayerKCC
   m_TagString: Untagged
@@ -525,6 +526,7 @@ MonoBehaviour:
   - {fileID: 2051969095714818444}
   - {fileID: 6112807823872140600}
   - {fileID: 8099439676080870667}
+  - {fileID: 6705351624214254461}
   ForceRemoteRenderTimeframe: 0
 --- !u!54 &5501855737433633615
 Rigidbody:
@@ -602,7 +604,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e245f58c8aef4ea7a1f8b8d975ed0dfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _lookSensitivity: {x: 1, y: 1}
+  _lookSensitivity: {x: 0.1, y: 0.1}
 --- !u!114 &8099439676080870667
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -615,6 +617,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ac8a5d152b44aa7b4c75b4ddda07c54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  networkHealth: {fileID: 6705351624214254461}
   primaryWeaponPosition: {fileID: 6015483494481926346}
   primaryWeaponPrefab:
     RawGuidValue: d93a170af5472a4499e1f66c11d0f0f1
@@ -624,14 +627,7 @@ MonoBehaviour:
   Input: {fileID: 6112807823872140600}
   CameraPivot: {fileID: 3225618391890603553}
   CameraHandle: {fileID: 3225618391890603553}
-  MoveSpeed: 10
-  JumpImpulse: 10
-  UpGravity: -25
-  DownGravity: -40
-  GroundAcceleration: 55
-  GroundDeceleration: 25
-  AirAcceleration: 25
-  AirDeceleration: 1.3
+  playerMovementSettings: {fileID: 11400000, guid: 7ec946cb778dff64d978d53d52e95b77, type: 2}
 --- !u!114 &2115559961380696704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -645,6 +641,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 3388976981686390614, guid: 326adeb7d36bb274b9b5220e428939b4, type: 3}
+--- !u!114 &6705351624214254461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6485119306318585325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f67b39e18874d2fa09500b65f72542e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
 --- !u!1 &6583056719686401792
 GameObject:
   m_ObjectHideFlags: 0

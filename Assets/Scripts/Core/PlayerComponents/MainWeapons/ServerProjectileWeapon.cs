@@ -11,12 +11,14 @@ namespace Core.PlayerComponents.MainWeapons
         [SerializeField] private Transform firePoint;
         [SerializeField] private float speed;
 
-        public override void Fire()
+        public override void Fire(Vector3 start, Vector3 direction)
         {
-            var projectileParams = new ProjectileParams();
-            projectileParams.Direction = firePoint.forward;
-            projectileParams.Speed = speed;
-            
+            var projectileParams = new ProjectileParams
+            {
+                Direction = direction,
+                Speed = speed
+            };
+
             if (HasInputAuthority)
             {
                 var dummyProjectile = Instantiate(dummyVisualPrefab, firePoint.position, firePoint.rotation);

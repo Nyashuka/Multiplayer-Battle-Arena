@@ -6,6 +6,7 @@ using Core.Projectiles;
 using Data;
 using Fusion;
 using Fusion.Addons.SimpleKCC;
+using ScriptableObjects;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -14,6 +15,9 @@ namespace Core
 	[DefaultExecutionOrder(-5)]
 	public sealed class Player : NetworkBehaviour
 	{
+		[Header("Health")]
+		[SerializeField] private NetworkHealth networkHealth;
+		
 		[Header("Weapons")] 
 		[SerializeField] private Transform primaryWeaponPosition;
 		[SerializeField] private NetworkPrefabRef primaryWeaponPrefab;
@@ -25,21 +29,18 @@ namespace Core
 		public Transform CameraPivot;
 		public Transform CameraHandle;
 
-		[Header("Movement Settings")] public float MoveSpeed = 10.0f;
-		public float JumpImpulse = 10.0f;
-		public float UpGravity = -25.0f;
-		public float DownGravity = -40.0f;
-		public float GroundAcceleration = 55.0f;
-		public float GroundDeceleration = 25.0f;
-		public float AirAcceleration = 25.0f;
-		public float AirDeceleration = 1.3f;
-
+		[FormerlySerializedAs("movementSettings")]
+		[Header("Movement Settings")] 
+		[SerializeField] private PlayerMovementSettings playerMovementSettings;
+		private MovementConfig _movementConfig;
+		
 		[Networked] private Vector3 _moveVelocity { get; set; }
 
 		private Transform _cameraTransform;
 
 		public override void Spawned()
 		{
+			_movementConfig = playerMovementSettings.GetConfig();
 			InitializeCamera();
 			
 			if (Object.HasInputAuthority)
@@ -66,39 +67,37 @@ namespace Core
 				if (KCC.IsGrounded == true)
 				{
 					// Set world space jump vector.
-					jumpImpulse = JumpImpulse;
+					jumpImpulse = _movementConfig.JumpImpulse;
 				}
 			}
 			if (Input.CurrentInput.Actions.WasPressed(Input.PreviousInput.Actions, GameplayInput.FIRE_BUTTON) == true)
 			{
 				if (primaryWeapon != null)
 				{
-					// projectilesLauncher.Launch(primaryWeapon.transform.position + primaryWeapon.transform.forward, 
-					// 		KCC.LookDirection, Quaternion.identity);
-					// primaryWeapon.Fire(KCC.LookDirection, Runner, Object.InputAuthority);
-					primaryWeapon.Fire();
+					GetCameraStartAndDirection(out var cameraStart, out var cameraDirection);
+					primaryWeapon.Fire(cameraStart, cameraDirection);
 				}
 			}
-
+			
 			// It feels better when the player falls quicker.
-			KCC.SetGravity(KCC.RealVelocity.y >= 0.0f ? UpGravity : DownGravity);
+			KCC.SetGravity(KCC.RealVelocity.y >= 0.0f ? _movementConfig.UpGravity : _movementConfig.DownGravity);
 
-			Vector3 desiredMoveVelocity = inputDirection * MoveSpeed;
+			Vector3 desiredMoveVelocity = inputDirection * _movementConfig.MoveSpeed;
 
 			if (KCC.ProjectOnGround(desiredMoveVelocity, out Vector3 projectedDesiredMoveVelocity) == true)
 			{
-				desiredMoveVelocity = Vector3.Normalize(projectedDesiredMoveVelocity) * MoveSpeed;
+				desiredMoveVelocity = Vector3.Normalize(projectedDesiredMoveVelocity) * _movementConfig.MoveSpeed;
 			}
 
 			float acceleration;
 			if (desiredMoveVelocity == Vector3.zero)
 			{
 				// No desired move velocity - we are stopping.
-				acceleration = KCC.IsGrounded == true ? GroundDeceleration : AirDeceleration;
+				acceleration = KCC.IsGrounded == true ? _movementConfig.GroundDeceleration : _movementConfig.AirDeceleration;
 			}
 			else
 			{
-				acceleration = KCC.IsGrounded == true ? GroundAcceleration : AirAcceleration;
+				acceleration = KCC.IsGrounded == true ? _movementConfig.GroundAcceleration : _movementConfig.AirAcceleration;
 			}
 
 			_moveVelocity = Vector3.Lerp(_moveVelocity, desiredMoveVelocity, acceleration * Runner.DeltaTime);
@@ -120,6 +119,24 @@ namespace Core
 			CameraPivot.localRotation = Quaternion.Euler(pitchRotation);
 
 			_cameraTransform.SetPositionAndRotation(CameraHandle.position, CameraHandle.rotation);
+			
+			if (!HasInputAuthority) return;
+			
+			AimGun();
+		}
+
+		private void AimGun()
+		{
+			Ray ray = new Ray(_cameraTransform.position, _cameraTransform.forward);
+			Vector3 lookTarget;
+
+			if (Physics.Raycast(ray, out RaycastHit hit, 100f))
+				lookTarget = hit.point;
+			else
+				lookTarget = ray.GetPoint(100f);
+
+			Vector3 direction = (lookTarget - primaryWeaponPosition.position).normalized;
+			primaryWeaponPosition.rotation = Quaternion.LookRotation(direction);
 		}
 
 		[Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
@@ -140,19 +157,30 @@ namespace Core
 				primaryWeapon = allWeapons.FirstOrDefault(w => w.Owner == Object);
 				yield return null;
 			}
+
+			// primaryWeapon.transform.position = primaryWeaponPosition.position;
+			primaryWeapon.transform.position = new Vector3(primaryWeaponPosition.position.x,
+				primaryWeaponPosition.position.y,
+				primaryWeaponPosition.position.z + primaryWeapon.transform.localScale.z / 2);
+			primaryWeapon.transform.rotation = primaryWeaponPosition.rotation;
 			
 			Debug.Log("Weapon ready!");
 		}
 
+		private void GetCameraStartAndDirection(out Vector3 cameraStart, out Vector3 cameraDirection)
+		{
+			Camera cam = Camera.main;
+
+			Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+			cameraDirection = ray.direction;
+			cameraStart = ray.origin;	
+		}
 		private void InitializeCamera()
 		{
 			var mainCamera = Camera.main;
 			if (mainCamera != null)
 			{
 				_cameraTransform = mainCamera.transform;
-				_cameraTransform.SetParent(CameraHandle);
-				_cameraTransform.localPosition = Vector3.zero;
-				_cameraTransform.localRotation = Quaternion.identity;
 			}
 		}
 

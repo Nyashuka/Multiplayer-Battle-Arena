@@ -1,4 +1,5 @@
 using Fusion;
+using UnityEngine;
 
 namespace Core.PlayerComponents.MainWeapons.Abstract
 {
@@ -14,6 +15,6 @@ namespace Core.PlayerComponents.MainWeapons.Abstract
                 transform.SetParent(player.GetPrimaryWeaponTransform());
             }
         }
-        public abstract void Fire();
+        public abstract void Fire(Vector3 start, Vector3 direction);
     }
 }

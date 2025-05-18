@@ -1,10 +1,9 @@
 using Core.Projectiles.Abstract;
-using Data;
 using UnityEngine;
 
 namespace Core.Projectiles
 {
-    public class DummyProjectile : VisualProjectileBase
+    public class SmoothedDummyProjectile : VisualProjectileBase
     {
         private float _speed = 20f;
         public float lifetime = 2f;
@@ -15,7 +14,7 @@ namespace Core.Projectiles
         public override void Init(ProjectileParams projectileParams)
         {
             _speed = projectileParams.Speed;
-            _direction = projectileParams.Direction.normalized;
+            _direction = (projectileParams.Target - projectileParams.VisualStart).normalized;
         }
 
         public override void Launch()
@@ -33,6 +32,5 @@ namespace Core.Projectiles
                 Destroy(gameObject);
             }
         }
-
     }
 }
