@@ -1,19 +1,27 @@
+using Core.PlayerComponents;
 using UnityEngine;
 
 namespace Core
 {
     public class EnemyCanvas : MonoBehaviour
     {
-        [SerializeField] private Transform cameraTransform;
+        [SerializeField] private Transform cameraTransformForFollow;
+        [SerializeField] private EnemyHealthBar healthBar;
 
-        public void Start()
+        public void Initialize(Transform cameraTransform, IHealthSource health)
         {
-            cameraTransform = Camera.main.transform;     
+            cameraTransformForFollow = cameraTransform;
+            InitializeHealthBar(health);
+        }
+
+        private void InitializeHealthBar(IHealthSource health)
+        {
+            healthBar.Initialize(health);
         }
         
         private void LateUpdate()
         {
-            transform.LookAt(transform.position + cameraTransform.forward);    
+            transform.LookAt(transform.position + cameraTransformForFollow.forward);    
         }
     }
 }

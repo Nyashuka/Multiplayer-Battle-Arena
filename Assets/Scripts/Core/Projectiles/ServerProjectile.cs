@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Core.PlayerComponents;
 using Data;
 using Fusion;
 using Networking;
@@ -31,6 +32,27 @@ namespace Core.Projectiles
 
             if (Runner.GetPhysicsScene().Raycast(currentPosition, _direction, out var hit, displacement.magnitude))
             {
+                IDamagable damagable = null;
+
+                if (hit.collider.TryGetComponent<IDamagable>(out var directHit))
+                {
+                    damagable = directHit;
+                }
+                else if (hit.collider.transform.root.TryGetComponent<IDamagable>(out var rootHit))
+                {
+                    damagable = rootHit;
+                }
+
+                if (damagable != null)
+                {
+                    damagable.TakeDamage(25);
+                    Debug.Log("Damaged");
+                }
+                // if (hit.collider.TryGetComponent<IDamagable>(out var damagable))
+                // {
+                //     damagable.TakeDamage(25);
+                //     Debug.Log("Damaged");
+                // }
                 Explode(hit.point);
                 Runner.Despawn(Object);
                 return;

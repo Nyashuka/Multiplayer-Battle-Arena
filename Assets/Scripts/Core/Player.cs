@@ -38,6 +38,7 @@ namespace Core
 
 		private Transform _cameraTransform;
 
+		[SerializeField] private EnemyCanvas enemyCanvasPrefab;
 		public override void Spawned()
 		{
 			_movementConfig = playerMovementSettings.GetConfig();
@@ -147,6 +148,18 @@ namespace Core
 				(runner, o) => { o.GetComponent<WeaponBase>().Owner = Object; });
 
 			primaryWeapon = weapon.GetComponent<WeaponBase>();
+		}
+	
+		[Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+		private void Rpc_NotifyOthersAboutMe(NetworkObject myObject)
+		{
+			if (HasInputAuthority)
+			{
+				if (!myObject.HasInputAuthority)
+				{
+					
+				}
+			}
 		}
 		
 		private IEnumerator WaitForWeapon()

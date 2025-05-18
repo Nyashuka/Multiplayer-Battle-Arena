@@ -897,8 +897,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aff73ce0edc6a4b478ec6da8285d6ee1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerPrefab:
-    RawGuidValue: 08d2bddfa6bbc274eb957ca045b77ea3
+  levelBuilder: {fileID: 1513546860}
 --- !u!4 &1293292444
 Transform:
   m_ObjectHideFlags: 0
@@ -1666,6 +1665,74 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &1513546857
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1513546858}
+  - component: {fileID: 1513546859}
+  - component: {fileID: 1513546860}
+  m_Layer: 0
+  m_Name: LevelBuilder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1513546858
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1513546857}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1513546859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1513546857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 1629700902
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 1513546860}
+  ForceRemoteRenderTimeframe: 0
+--- !u!114 &1513546860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1513546857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd28b62b50c046bbb80d400b2270799b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyCanvasPrefab: {fileID: 123717014050820840, guid: b10bdfa519bf5cc4a840d0ebfff3b14d, type: 3}
+  playerPrefab:
+    RawGuidValue: 08d2bddfa6bbc274eb957ca045b77ea3
+  spawnPoints: []
 --- !u!1 &1828601335
 GameObject:
   m_ObjectHideFlags: 0
@@ -1814,6 +1881,7 @@ SceneRoots:
   - {fileID: 223974230}
   - {fileID: 705507995}
   - {fileID: 1293292444}
+  - {fileID: 1513546858}
   - {fileID: 2145037651}
   - {fileID: 215018354}
   - {fileID: 782628378}
