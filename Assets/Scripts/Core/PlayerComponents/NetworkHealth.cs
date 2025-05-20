@@ -1,4 +1,5 @@
 using System;
+using Data;
 using Fusion;
 using UnityEngine;
 
@@ -6,11 +7,14 @@ namespace Core.PlayerComponents
 {
     public class NetworkHealth : NetworkBehaviour, IDamagable, IHealable, IHealthSource
     {
+        [Networked] public PlayerRef Owner { get; set; }
+        public PlayerRef LastAttacker { get; private set; }
         [Networked] private int NetworkHealthValue { get; set; }
         public Health Health { get; private set; }
 
         [SerializeField] private int maxHealth = 100;
-        
+
+        public event Action<DeathData> DeathEvent;
         public event Action<int> HealthChanged;
         public int CurrentHealth => NetworkHealthValue;
         public int MaxHealth => Health.MaxHealth;
@@ -21,7 +25,7 @@ namespace Core.PlayerComponents
             OnHealthChanged(Health.CurrentHealth);
 
             Health.HealthChanged += OnHealthChanged;
-            Health.Death += OnDeath;
+            Health.DeathEvent += OnDeathEvent;
         }
 
         private void OnHealthChanged(int value)
@@ -40,17 +44,22 @@ namespace Core.PlayerComponents
             HealthChanged?.Invoke(NetworkHealthValue);
         } 
 
-        private void OnDeath()
+        private void OnDeathEvent()
         {
-            
+            DeathEvent?.Invoke(new DeathData()
+            {
+                Killer = LastAttacker,
+                Victim = Owner
+            });
         }
 
-        public void TakeDamage(int damage)
+        public void TakeDamage(DamageData data)
         {
             if (!HasStateAuthority || !Health.IsAlive)
                 return;
 
-            Health.TakeDamage(damage);
+            LastAttacker = data.Attacker;
+            Health.TakeDamage(data);
         }
 
         public void Heal(int amount)

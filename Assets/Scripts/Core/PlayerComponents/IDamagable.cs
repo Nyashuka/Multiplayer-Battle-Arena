@@ -1,7 +1,9 @@
+using Data;
+
 namespace Core.PlayerComponents
 {
     public interface IDamagable
     {
-        void TakeDamage(int damage);
+        void TakeDamage(DamageData data);
     }
 }

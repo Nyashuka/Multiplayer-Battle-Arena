@@ -1,6 +1,5 @@
-using System.Collections.Generic;
-using System.Linq;
 using Core.PlayerComponents;
+using Core.PlayerComponents.MainWeapons;
 using Data;
 using Fusion;
 using Networking;
@@ -10,7 +9,9 @@ namespace Core.Projectiles
 {
     public class ServerProjectile : NetworkBehaviour, IProjectileInitialize
     {
-        private float speed = 20f;
+        public SimpleKinematicWeapon weapon;
+        public PlayerRef Owner { get; private set; }
+        private float _speed = 20f;
         public float lifetime = 2f;
 
         private float _timer;
@@ -18,16 +19,17 @@ namespace Core.Projectiles
 
         public void Init(ProjectileParams projectileParams)
         {
-            speed = projectileParams.Speed;
+            _speed = projectileParams.Speed;
             _direction = _direction = (projectileParams.Target - projectileParams.VisualStart).normalized;
+            Owner = projectileParams.Owner;
         }
 
         public override void FixedUpdateNetwork()
         {
-            if (!HasStateAuthority) return;
+            if (!HasStateAuthority || weapon == null) return;
 
             Vector3 currentPosition = transform.position;
-            Vector3 displacement = _direction * (speed * Runner.DeltaTime);
+            Vector3 displacement = _direction * (_speed * Runner.DeltaTime);
             Vector3 nextPosition = currentPosition + displacement;
 
             if (Runner.GetPhysicsScene().Raycast(currentPosition, _direction, out var hit, displacement.magnitude))
@@ -45,15 +47,16 @@ namespace Core.Projectiles
 
                 if (damagable != null)
                 {
-                    damagable.TakeDamage(25);
+                    damagable.TakeDamage(new DamageData()
+                    {
+                        Attacker = Owner,
+                        Damage = 25
+                    });
                     Debug.Log("Damaged");
                 }
-                // if (hit.collider.TryGetComponent<IDamagable>(out var damagable))
-                // {
-                //     damagable.TakeDamage(25);
-                //     Debug.Log("Damaged");
-                // }
-                Explode(hit.point);
+                // Explode(hit.point);
+                
+                weapon.RPC_DestroyDummyProjectile(Object.Id, hit.point);
                 Runner.Despawn(Object);
                 return;
             }
@@ -65,11 +68,6 @@ namespace Core.Projectiles
             {
                 Runner.Despawn(Object);
             }
-        }
-
-        private void Explode(Vector3 position)
-        {
-            RPCGlobalManger.Instance.Explode(position);
         }
     }
 }

@@ -17,6 +17,7 @@ namespace Core
 	{
 		[Header("Health")]
 		[SerializeField] private NetworkHealth networkHealth;
+		public NetworkHealth NetworkHealth => networkHealth;
 		
 		[Header("Weapons")] 
 		[SerializeField] private Transform primaryWeaponPosition;
@@ -146,6 +147,8 @@ namespace Core
 			var weapon = Runner.Spawn(primaryWeaponPrefab,
 				primaryWeaponPosition.position, Quaternion.identity, Object.InputAuthority,
 				(runner, o) => { o.GetComponent<WeaponBase>().Owner = Object; });
+			
+			networkHealth.Owner = Object.InputAuthority;
 
 			primaryWeapon = weapon.GetComponent<WeaponBase>();
 		}

@@ -1,4 +1,5 @@
 using Data;
+using Fusion;
 
 namespace Core.Projectiles
 {

@@ -1,4 +1,5 @@
 using System;
+using Data;
 using UnityEngine;
 
 namespace Core.PlayerComponents
@@ -12,7 +13,7 @@ namespace Core.PlayerComponents
         public int MaxHealth { get => _maxHealth; }
         
         public event Action<int> HealthChanged;
-        public event Action Death;
+        public event Action DeathEvent;
 
         public Health(int maxHealth)
         {
@@ -26,15 +27,15 @@ namespace Core.PlayerComponents
             HealthChanged?.Invoke(CurrentHealth);
     
             if (!IsAlive)
-                Death?.Invoke();
+                DeathEvent?.Invoke();
         }
 
-        public void TakeDamage(int damage)
+        public void TakeDamage(DamageData data)
         {
-            if (damage <= 0 || !IsAlive)
+            if (data.Damage <= 0 || !IsAlive)
                 return;
 
-            SetHealth(Mathf.Max(0, CurrentHealth - damage));
+            SetHealth(Mathf.Max(0, CurrentHealth - data.Damage));
         }
 
         public void Heal(int amount)

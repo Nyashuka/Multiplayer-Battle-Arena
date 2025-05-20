@@ -4,13 +4,11 @@ namespace VFX
 {
     public class SimpleExplosiveEffect : MonoBehaviour
     {
-        [SerializeField] private ParticleSystem particleSystem;
+        [SerializeField] private ParticleSystem explosiveParticleSystem;
 
         public void Play()
         {
-            particleSystem.Play();
-        
-            Destroy(gameObject, 5f);
+            explosiveParticleSystem.Play();
         }
     }
 }

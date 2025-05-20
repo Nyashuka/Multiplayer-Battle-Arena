@@ -12,8 +12,6 @@ namespace Networking
     public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     {
         [SerializeField] private LevelBuilder levelBuilder;
-        // [SerializeField] private NetworkPrefabRef _playerPrefab;
-        // private Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
         private NetworkRunner _runner;
         private bool _mouseButton0;
         private bool _mouseButton1;

@@ -27,7 +27,8 @@ namespace Core.PlayerComponents.MainWeapons
                 VisualStart = firePoint.position,
                 ServerStart = start,
                 Direction = direction,
-                Speed = speed
+                Speed = speed,
+                Owner = Object.InputAuthority
             };
 
             RPC_RequestFire(projectileParams);
@@ -37,7 +38,7 @@ namespace Core.PlayerComponents.MainWeapons
         private void RPC_RequestFire(ProjectileParams projectileParams, RpcInfo info = default)
         {
             if (!HasStateAuthority) return;
-
+            
             if (Physics.Raycast(projectileParams.ServerStart, projectileParams.Direction, out RaycastHit hit, 100f))
             {
                 projectileParams.Target = hit.point;
@@ -48,6 +49,7 @@ namespace Core.PlayerComponents.MainWeapons
             }
             
             var serverProjectile = Runner.Spawn(serverProjectilePrefab, firePoint.position, firePoint.rotation, Object.InputAuthority);
+            serverProjectile.weapon = this;
             serverProjectile.GetComponent<IProjectileInitialize>().Init(projectileParams);
 
             RPC_SpawnDummyProjectile(serverProjectile.Object.Id, projectileParams);
@@ -64,6 +66,15 @@ namespace Core.PlayerComponents.MainWeapons
                 audioSource.Play();
             
             _visualProjectiles[serverProjectileId] = visualProjectile;
+        }
+
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        public void RPC_DestroyDummyProjectile(NetworkId serverProjectileId, Vector3 position, RpcInfo info = default)
+        {
+            var visualProjectile = _visualProjectiles[serverProjectileId];
+            visualProjectile.Explose(position);
+            Destroy(visualProjectile.gameObject);
+            _visualProjectiles.Remove(serverProjectileId);
         }
     }
 }
