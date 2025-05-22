@@ -1,20 +1,27 @@
+using System;
 using Core.MatchmakingComponents;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem.HID;
 using UnityEngine.UI;
 
 namespace UserInterface
 {
     public class MainMenu : MonoBehaviour
     {
-        [SerializeField] private MatchFinder matchFinder;
+        public event Action FindMatchRequested;
+
         [SerializeField] private TMP_InputField playerNameInputField;
         [SerializeField] private Button findMatchButton;
 
-        public void Start()
+        private void Start()
         {
-            findMatchButton.onClick.AddListener(matchFinder.FindMatch);
+            findMatchButton.onClick.AddListener(OnFindMatchClicked);
+        }
+
+        private void OnFindMatchClicked()
+        {
+            FindMatchRequested?.Invoke();
         }
     }
 }

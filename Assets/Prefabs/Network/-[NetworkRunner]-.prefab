@@ -128,6 +128,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   networkRunner: {fileID: 6096595131678479028}
-  gameInitializerPrefab: {fileID: 6361803122456692904, guid: c7b32fdf3daa5f742a57d869a8eea2a8, type: 3}
+  matchBootstrapperPrefab: {fileID: 6361803122456692904, guid: c7b32fdf3daa5f742a57d869a8eea2a8, type: 3}
   gameScene:
-    RawValue: 2
+    RawValue: 3

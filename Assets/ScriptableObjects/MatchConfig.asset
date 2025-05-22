@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14174e519b0446ee8232d5ea3b16b9a5, type: 3}
+  m_Name: MatchConfig
+  m_EditorClassIdentifier: 
+  mapPrefab:
+    RawGuidValue: fc5a676d2c90b3d4f8a22e369c35950d
+  playerPrefab:
+    RawGuidValue: 08d2bddfa6bbc274eb957ca045b77ea3
+  matchManagerPrefab:
+    RawGuidValue: 0872f4c72644ede46977a512a3522677
+  canvasPrefab: {fileID: 6772524384755994423, guid: 67646e95c45239f429f2482e1bb38624, type: 3}
+  hudPrefab: {fileID: 6491382689165946488, guid: 9a3fc292aeae18b4d9b4ac58a2339262, type: 3}

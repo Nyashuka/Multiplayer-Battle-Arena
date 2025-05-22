@@ -12,13 +12,14 @@ namespace Networking
     public class MainNetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
     {
         [SerializeField] private NetworkRunner networkRunner;
-        [SerializeField] private GameInitializer gameInitializerPrefab;
+        [SerializeField] private MatchBootstrapper matchBootstrapperPrefab;
         [SerializeField] private SceneRef gameScene;
         
         private readonly List<PlayerRef> _connectedPlayers = new();
         private const int MinPlayersToStartMatch = 2;
         private string _currentRoomName;
-        [Networked] private GameInitializer GameInitializer { get; set; }
+        
+        [Networked] private MatchBootstrapper MatchBootstrapper { get; set; }
 
         private void PlayerJoined(PlayerRef player)
         {
@@ -36,12 +37,11 @@ namespace Networking
         {
             var sceneName = SceneManager.GetActiveScene().name;
             Debug.Log("Scene loaded: " + sceneName);
-            if (sceneName == "GameScene")
+            if (sceneName == "MatchScene")
             {
                 if (networkRunner.IsServer)
                 {
-                    GameInitializer = networkRunner.Spawn(gameInitializerPrefab).GetComponent<GameInitializer>();
-                    GameInitializer.LoadGame();
+                    MatchBootstrapper = networkRunner.Spawn(matchBootstrapperPrefab).GetComponent<MatchBootstrapper>();
                 }
             }
         }

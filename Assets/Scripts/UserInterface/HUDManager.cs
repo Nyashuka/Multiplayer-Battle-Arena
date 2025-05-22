@@ -10,20 +10,27 @@ namespace UserInterface
     {
         [SerializeField] private TMP_Text statisticText;
         
-        private PlayerStatistic _playerStatistic;
-
-        public void Start()
+        private void OnEnable()
         {
             GameEventBus.Instance.Subscribe(GameEventDefinitions.StatisticsChanged, OnStatisticsChanged);
+        }
+
+        private void OnDisable()
+        {
+            GameEventBus.Instance.Unsubscribe(GameEventDefinitions.StatisticsChanged, OnStatisticsChanged);
         }
 
         private void OnStatisticsChanged(IEventBusArgs args)
         {
             if (args is StatisticsChangedEventArgs statisticsChangedEvent)
             {
-                _playerStatistic = statisticsChangedEvent
+                var playerStatistic = statisticsChangedEvent
                     .MatchStatistic.GetPlayerStatistic(statisticsChangedEvent.Owner);
-                UpdateStatistic(_playerStatistic);
+                
+                if (playerStatistic != null)
+                {
+                    UpdateStatistic(playerStatistic);
+                }
             }
         }
 

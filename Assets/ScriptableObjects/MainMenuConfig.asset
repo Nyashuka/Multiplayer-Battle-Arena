@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee4ca65dd2254a30af3cb8f6ae1bc93f, type: 3}
+  m_Name: MainMenuConfig
+  m_EditorClassIdentifier: 
+  matchBootstrapperPrefab:
+    RawGuidValue: c7b32fdf3daa5f742a57d869a8eea2a8
+  networkRunnerPrefab: {fileID: 6096595131678479028, guid: 0bcefdbafa2dfb146810efaeedfb7a57, type: 3}
+  canvasPrefab: {fileID: 6772524384755994423, guid: 67646e95c45239f429f2482e1bb38624, type: 3}
+  mainMenuPrefab: {fileID: 928135289259128229, guid: f6626d50e3234204ebb05f77c34c691c, type: 3}
