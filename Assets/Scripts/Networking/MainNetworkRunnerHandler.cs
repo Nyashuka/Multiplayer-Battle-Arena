@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using Fusion;
 using Fusion.Addons.Physics;
 using Fusion.Sockets;
+using Infrastructure;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Infrastructure
+namespace Networking
 {
     public class MainNetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
     {
@@ -17,9 +18,9 @@ namespace Infrastructure
         private readonly List<PlayerRef> _connectedPlayers = new();
         private const int MinPlayersToStartMatch = 2;
         private string _currentRoomName;
-        private GameInitializer _gameInitializer;
-        
-        public void PlayerJoined(PlayerRef player)
+        [Networked] private GameInitializer GameInitializer { get; set; }
+
+        private void PlayerJoined(PlayerRef player)
         {
             _connectedPlayers.Add(player);
             Debug.Log($"Player added: {player}");
@@ -27,27 +28,31 @@ namespace Infrastructure
             if (_connectedPlayers.Count == MinPlayersToStartMatch)
             {
                 Debug.Log($"Starting match");
-                var runnerSimulatePhysics3D = gameObject.AddComponent<RunnerSimulatePhysics3D>();
-                runnerSimulatePhysics3D.ClientPhysicsSimulation = ClientPhysicsSimulation.SimulateAlways;
                 StartMatch();     
             }
         }
 
-        public void SceneLoadDone()
+        private void SceneLoadDone()
         {
             var sceneName = SceneManager.GetActiveScene().name;
             Debug.Log("Scene loaded: " + sceneName);
-            if (networkRunner.IsServer && sceneName == "GameScene")
+            if (sceneName == "GameScene")
             {
-                _gameInitializer = networkRunner.Spawn(gameInitializerPrefab).GetComponent<GameInitializer>();
-                // DontDestroyOnLoad(_gameInitializer);
-                _gameInitializer.LoadGame();
+                if (networkRunner.IsServer)
+                {
+                    GameInitializer = networkRunner.Spawn(gameInitializerPrefab).GetComponent<GameInitializer>();
+                    GameInitializer.LoadGame();
+                }
             }
         }
 
         private void StartMatch()
         {
-            if (networkRunner.IsSceneAuthority) {
+            var runnerSimulatePhysics3D = gameObject.AddComponent<RunnerSimulatePhysics3D>();
+            runnerSimulatePhysics3D.ClientPhysicsSimulation = ClientPhysicsSimulation.SimulateAlways;
+            
+            if (networkRunner.IsSceneAuthority) 
+            {
                 networkRunner.LoadScene(gameScene);
             }
         } 
