@@ -18,5 +18,7 @@ MonoBehaviour:
     RawGuidValue: 08d2bddfa6bbc274eb957ca045b77ea3
   matchManagerPrefab:
     RawGuidValue: 0872f4c72644ede46977a512a3522677
+  defaultWeaponPrefab:
+    RawGuidValue: d93a170af5472a4499e1f66c11d0f0f1
   canvasPrefab: {fileID: 6772524384755994423, guid: 67646e95c45239f429f2482e1bb38624, type: 3}
   hudPrefab: {fileID: 6491382689165946488, guid: 9a3fc292aeae18b4d9b4ac58a2339262, type: 3}

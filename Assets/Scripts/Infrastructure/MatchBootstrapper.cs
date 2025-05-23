@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Core;
 using Core.MatchmakingComponents;
 using Environment;
 using Fusion;
@@ -40,9 +41,19 @@ namespace Infrastructure
             foreach (var activePlayer in Runner.ActivePlayers)
             {
                 var position = GetSpawnPosition(_map.SpawnPoints);
-                var player = playerFactory.Create(activePlayer, position, Quaternion.identity);
-                _players.Add(activePlayer, player);
+                var playerNetworkObject = playerFactory.Create(activePlayer, position, Quaternion.identity);
+                _players.Add(activePlayer, playerNetworkObject);
+
+                var player = playerNetworkObject.GetComponent<Player>();
+                SetupDefaultPlayerWeapon(activePlayer, player);
             }
+        }
+
+        private void SetupDefaultPlayerWeapon(PlayerRef playerRef, Player player)
+        {
+            var mainWeaponFactory = new MainWeaponFactory(Runner, matchConfig.DefaultWeaponPrefab);
+            var playerWeapon = mainWeaponFactory.Create(playerRef, player.GetPrimaryWeaponTransform());
+            player.SetWeapon(playerWeapon);
         }
 
         private void InitializeUI()

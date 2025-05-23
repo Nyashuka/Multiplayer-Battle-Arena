@@ -8,10 +8,13 @@ namespace ScriptableObjects
     public class MatchConfig : ScriptableObject
     {
         [Header("Network Prefabs")]
-        public NetworkPrefabRef mapPrefab;
-        public NetworkPrefabRef playerPrefab;
-        public NetworkPrefabRef matchManagerPrefab;
+        [SerializeField] public NetworkPrefabRef mapPrefab;
+        [SerializeField] public NetworkPrefabRef playerPrefab;
+        [SerializeField] public NetworkPrefabRef matchManagerPrefab;
+        [SerializeField] private NetworkPrefabRef defaultWeaponPrefab;
 
+        public NetworkPrefabRef DefaultWeaponPrefab => defaultWeaponPrefab;
+        
         [Header("UI Prefabs")]
         public Canvas canvasPrefab;
         public HUDManager hudPrefab;

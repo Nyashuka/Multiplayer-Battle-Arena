@@ -478,10 +478,10 @@ GameObject:
   - component: {fileID: 5501855737433633615}
   - component: {fileID: 2051969095714818444}
   - component: {fileID: 6112807823872140600}
-  - component: {fileID: 8099439676080870667}
   - component: {fileID: 6705351624214254461}
   - component: {fileID: 7678491000565604077}
   - component: {fileID: 7366802892924089786}
+  - component: {fileID: 8099439676080870667}
   m_Layer: 0
   m_Name: PlayerKCC
   m_TagString: Untagged
@@ -526,10 +526,10 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 2051969095714818444}
   - {fileID: 6112807823872140600}
-  - {fileID: 8099439676080870667}
   - {fileID: 6705351624214254461}
   - {fileID: 7678491000565604077}
   - {fileID: 7366802892924089786}
+  - {fileID: 8099439676080870667}
   ForceRemoteRenderTimeframe: 0
 --- !u!54 &5501855737433633615
 Rigidbody:
@@ -608,30 +608,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _lookSensitivity: {x: 0.1, y: 0.1}
---- !u!114 &8099439676080870667
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6485119306318585325}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ac8a5d152b44aa7b4c75b4ddda07c54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  networkHealth: {fileID: 6705351624214254461}
-  primaryWeaponPosition: {fileID: 6015483494481926346}
-  primaryWeaponPrefab:
-    RawGuidValue: d93a170af5472a4499e1f66c11d0f0f1
-  primaryWeapon: {fileID: 0}
-  projectilesLauncher: {fileID: 0}
-  KCC: {fileID: 2051969095714818444}
-  Input: {fileID: 6112807823872140600}
-  CameraPivot: {fileID: 3225618391890603553}
-  CameraHandle: {fileID: 3225618391890603553}
-  playerMovementSettings: {fileID: 11400000, guid: 7ec946cb778dff64d978d53d52e95b77, type: 2}
-  enemyCanvasPrefab: {fileID: 123717014050820840, guid: b10bdfa519bf5cc4a840d0ebfff3b14d, type: 3}
 --- !u!114 &6705351624214254461
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -673,6 +649,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _Lives: 0
   initialLives: 3
+--- !u!114 &8099439676080870667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6485119306318585325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ac8a5d152b44aa7b4c75b4ddda07c54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  networkHealth: {fileID: 6705351624214254461}
+  input: {fileID: 6112807823872140600}
+  kcc: {fileID: 2051969095714818444}
+  primaryWeaponHolder: {fileID: 6015483494481926346}
+  cameraHandle: {fileID: 3225618391890603553}
+  playerMovementSettings: {fileID: 11400000, guid: 7ec946cb778dff64d978d53d52e95b77, type: 2}
+  _CurrentWeapon: {fileID: 0}
 --- !u!1 &6583056719686401792
 GameObject:
   m_ObjectHideFlags: 0
