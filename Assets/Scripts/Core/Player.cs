@@ -1,26 +1,22 @@
-using System.Collections;
-using System.Linq;
 using Core.PlayerComponents;
 using Core.PlayerComponents.MainWeapons.Abstract;
-using Core.Projectiles;
 using Data;
 using Fusion;
 using Fusion.Addons.SimpleKCC;
 using ScriptableObjects;
 using UnityEngine;
-using UnityEngine.Rendering.VirtualTexturing;
-using UnityEngine.Serialization;
 
 namespace Core
 {
 	[DefaultExecutionOrder(-5)]
 	public sealed class Player : NetworkBehaviour
 	{
-		[Header("Player Components")] [SerializeField]
-		private NetworkHealth networkHealth;
-
+		[Header("Player Components")] 
+		[SerializeField] private NetworkHealth networkHealth;
+		[SerializeField] private PlayerLives playerLives;
 		[SerializeField] private PlayerInput input;
 		[SerializeField] private SimpleKCC kcc;
+		[SerializeField] private PlayerLifecycle playerLifecycle;
 		[SerializeField] private Transform primaryWeaponHolder;
 		[SerializeField] private Transform cameraHandle;
 
@@ -32,7 +28,9 @@ namespace Core
 		private Transform _cameraTransform;
 
 		[Networked] private Vector3 MoveVelocity { get; set; }
-		[Networked] public WeaponBase CurrentWeapon { get; set; }
+		[Networked] private WeaponBase CurrentWeapon { get; set; }
+		
+		public PlayerLives PlayerLives => playerLives;
 		
 		[Rpc(RpcSources.StateAuthority, RpcTargets.All)]
 		private void Rpc_SetupPrimaryGunVisual()
@@ -143,7 +141,38 @@ namespace Core
 			cameraDirection = ray.direction;
 			cameraStart = ray.origin;	
 		}
+
+		private void OnDeath(DeathData deathData)
+		{
+			if(!HasStateAuthority) return;
+			
+			Rpc_DeathPlayer();
+		}
 		
+		[Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+		private void Rpc_DeathPlayer()
+		{
+			if (!networkHealth.IsAlive && playerLifecycle.IsEnabled)
+			{
+				playerLifecycle.Die();
+			}
+		}
+
+		public void Respawn(Vector3 respawnPosition)
+		{
+			if(!HasStateAuthority) return;
+			
+			kcc.SetPosition(respawnPosition);
+			Rpc_RespawnPlayer();
+			networkHealth.Reset();
+		}
+		
+		[Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+		private void Rpc_RespawnPlayer()
+		{
+			playerLifecycle.Respawn();
+		}
+
 		private void InitializeCamera()
 		{
 			var mainCamera = Camera.main;
@@ -160,12 +189,20 @@ namespace Core
 		
 		public override void Spawned()
 		{
+			if (HasStateAuthority)
+			{
+				networkHealth.Owner = Object.InputAuthority;
+				networkHealth.DeathEvent += OnDeath;
+			}
+			
 			_movementConfig = playerMovementSettings.GetConfig();
 			InitializeCamera();
 		}
 		
 		public override void FixedUpdateNetwork()
 		{
+			if(!networkHealth.IsAlive) return; 
+			
 			HandleLookRotation();
 			HandleJumpInput();
 			HandleShootingInput();

@@ -16,6 +16,7 @@ namespace Core.PlayerComponents
 
         [SerializeField] private int maxHealth = 100;
 
+        public bool IsAlive => NetworkHealthValue > 0;
         public event Action<DeathData> DeathEvent;
         public event Action<int> HealthChanged;
         public int CurrentHealth => NetworkHealthValue;
@@ -23,14 +24,8 @@ namespace Core.PlayerComponents
         
         public override void Spawned()
         {
-            Health = new Health(maxHealth);
-            OnHealthChanged(Health.CurrentHealth);
-
-            Health.HealthChanged += OnHealthChanged;
-            Health.DeathEvent += OnDeathEvent;
+            Reset();
         }
-
-      
         
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         private void Rpc_NotifyHealthChanged()
@@ -51,7 +46,7 @@ namespace Core.PlayerComponents
             
             GameEventBus.Instance.RaiseEvent(
                     GameEventDefinitions.PlayerDeath, 
-                    new PlayerKilledEventArgs(deathData)
+                    new PlayerDeathEventArgs(deathData)
                 );
         } 
         
@@ -86,6 +81,15 @@ namespace Core.PlayerComponents
                 return;
 
             Health.Heal(amount);
+        }
+
+        public void Reset()
+        {
+            Health = new Health(maxHealth);
+            OnHealthChanged(Health.CurrentHealth);
+
+            Health.HealthChanged += OnHealthChanged;
+            Health.DeathEvent += OnDeathEvent;
         }
     }
 }

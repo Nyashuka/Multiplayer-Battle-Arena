@@ -1,6 +1,7 @@
 using Fusion;
 using UnityEngine;
 using UserInterface;
+using UserInterface.MatchUI;
 
 namespace ScriptableObjects
 {
@@ -12,11 +13,16 @@ namespace ScriptableObjects
         [SerializeField] public NetworkPrefabRef playerPrefab;
         [SerializeField] public NetworkPrefabRef matchManagerPrefab;
         [SerializeField] private NetworkPrefabRef defaultWeaponPrefab;
+        [SerializeField] private NetworkPrefabRef matchTimerPrefab;
 
         public NetworkPrefabRef DefaultWeaponPrefab => defaultWeaponPrefab;
+        public NetworkPrefabRef MatchTimerPrefab => matchTimerPrefab;
         
         [Header("UI Prefabs")]
         public Canvas canvasPrefab;
-        public HUDManager hudPrefab;
+        public GameHUD gameHUDPrefab;
+        [SerializeField] private MatchTimerUI matchTimerUIPrefab;
+        
+        public MatchTimerUI MatchTimerUIPrefab => matchTimerUIPrefab;
     }
 }

@@ -4,9 +4,9 @@ using Services.EventBus.EventBusArguments;
 using TMPro;
 using UnityEngine;
 
-namespace UserInterface
+namespace UserInterface.MatchUI
 {
-    public class HUDManager : MonoBehaviour
+    public class GameHUD : MonoBehaviour
     {
         [SerializeField] private TMP_Text statisticText;
         

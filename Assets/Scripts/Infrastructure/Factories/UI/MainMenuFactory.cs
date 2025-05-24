@@ -1,7 +1,7 @@
 using UnityEngine;
 using UserInterface;
 
-namespace Infrastructure.Factories
+namespace Infrastructure.Factories.UI
 {
     public class MainMenuFactory
     {

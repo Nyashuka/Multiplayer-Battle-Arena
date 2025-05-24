@@ -20,5 +20,15 @@ namespace Core
                 _canvasInstance.Initialize(Camera.main.transform, networkHealth);
             }
         }
+
+        public void Disable()
+        {
+            
+        }
+
+        public void Enable()
+        {
+            
+        }
     }
 }

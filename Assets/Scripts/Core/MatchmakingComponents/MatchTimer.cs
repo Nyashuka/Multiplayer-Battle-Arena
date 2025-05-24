@@ -15,23 +15,15 @@ namespace Core.MatchmakingComponents
         public event Action<float> TimerUpdatedEvent;
         public event Action TimerEndedEvent;
 
-        public bool HasEnded { get; private set; }
+        [Networked] public bool IsRunning { get; private set; }
         
-        public override void Spawned()
-        {
-            if (HasStateAuthority)
-            {
-                StartMatchTimer();
-            }
-        }
-
         public override void FixedUpdateNetwork()
         {
-            if (HasEnded) return;
+            if (!HasStateAuthority && !IsRunning) return;
 
             if (NetworkTimer.Expired(Runner))
             {
-                HasEnded = true;
+                IsRunning = false;
                 TimerEndedEvent?.Invoke();
             }
             else
@@ -44,8 +36,9 @@ namespace Core.MatchmakingComponents
         public void StartMatchTimer()
         {
             if (!HasStateAuthority) return;
+            
             NetworkTimer = TickTimer.CreateFromSeconds(Runner, matchDurationSeconds);
-            HasEnded = false;
+            IsRunning = true;
         }
 
         public float? GetRemainingTime()

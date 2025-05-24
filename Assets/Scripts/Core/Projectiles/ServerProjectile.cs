@@ -31,7 +31,7 @@ namespace Core.Projectiles
             Vector3 currentPosition = transform.position;
             Vector3 displacement = _direction * (_speed * Runner.DeltaTime);
             Vector3 nextPosition = currentPosition + displacement;
-
+            
             if (Runner.GetPhysicsScene().Raycast(currentPosition, _direction, out var hit, displacement.magnitude))
             {
                 IDamagable damagable = null;
@@ -54,7 +54,6 @@ namespace Core.Projectiles
                     });
                     Debug.Log("Damaged");
                 }
-                // Explode(hit.point);
                 
                 weapon.RPC_DestroyDummyProjectile(Object.Id, hit.point);
                 Runner.Despawn(Object);

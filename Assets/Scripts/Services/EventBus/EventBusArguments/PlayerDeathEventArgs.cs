@@ -2,11 +2,11 @@ using Data;
 
 namespace Services.EventBus.EventBusArguments
 {
-    public class PlayerKilledEventArgs : IEventBusArgs
+    public class PlayerDeathEventArgs : IEventBusArgs
     {
         public DeathData DeathData { get; private set; }
         
-        public PlayerKilledEventArgs(DeathData deathData)
+        public PlayerDeathEventArgs(DeathData deathData)
         {
             DeathData = deathData;
         }

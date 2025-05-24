@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using Core;
 using Core.MatchmakingComponents;
+using Data;
 using Environment;
 using Fusion;
 using Infrastructure.Factories;
+using Infrastructure.Factories.UI;
 using ScriptableObjects;
 using UnityEngine;
+using UserInterface.MatchUI;
 
 namespace Infrastructure
 {
@@ -13,18 +16,31 @@ namespace Infrastructure
     {
         [SerializeField] private MatchConfig matchConfig;
         
-        private MatchManager _matchManager;
         private Map _map;
-        private readonly Dictionary<PlayerRef, NetworkObject> _players = new();
+        private MatchManager MatchManager { get; set; }
+        
+        [Networked] private MatchTimer MatchTimer { get; set; }
+        private Dictionary<PlayerRef, Player> Players { get; set; } = new();
         
         public override void Spawned()
         { 
+            // state authority
             InitializeMap();
             InitializePlayers();
-            InitializeUI();
+            InitializeMatchTimer();
             InitializeMatchManager(); 
+            // all clients
+            InitializeUI();
         }
-        
+
+        private void InitializeMatchTimer()
+        {
+            if(!HasStateAuthority) return;
+            
+            var timerFactory = new MatchTimerFactory(Runner, matchConfig.MatchTimerPrefab);
+            MatchTimer = timerFactory.Create();
+        }
+
         private void InitializeMap()
         {
             if(!HasStateAuthority) return;
@@ -42,15 +58,18 @@ namespace Infrastructure
             {
                 var position = GetSpawnPosition(_map.SpawnPoints);
                 var playerNetworkObject = playerFactory.Create(activePlayer, position, Quaternion.identity);
-                _players.Add(activePlayer, playerNetworkObject);
 
                 var player = playerNetworkObject.GetComponent<Player>();
+                Players.Add(activePlayer, player);
+                
                 SetupDefaultPlayerWeapon(activePlayer, player);
             }
         }
 
         private void SetupDefaultPlayerWeapon(PlayerRef playerRef, Player player)
         {
+            if(!HasStateAuthority) return;
+            
             var mainWeaponFactory = new MainWeaponFactory(Runner, matchConfig.DefaultWeaponPrefab);
             var playerWeapon = mainWeaponFactory.Create(playerRef, player.GetPrimaryWeaponTransform());
             player.SetWeapon(playerWeapon);
@@ -61,16 +80,21 @@ namespace Infrastructure
             var canvasFactory = new CanvasFactory(matchConfig.canvasPrefab);
             var canvas = canvasFactory.Create();
 
-            var hudFactory = new HUDFactory(canvas.transform, matchConfig.hudPrefab);
+            var hudFactory = new HUDFactory(canvas.transform, matchConfig.gameHUDPrefab);
             var hud = hudFactory.Create();
+
+            var matchTimerUIFactory = new MatchTimerUIFactory(matchConfig.MatchTimerUIPrefab);
+            var matchTimerUI = matchTimerUIFactory.Create(canvas.transform);
+            matchTimerUI.Initialize(MatchTimer);
         }
 
         private void InitializeMatchManager()
         {
-            if(!HasStateAuthority) return;
+            if (!HasStateAuthority) return;
             
             var matchManagerFactory = new MatchManagerFactory(Runner, matchConfig.matchManagerPrefab);
-            _matchManager = matchManagerFactory.Create();
+            MatchManager = matchManagerFactory.Create();
+            MatchManager.Initialize(Players, MatchTimer, _map);
         }
 
         private Vector3 GetSpawnPosition(List<SpawnPoint> spawnPoints)
