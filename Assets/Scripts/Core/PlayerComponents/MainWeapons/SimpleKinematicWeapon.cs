@@ -39,6 +39,8 @@ namespace Core.PlayerComponents.MainWeapons
         {
             if (!HasStateAuthority) return;
             
+            projectileParams.Speed = speed;
+            
             if (Physics.Raycast(projectileParams.ServerStart, projectileParams.Direction, out RaycastHit hit, 100f))
             {
                 projectileParams.Target = hit.point;

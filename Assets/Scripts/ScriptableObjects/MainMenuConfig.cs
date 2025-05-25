@@ -1,4 +1,5 @@
 using Fusion;
+using Networking;
 using UnityEngine;
 using UserInterface;
 
@@ -10,6 +11,7 @@ namespace ScriptableObjects
         [Header("Network Prefabs")]
         public NetworkPrefabRef matchBootstrapperPrefab;
         public NetworkRunner networkRunnerPrefab;
+        public MainNetworkRunnerHandler networkRunnerHandlerPrefab;
 
         [Header("UI Prefabs")]
         public Canvas canvasPrefab;

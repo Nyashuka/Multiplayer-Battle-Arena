@@ -1,9 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Core.MatchmakingComponents;
+using Data;
 using Fusion;
 using Fusion.Addons.Physics;
 using Fusion.Sockets;
 using Infrastructure;
+using ScriptableObjects;
+using Services.EventBus;
+using Services.EventBus.EventBusArguments;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,22 +17,68 @@ namespace Networking
 {
     public class MainNetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
     {
-        [SerializeField] private NetworkRunner networkRunner;
-        [SerializeField] private MatchBootstrapper matchBootstrapperPrefab;
-        [SerializeField] private SceneRef gameScene;
+        [SerializeField] private MatchStartConfig startConfig;
         
-        private readonly List<PlayerRef> _connectedPlayers = new();
-        private const int MinPlayersToStartMatch = 2;
+        private int _playersToStart;
+        
         private string _currentRoomName;
         
         [Networked] private MatchBootstrapper MatchBootstrapper { get; set; }
+        
+        private FindMatchStarter _findMatchStarter;
+        private MatchStateEnum _matchState;
+        private NetworkRunner _networkRunner;
+        
+        private void Start()
+        {
+            DontDestroyOnLoad(gameObject);
+            _matchState = MatchStateEnum.Lobby;
+            _findMatchStarter = new FindMatchStarter();
+            GameEventBus.Instance.Subscribe(GameEventDefinitions.StartMatchSearchRequested, OnStartSearchMatchRequested);
+            GameEventBus.Instance.Subscribe(GameEventDefinitions.StopMatchSearchRequested, OnStopSearchMatchRequested);
+        }
+
+        private NetworkRunner InstantiateNetworkRunner()
+        {
+            var networkRunner = Instantiate(startConfig.NetworkRunnerPrefab);
+            
+            return networkRunner;
+        }
+
+        private void OnStartSearchMatchRequested(IEventBusArgs args)
+        {
+            if(_matchState == MatchStateEnum.Matching || _matchState == MatchStateEnum.Searching)
+                return;
+            
+            if (args is StartMatchSearchEventArgs startMatchSearchArgs)
+            {
+                _playersToStart = startMatchSearchArgs.PlayersCount;
+            }
+            else
+            {
+                _playersToStart = startConfig.PlayersInMatch;
+            }
+            
+            _matchState = MatchStateEnum.Searching;
+            _networkRunner = InstantiateNetworkRunner();
+            _networkRunner.AddCallbacks(this);
+            _findMatchStarter.FindMatchAsync(_networkRunner, _playersToStart);
+        }
+
+        private void OnStopSearchMatchRequested(IEventBusArgs args)
+        {
+            if(_matchState == MatchStateEnum.Matching || _matchState == MatchStateEnum.Lobby)
+                return;
+            
+            _networkRunner.Shutdown();
+            _matchState = MatchStateEnum.Lobby;
+        }
 
         private void PlayerJoined(PlayerRef player)
         {
-            _connectedPlayers.Add(player);
             Debug.Log($"Player added: {player}");
 
-            if (_connectedPlayers.Count == MinPlayersToStartMatch)
+            if (_networkRunner.ActivePlayers.Count() == _playersToStart)
             {
                 Debug.Log($"Starting match");
                 StartMatch();     
@@ -39,21 +91,23 @@ namespace Networking
             Debug.Log("Scene loaded: " + sceneName);
             if (sceneName == "MatchScene")
             {
-                if (networkRunner.IsServer)
+                if (_networkRunner.IsServer)
                 {
-                    MatchBootstrapper = networkRunner.Spawn(matchBootstrapperPrefab).GetComponent<MatchBootstrapper>();
+                    MatchBootstrapper = _networkRunner.Spawn(startConfig.MatchBootstrapperPrefab).GetComponent<MatchBootstrapper>();
                 }
             }
         }
 
         private void StartMatch()
         {
+            _matchState = MatchStateEnum.Matching;
+            
             var runnerSimulatePhysics3D = gameObject.AddComponent<RunnerSimulatePhysics3D>();
             runnerSimulatePhysics3D.ClientPhysicsSimulation = ClientPhysicsSimulation.SimulateAlways;
             
-            if (networkRunner.IsSceneAuthority) 
+            if (_networkRunner.IsSceneAuthority) 
             {
-                networkRunner.LoadScene(gameScene);
+                _networkRunner.LoadScene(startConfig.GameScene);
             }
         } 
         

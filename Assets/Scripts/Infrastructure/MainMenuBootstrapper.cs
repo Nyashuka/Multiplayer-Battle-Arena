@@ -10,27 +10,16 @@ namespace Infrastructure
     {
         [SerializeField] private MainMenuConfig mainMenuConfig;
         
-        MatchSearcher _matchSearcher;
-        
         public void Start()
         {
             var canvasFactory = new CanvasFactory(mainMenuConfig.canvasPrefab);
             var canvas = canvasFactory.Create();
 
             var mainMenuFactory = new MainMenuFactory(canvas.transform, mainMenuConfig.mainMenuPrefab);
-            var mainMenu = mainMenuFactory.Create();
+            mainMenuFactory.Create();
             
-            var networkRunnerFactory = new NetworkRunnerFactory(mainMenuConfig.networkRunnerPrefab);
-            var networkRunner = networkRunnerFactory.Create();
-            
-            _matchSearcher = new MatchSearcher(networkRunner);
-
-            mainMenu.FindMatchRequested += FindMatch;
-        }
-
-        private async void FindMatch()
-        {
-            await _matchSearcher.FindMatchAsync();
+            var networkRunnerFactory = new NetworkRunnerHandlerFactory(mainMenuConfig.networkRunnerHandlerPrefab);
+            networkRunnerFactory.Create();
         }
     }
 }

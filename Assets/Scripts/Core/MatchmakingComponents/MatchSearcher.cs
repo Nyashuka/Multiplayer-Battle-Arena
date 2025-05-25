@@ -7,18 +7,13 @@ using UnityEngine.SceneManagement;
 
 namespace Core.MatchmakingComponents
 {
-    public class MatchSearcher
+    public class MatchSearcher 
     {
         private readonly NetworkRunner _networkRunner;
-        private const int MaxPlayers = 2;
+        private const int MaxPlayers = 3;
 
-        private bool _isSearching = false;
+        public bool IsSearching { get; private set;  } = false;
         private CancellationTokenSource _cts;
-
-        public event Action OnMatchCreated;
-        public event Action OnMatchJoined;
-        public event Action<string> OnError;
-        public event Action OnSearchCancelled;
 
         public MatchSearcher(NetworkRunner networkRunner)
         {
@@ -27,13 +22,12 @@ namespace Core.MatchmakingComponents
 
         public async Task FindMatchAsync()
         {
-            if (_isSearching)
+            if (IsSearching)
             {
-                OnError?.Invoke("Search already in progress.");
                 return;
             }
 
-            _isSearching = true;
+            IsSearching = true;
             _cts = new CancellationTokenSource();
 
             try
@@ -54,43 +48,22 @@ namespace Core.MatchmakingComponents
 
                 var startGameTask = _networkRunner.StartGame(startArgs);
 
-                using (_cts.Token.Register(() => {
-                           // Якщо потрібна додаткова логіка зупинки, викликати тут
-                           // Наприклад: _networkRunner.Shutdown();
-                       }))
+                var startGameResult = await startGameTask;
+
+                if (!startGameResult.Ok)
                 {
-                    var startGameResult = await startGameTask;
-
-                    if (_cts.IsCancellationRequested)
-                    {
-                        OnSearchCancelled?.Invoke();
-                        return;
-                    }
-
-                    if (!startGameResult.Ok)
-                    {
-                        OnError?.Invoke($"Error: {startGameResult.ErrorMessage}");
-                        return;
-                    }
-
-                    if (_networkRunner.IsServer)
-                    {
-                        OnMatchCreated?.Invoke();
-                    }
-                    else
-                    {
-                        OnMatchJoined?.Invoke();
-                    }
+                    IsSearching = false;
                 }
             }
             catch (Exception ex)
             {
                 if (!_cts.IsCancellationRequested)
-                    OnError?.Invoke($"Creating/connection room error: {ex.Message}");
+                    Debug.Log($"Creating/connection room error: {ex.Message}");
+                
+                IsSearching = false;
             }
             finally
             {
-                _isSearching = false;
                 _cts.Dispose();
                 _cts = null;
             }
@@ -98,9 +71,10 @@ namespace Core.MatchmakingComponents
 
         public void CancelSearch()
         {
-            if (_isSearching && _cts is { IsCancellationRequested: false })
+            if (IsSearching && _cts is { IsCancellationRequested: false })
             {
                 _cts.Cancel();
+                IsSearching = false;
             }
         }
 
