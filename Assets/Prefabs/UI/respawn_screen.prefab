@@ -279,6 +279,7 @@ GameObject:
   - component: {fileID: 951897820722847121}
   - component: {fileID: 1432978346475573930}
   - component: {fileID: 7135546096951824250}
+  - component: {fileID: 7291928451914732505}
   m_Layer: 5
   m_Name: respawn_screen
   m_TagString: Untagged
@@ -345,3 +346,16 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7291928451914732505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3435919194125381495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d646df5a16d0477294b76563a3bc277f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timerText: {fileID: 4257017768028926599}

@@ -31,14 +31,24 @@ namespace UserInterface
         {
             if (!_isSearching)
             {
-                _isSearching = true;
-                GameEventBus.Instance.RaiseEvent(GameEventDefinitions.StartMatchSearchRequested,
-                    new StartMatchSearchEventArgs(Convert.ToInt32(playerCountInputField.text)));
-                StartCoroutine(CalcMatchTime());
-                findMatchButton.SetText("Stop");
+                RequestStartSearchMatch();
                 return;
             }
             
+            RequestStopMatchSearch();
+        }
+
+        private void RequestStartSearchMatch()
+        {
+            _isSearching = true;
+            GameEventBus.Instance.RaiseEvent(GameEventDefinitions.StartMatchSearchRequested,
+                new StartMatchSearchEventArgs(Convert.ToInt32(playerCountInputField.text)));
+            StartCoroutine(CalcMatchTime());
+            findMatchButton.SetText("Stop");
+        }
+
+        private void RequestStopMatchSearch()
+        {
             GameEventBus.Instance.RaiseEvent(GameEventDefinitions.StopMatchSearchRequested,
                 new EmptyEventArgs());
             _isSearching = false;

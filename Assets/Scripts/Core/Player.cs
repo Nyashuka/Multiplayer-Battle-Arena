@@ -158,11 +158,12 @@ namespace Core
 			}
 		}
 
-		public void Respawn(Vector3 respawnPosition)
+		public void Respawn(Transform respawnPosition)
 		{
 			if(!HasStateAuthority) return;
 			
-			kcc.SetPosition(respawnPosition);
+			kcc.SetPosition(respawnPosition.position);
+			kcc.SetLookRotation(respawnPosition.rotation);
 			Rpc_RespawnPlayer();
 			networkHealth.Reset();
 		}

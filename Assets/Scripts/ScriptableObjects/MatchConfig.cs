@@ -22,7 +22,9 @@ namespace ScriptableObjects
         public Canvas canvasPrefab;
         public GameHUD gameHUDPrefab;
         [SerializeField] private MatchTimerUI matchTimerUIPrefab;
+        [SerializeField] private MatchUIController matchUIControllerPrefab;
         
         public MatchTimerUI MatchTimerUIPrefab => matchTimerUIPrefab;
+        public MatchUIController MatchUIControllerPrefab => matchUIControllerPrefab;
     }
 }

@@ -13,32 +13,74 @@ namespace Core.MatchmakingComponents
 {
     public class MatchManager : NetworkBehaviour
     {
+        public static MatchManager Instance { get; private set; }
+
         private Dictionary<PlayerRef, Player> Players { get; set; }
-        
+
         private MatchScore _matchScore;
         private MatchStatistic _matchStatistic;
-        private MatchTimer _matchTimer;
+        public MatchTimer MatchTimer { get; private set; }
+        
         private Map _map;
 
         private readonly float _respawnTime = 10f;
-        private Dictionary<PlayerRef, TickTimer> _respawnTimers = new();
+        private readonly Dictionary<PlayerRef, TickTimer> _respawnTimers = new();
 
         public void Initialize(Dictionary<PlayerRef, Player> players, MatchTimer matchTimer, Map map)
         {
-            if(!HasStateAuthority) return;
-            
+            if (!HasStateAuthority) return;
+
             Players = players;
-            _matchTimer = matchTimer;
-            _matchTimer.StartMatchTimer();
+            MatchTimer = matchTimer;
+            MatchTimer.StartMatchTimer();
             _map = map;
         }
-        
+
         public override void Spawned()
         {
+            if (Instance)
+            {
+                if (HasStateAuthority)
+                    Runner.Despawn(Object);
+            }
+            else
+            {
+                Instance = this;
+            }
+
             _matchScore = new MatchScore();
             _matchStatistic = new MatchStatistic();
-            
+
             GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerDeath, OnPlayerDeath);
+        }
+
+        public override void FixedUpdateNetwork()
+        {
+            var expiredPlayers = new List<PlayerRef>();
+
+            foreach (var (player, timer) in _respawnTimers)
+            {
+                if (timer.Expired(Runner))
+                {
+                    expiredPlayers.Add(player);
+                    if (HasStateAuthority)
+                    {
+                        Respawn(player);
+                    }
+                }
+            }
+
+            foreach (var player in expiredPlayers)
+            {
+                _respawnTimers.Remove(player);
+            }
+        }
+
+        private void Respawn(PlayerRef playerRef)
+        {
+            var spawnPoint = _map.SpawnPoints[Random.Range(0, _map.SpawnPoints.Count)];
+            
+            Players[playerRef].Respawn(spawnPoint.transform);
         }
 
         private void HandlePlayerDeath(PlayerRef playerRef)
@@ -48,21 +90,17 @@ namespace Core.MatchmakingComponents
                 _respawnTimers.Add(playerRef, TickTimer.CreateFromSeconds(Runner, _respawnTime));
             }
 
+            var respawnAt = Runner.SimulationTime + _respawnTime;
+            
             GameEventBus.Instance.RaiseEvent(
                 GameEventDefinitions.StatisticsChanged, 
                 new StatisticsChangedEventArgs(Runner.LocalPlayer, _matchStatistic)
             );
             
-            if(!HasStateAuthority) return;
-            
-            RespawnPlayer(playerRef);
-        }
-
-        private void RespawnPlayer(PlayerRef playerRef)
-        {
-            Player player = Players[playerRef];
-            var spawnPoint = _map.SpawnPoints[Random.Range(0, _map.SpawnPoints.Count)];
-            player.Respawn(spawnPoint.transform.position);
+            if (Runner.LocalPlayer == playerRef)
+            {
+                GameEventBus.Instance.RaiseEvent(GameEventDefinitions.ShowRespawnScreen, new RespawnEventArgs(respawnAt));
+            }
         }
 
         private void OnPlayerDeath(IEventBusArgs args)
@@ -75,15 +113,6 @@ namespace Core.MatchmakingComponents
                 
                 HandlePlayerDeath(playerKilledEventArgs.DeathData.Victim);
             }
-        }
-        
-        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-        private void Rpc_NotifyNewPlayerScore(PlayerRef player, int score)
-        {
-            if(HasStateAuthority) return;
-
-            Debug.Log(player + " | score: " + score);
-            _matchScore.SetScore(player, score);
         }
     }
 }

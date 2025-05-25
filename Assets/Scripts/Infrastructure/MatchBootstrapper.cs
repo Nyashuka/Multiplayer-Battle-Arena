@@ -80,12 +80,8 @@ namespace Infrastructure
             var canvasFactory = new CanvasFactory(matchConfig.canvasPrefab);
             var canvas = canvasFactory.Create();
 
-            var hudFactory = new HUDFactory(canvas.transform, matchConfig.gameHUDPrefab);
-            var hud = hudFactory.Create();
-
-            var matchTimerUIFactory = new MatchTimerUIFactory(matchConfig.MatchTimerUIPrefab);
-            var matchTimerUI = matchTimerUIFactory.Create(canvas.transform);
-            matchTimerUI.Initialize(MatchTimer);
+            var matchUIControllerFactory = new MatchUIControllerFactory(matchConfig.MatchUIControllerPrefab);
+            matchUIControllerFactory.Create(canvas.transform);
         }
 
         private void InitializeMatchManager()

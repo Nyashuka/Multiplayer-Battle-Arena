@@ -6,5 +6,6 @@ namespace Services.EventBus
         public const string StatisticsChanged = "StatisticsChanged";
         public const string StartMatchSearchRequested = "StartMatchSearchRequested";
         public const string StopMatchSearchRequested = "StopMatchSearchRequested";
+        public const string ShowRespawnScreen = "ShowRespawnScreen";
     }
 }
