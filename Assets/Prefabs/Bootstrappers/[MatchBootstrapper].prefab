@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12e992e666e3462da722f38cc4c6e0c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  matchConfig: {fileID: 11400000, guid: b89ab9a233aa60c43baee96bd1dc21fc, type: 2}
+  matchBootstrapperConfig: {fileID: 11400000, guid: b89ab9a233aa60c43baee96bd1dc21fc, type: 2}
 --- !u!114 &4025499621911834004
 MonoBehaviour:
   m_ObjectHideFlags: 0

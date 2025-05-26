@@ -1,10 +1,8 @@
-using Fusion;
-
 namespace Services.EventBus.EventBusArguments
 {
-    public class RespawnEventArgs : IEventBusArgs
+    public class StartRespawnEventArgs : IEventBusArgs
     {
-        public RespawnEventArgs(float respawnAt)
+        public StartRespawnEventArgs(float respawnAt)
         {
             RespawnAt = respawnAt;
         }

@@ -4,6 +4,8 @@ using Data;
 using Fusion;
 using Fusion.Addons.SimpleKCC;
 using ScriptableObjects;
+using Services.EventBus;
+using Services.EventBus.EventBusArguments;
 using UnityEngine;
 
 namespace Core
@@ -31,6 +33,7 @@ namespace Core
 		[Networked] private WeaponBase CurrentWeapon { get; set; }
 		
 		public PlayerLives PlayerLives => playerLives;
+		public NetworkHealth NetworkHealth => networkHealth;
 		
 		[Rpc(RpcSources.StateAuthority, RpcTargets.All)]
 		private void Rpc_SetupPrimaryGunVisual()
@@ -195,9 +198,15 @@ namespace Core
 				networkHealth.Owner = Object.InputAuthority;
 				networkHealth.DeathEvent += OnDeath;
 			}
+
+			if (Runner.LocalPlayer == Object.InputAuthority)
+			{
+				GameEventBus.Instance.RaiseEvent(GameEventDefinitions.PlayerSpawned, new PlayerSpawnedEventArgs(this), true);
+			}
 			
 			_movementConfig = playerMovementSettings.GetConfig();
 			InitializeCamera();
+			
 		}
 		
 		public override void FixedUpdateNetwork()

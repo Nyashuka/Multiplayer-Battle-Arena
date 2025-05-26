@@ -14,10 +14,10 @@ namespace Infrastructure
 {
     public class MatchBootstrapper : NetworkBehaviour
     {
-        [SerializeField] private MatchConfig matchConfig;
+        [SerializeField] private MatchBootstrapperConfig matchBootstrapperConfig;
         
         private Map _map;
-        private MatchManager MatchManager { get; set; }
+        [Networked] private MatchManager MatchManager { get; set; }
         
         [Networked] private MatchTimer MatchTimer { get; set; }
         private Dictionary<PlayerRef, Player> Players { get; set; } = new();
@@ -37,7 +37,7 @@ namespace Infrastructure
         {
             if(!HasStateAuthority) return;
             
-            var timerFactory = new MatchTimerFactory(Runner, matchConfig.MatchTimerPrefab);
+            var timerFactory = new MatchTimerFactory(Runner, matchBootstrapperConfig.MatchTimerPrefab);
             MatchTimer = timerFactory.Create();
         }
 
@@ -45,7 +45,7 @@ namespace Infrastructure
         {
             if(!HasStateAuthority) return;
             
-            var mapFactory = new MapFactory(Runner, matchConfig.mapPrefab);
+            var mapFactory = new MapFactory(Runner, matchBootstrapperConfig.mapPrefab);
             _map = mapFactory.Create();
         }
 
@@ -53,7 +53,7 @@ namespace Infrastructure
         {
             if(!HasStateAuthority) return;
             
-            var playerFactory = new PlayerFactory(Runner, matchConfig.playerPrefab);
+            var playerFactory = new PlayerFactory(Runner, matchBootstrapperConfig.playerPrefab);
             foreach (var activePlayer in Runner.ActivePlayers)
             {
                 var position = GetSpawnPosition(_map.SpawnPoints);
@@ -70,26 +70,27 @@ namespace Infrastructure
         {
             if(!HasStateAuthority) return;
             
-            var mainWeaponFactory = new MainWeaponFactory(Runner, matchConfig.DefaultWeaponPrefab);
+            var mainWeaponFactory = new MainWeaponFactory(Runner, matchBootstrapperConfig.DefaultWeaponPrefab);
             var playerWeapon = mainWeaponFactory.Create(playerRef, player.GetPrimaryWeaponTransform());
             player.SetWeapon(playerWeapon);
         }
 
         private void InitializeUI()
         {
-            var canvasFactory = new CanvasFactory(matchConfig.canvasPrefab);
-            var canvas = canvasFactory.Create();
-
-            var matchUIControllerFactory = new MatchUIControllerFactory(matchConfig.MatchUIControllerPrefab);
-            matchUIControllerFactory.Create(canvas.transform);
+            var hudFactory = new HUDFactory(matchBootstrapperConfig.GameHUDPrefab);
+            var hud = hudFactory.Create();
+            
+            UIManager.Instance.SetHud(hud);
         }
 
         private void InitializeMatchManager()
         {
-            if (!HasStateAuthority) return;
+            if (HasStateAuthority)
+            {
+                var matchManagerFactory = new MatchManagerFactory(Runner, matchBootstrapperConfig.matchManagerPrefab);
+                MatchManager = matchManagerFactory.Create();
+            }            
             
-            var matchManagerFactory = new MatchManagerFactory(Runner, matchConfig.matchManagerPrefab);
-            MatchManager = matchManagerFactory.Create();
             MatchManager.Initialize(Players, MatchTimer, _map);
         }
 

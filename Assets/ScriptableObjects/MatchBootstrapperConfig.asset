@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 14174e519b0446ee8232d5ea3b16b9a5, type: 3}
-  m_Name: MatchConfig
+  m_Name: MatchBootstrapperConfig
   m_EditorClassIdentifier: 
   mapPrefab:
     RawGuidValue: fc5a676d2c90b3d4f8a22e369c35950d

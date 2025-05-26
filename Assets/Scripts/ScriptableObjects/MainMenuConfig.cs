@@ -2,6 +2,7 @@ using Fusion;
 using Networking;
 using UnityEngine;
 using UserInterface;
+using UserInterface.MatchUI;
 
 namespace ScriptableObjects
 {
@@ -14,7 +15,8 @@ namespace ScriptableObjects
         public MainNetworkRunnerHandler networkRunnerHandlerPrefab;
 
         [Header("UI Prefabs")]
-        public Canvas canvasPrefab;
-        public MainMenu mainMenuPrefab;
+        [SerializeField] private UIManager uiManagerPrefab;
+        
+        public UIManager UIManagerPrefab => uiManagerPrefab;
     }
 }

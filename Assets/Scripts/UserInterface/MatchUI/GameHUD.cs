@@ -1,42 +1,32 @@
-using Core.MatchmakingComponents.ScoreSystem;
-using Services.EventBus;
-using Services.EventBus.EventBusArguments;
-using TMPro;
+using System.Collections.Generic;
+using System.Linq;
+using Core.PlayerComponents;
 using UnityEngine;
+using UserInterface.MatchUI.HUDElements;
 
 namespace UserInterface.MatchUI
 {
+    [RequireComponent(typeof(RectTransform))]
+    [RequireComponent(typeof(CanvasGroup))]
+    [RequireComponent(typeof(Canvas))]
     public class GameHUD : MonoBehaviour
     {
-        [SerializeField] private TMP_Text statisticText;
-        
-        private void OnEnable()
+        [SerializeField] private Canvas hudCanvas;
+        [SerializeField] private List<HUDElement> hudElements;
+
+        public T GetElement<T>() where T : HUDElement
         {
-            GameEventBus.Instance.Subscribe(GameEventDefinitions.StatisticsChanged, OnStatisticsChanged);
+            return hudElements.OfType<T>().FirstOrDefault();
         }
 
-        private void OnDisable()
+        public void ShowAll()
         {
-            GameEventBus.Instance.Unsubscribe(GameEventDefinitions.StatisticsChanged, OnStatisticsChanged);
+            foreach (var element in hudElements) element.Show();
         }
 
-        private void OnStatisticsChanged(IEventBusArgs args)
+        public void HideAll()
         {
-            if (args is StatisticsChangedEventArgs statisticsChangedEvent)
-            {
-                var playerStatistic = statisticsChangedEvent
-                    .MatchStatistic.GetPlayerStatistic(statisticsChangedEvent.Owner);
-                
-                if (playerStatistic != null)
-                {
-                    UpdateStatistic(playerStatistic);
-                }
-            }
-        }
-
-        private void UpdateStatistic(PlayerStatistic playerStatistic)
-        {
-            statisticText.text = $"k: {playerStatistic.Kills}, d: {playerStatistic.Deaths}";
+            foreach (var element in hudElements) element.Hide();
         }
     }
 }

@@ -101,9 +101,12 @@ namespace Networking
         private void StartMatch()
         {
             _matchState = MatchStateEnum.Matching;
-            
-            var runnerSimulatePhysics3D = gameObject.AddComponent<RunnerSimulatePhysics3D>();
-            runnerSimulatePhysics3D.ClientPhysicsSimulation = ClientPhysicsSimulation.SimulateAlways;
+
+            if (_networkRunner.IsServer)
+            {
+                var runnerSimulatePhysics3D = _networkRunner.gameObject.AddComponent<RunnerSimulatePhysics3D>();
+                runnerSimulatePhysics3D.ClientPhysicsSimulation = ClientPhysicsSimulation.SimulateAlways;
+            }
             
             if (_networkRunner.IsSceneAuthority) 
             {

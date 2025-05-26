@@ -1,15 +1,13 @@
 using System;
 using System.Collections;
-using Core.MatchmakingComponents;
 using Services.EventBus;
 using Services.EventBus.EventBusArguments;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
-namespace UserInterface
+namespace UserInterface.MatchUI.UIPages
 {
-    public class MainMenu : MonoBehaviour
+    public class MainMenu : UIPage
     {
         [SerializeField] private TMP_InputField playerNameInputField;
         [SerializeField] private TMP_InputField playerCountInputField;

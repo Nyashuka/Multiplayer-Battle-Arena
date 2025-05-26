@@ -28,12 +28,17 @@ namespace Core.MatchmakingComponents
 
         public void Initialize(Dictionary<PlayerRef, Player> players, MatchTimer matchTimer, Map map)
         {
-            if (!HasStateAuthority) return;
-
             Players = players;
             MatchTimer = matchTimer;
-            MatchTimer.StartMatchTimer();
             _map = map;
+            
+            if (HasStateAuthority)
+            {
+                MatchTimer.StartMatchTimer();
+            }
+            
+            GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerDeath, OnPlayerDeath);
+            GameEventBus.Instance.RaiseEvent(GameEventDefinitions.MatchStarted, new MatchStartedEventArgs(Runner, MatchTimer),true);
         }
 
         public override void Spawned()
@@ -51,7 +56,6 @@ namespace Core.MatchmakingComponents
             _matchScore = new MatchScore();
             _matchStatistic = new MatchStatistic();
 
-            GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerDeath, OnPlayerDeath);
         }
 
         public override void FixedUpdateNetwork()
@@ -99,7 +103,7 @@ namespace Core.MatchmakingComponents
             
             if (Runner.LocalPlayer == playerRef)
             {
-                GameEventBus.Instance.RaiseEvent(GameEventDefinitions.ShowRespawnScreen, new RespawnEventArgs(respawnAt));
+                GameEventBus.Instance.RaiseEvent(GameEventDefinitions.StartRespawn, new StartRespawnEventArgs(respawnAt));
             }
         }
 

@@ -2,11 +2,12 @@ using Fusion;
 using UnityEngine;
 using UserInterface;
 using UserInterface.MatchUI;
+using UserInterface.MatchUI.HUDElements;
 
 namespace ScriptableObjects
 {
     [CreateAssetMenu(menuName = "Game/MatchConfig")]
-    public class MatchConfig : ScriptableObject
+    public class MatchBootstrapperConfig : ScriptableObject
     {
         [Header("Network Prefabs")]
         [SerializeField] public NetworkPrefabRef mapPrefab;
@@ -19,12 +20,13 @@ namespace ScriptableObjects
         public NetworkPrefabRef MatchTimerPrefab => matchTimerPrefab;
         
         [Header("UI Prefabs")]
-        public Canvas canvasPrefab;
-        public GameHUD gameHUDPrefab;
+        [SerializeField] private GameHUD gameHUDPrefab;
+        [SerializeField] private UIPageSwitcher uiPageSwitcherPrefab;
         [SerializeField] private MatchTimerUI matchTimerUIPrefab;
-        [SerializeField] private MatchUIController matchUIControllerPrefab;
         
+        public GameHUD GameHUDPrefab => gameHUDPrefab;
         public MatchTimerUI MatchTimerUIPrefab => matchTimerUIPrefab;
-        public MatchUIController MatchUIControllerPrefab => matchUIControllerPrefab;
+        public UIPageSwitcher UIPageSwitcherPrefab => uiPageSwitcherPrefab;
     }
+    
 }

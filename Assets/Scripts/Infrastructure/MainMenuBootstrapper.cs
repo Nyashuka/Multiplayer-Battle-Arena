@@ -12,11 +12,8 @@ namespace Infrastructure
         
         public void Start()
         {
-            var canvasFactory = new CanvasFactory(mainMenuConfig.canvasPrefab);
-            var canvas = canvasFactory.Create();
-
-            var mainMenuFactory = new MainMenuFactory(canvas.transform, mainMenuConfig.mainMenuPrefab);
-            mainMenuFactory.Create();
+            var uiManagerFactory = new UIManagerFactory(mainMenuConfig.UIManagerPrefab);
+            uiManagerFactory.Create();
             
             var networkRunnerFactory = new NetworkRunnerHandlerFactory(mainMenuConfig.networkRunnerHandlerPrefab);
             networkRunnerFactory.Create();
