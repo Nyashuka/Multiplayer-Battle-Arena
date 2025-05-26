@@ -98,6 +98,7 @@ namespace Core.PlayerComponents
 				_lookRotationAccumulator.Accumulate(new Vector2(-mouseDelta.y, mouseDelta.x) * _lookSensitivity);
 				
 				_accumulatedInput.Actions.Set(GameplayInput.FIRE_BUTTON, mouse.leftButton.isPressed);
+				_accumulatedInput.Actions.Set(GameplayInput.USE_UTILITY_BUTTON, mouse.rightButton.isPressed);
 			}
 
 			Keyboard keyboard = Keyboard.current;

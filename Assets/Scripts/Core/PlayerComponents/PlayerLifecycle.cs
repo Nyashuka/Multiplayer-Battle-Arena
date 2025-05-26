@@ -21,7 +21,7 @@ namespace Core.PlayerComponents
             gunRoot.SetActive(false);
             playerVisualRoot.SetActive(false);
             simpleKcc.Collider.gameObject.SetActive(false);
-            enemyCanvasHandler.Enable();
+            enemyCanvasHandler.Disable();
         }
 
         public void Respawn()

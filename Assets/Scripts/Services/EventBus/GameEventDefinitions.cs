@@ -7,6 +7,7 @@ namespace Services.EventBus
         public const string StartMatchSearchRequested = "StartMatchSearchRequested";
         public const string StopMatchSearchRequested = "StopMatchSearchRequested";
         public const string StartRespawn = "StartRespawn";
+        public const string PlayerRespawned = "PlayerRespawned";
         public const string PlayerSpawned = "PlayerSpawned";
         public const string MatchStarted = "MatchStarted";
     }

@@ -483,6 +483,7 @@ GameObject:
   - component: {fileID: 7366802892924089786}
   - component: {fileID: 8099439676080870667}
   - component: {fileID: 4429941599079911357}
+  - component: {fileID: 4282971843036753778}
   m_Layer: 0
   m_Name: PlayerKCC
   m_TagString: Untagged
@@ -531,6 +532,7 @@ MonoBehaviour:
   - {fileID: 7678491000565604077}
   - {fileID: 7366802892924089786}
   - {fileID: 8099439676080870667}
+  - {fileID: 4282971843036753778}
   ForceRemoteRenderTimeframe: 0
 --- !u!54 &5501855737433633615
 Rigidbody:
@@ -664,6 +666,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   networkHealth: {fileID: 6705351624214254461}
   playerLives: {fileID: 7366802892924089786}
+  utilityItemHandler: {fileID: 4282971843036753778}
   input: {fileID: 6112807823872140600}
   kcc: {fileID: 2051969095714818444}
   playerLifecycle: {fileID: 4429941599079911357}
@@ -687,6 +690,23 @@ MonoBehaviour:
   playerVisualRoot: {fileID: 342994751608196818}
   enemyCanvasHandler: {fileID: 7678491000565604077}
   networkHealth: {fileID: 6705351624214254461}
+--- !u!114 &4282971843036753778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6485119306318585325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f630372c2e8b441c8fbed0cc9a6d43c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemConfigs:
+  - {fileID: 11400000, guid: dbb8e4265e2bfe04e9703746fb58d0c5, type: 2}
+  - {fileID: 11400000, guid: cba8399d90f4aae44b7c63a0ae79ea31, type: 2}
+  defaultItem: {fileID: 11400000, guid: cba8399d90f4aae44b7c63a0ae79ea31, type: 2}
+  input: {fileID: 6112807823872140600}
 --- !u!1 &6583056719686401792
 GameObject:
   m_ObjectHideFlags: 0

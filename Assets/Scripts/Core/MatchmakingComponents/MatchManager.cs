@@ -60,6 +60,8 @@ namespace Core.MatchmakingComponents
 
         public override void FixedUpdateNetwork()
         {
+            if(!HasStateAuthority) return;
+            
             var expiredPlayers = new List<PlayerRef>();
 
             foreach (var (player, timer) in _respawnTimers)
@@ -85,6 +87,16 @@ namespace Core.MatchmakingComponents
             var spawnPoint = _map.SpawnPoints[Random.Range(0, _map.SpawnPoints.Count)];
             
             Players[playerRef].Respawn(spawnPoint.transform);
+            Rpc_PlayerRespawned(playerRef);
+        }
+
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void Rpc_PlayerRespawned(PlayerRef playerRef)
+        {
+            if (Runner.LocalPlayer == playerRef)
+            {
+                GameEventBus.Instance.RaiseEvent(GameEventDefinitions.PlayerRespawned, new EmptyEventArgs());
+            }
         }
 
         private void HandlePlayerDeath(PlayerRef playerRef)

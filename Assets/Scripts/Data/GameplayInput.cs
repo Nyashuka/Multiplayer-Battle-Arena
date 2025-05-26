@@ -11,5 +11,6 @@ namespace Data
 
         public const int JUMP_BUTTON = 0;
         public const int FIRE_BUTTON = 1;
+        public const int USE_UTILITY_BUTTON = 2;
     }
 }

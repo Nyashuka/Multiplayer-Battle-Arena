@@ -1,5 +1,6 @@
 using Core.PlayerComponents;
 using Core.PlayerComponents.MainWeapons.Abstract;
+using Core.UtilityItems;
 using Data;
 using Fusion;
 using Fusion.Addons.SimpleKCC;
@@ -16,6 +17,7 @@ namespace Core
 		[Header("Player Components")] 
 		[SerializeField] private NetworkHealth networkHealth;
 		[SerializeField] private PlayerLives playerLives;
+		[SerializeField] private UtilityItemHandler utilityItemHandler;
 		[SerializeField] private PlayerInput input;
 		[SerializeField] private SimpleKCC kcc;
 		[SerializeField] private PlayerLifecycle playerLifecycle;
@@ -91,6 +93,17 @@ namespace Core
 					CurrentWeapon.Fire(cameraStart, cameraDirection);
 				}
 			}
+			if (input.CurrentInput.Actions.WasPressed(input.PreviousInput.Actions, GameplayInput.USE_UTILITY_BUTTON))
+			{
+				GetCameraStartAndDirection(out var cameraStart, out var cameraDirection);
+				var useItemContext = new ItemUseContext()
+				{
+					AimDirection = cameraDirection,
+					ThrowFrom = cameraStart,
+					User = this
+				};
+				utilityItemHandler.UseItem(useItemContext);
+			}
 		}
 
 		private void ApplyGravity()
@@ -127,7 +140,8 @@ namespace Core
 			Ray ray = new Ray(_cameraTransform.position, _cameraTransform.forward);
 			Vector3 lookTarget;
         
-			if (Physics.Raycast(ray, out RaycastHit hit, 100f))
+			int layerMask = ~LayerMask.GetMask("Projectile");
+			if (Physics.Raycast(ray, out RaycastHit hit, 100f, layerMask))
 				lookTarget = hit.point;
 			else
 				lookTarget = ray.GetPoint(100f);
@@ -139,8 +153,8 @@ namespace Core
 		private void GetCameraStartAndDirection(out Vector3 cameraStart, out Vector3 cameraDirection)
 		{
 			Camera cam = Camera.main;
-
 			Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+			
 			cameraDirection = ray.direction;
 			cameraStart = ray.origin;	
 		}

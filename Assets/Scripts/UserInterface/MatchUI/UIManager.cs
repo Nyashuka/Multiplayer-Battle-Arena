@@ -31,6 +31,20 @@ namespace UserInterface.MatchUI
         public void OnEnable()
         {
             GameEventBus.Instance.Subscribe(GameEventDefinitions.MatchStarted, OnMatchStarted);
+            GameEventBus.Instance.Subscribe(GameEventDefinitions.StartRespawn, OnStartRespawn);
+            GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerRespawned, OnPlayerRespawned);
+        }
+
+        private void OnPlayerRespawned(IEventBusArgs e)
+        {
+            pageSwitcher.ClosePage();
+            _gameHud.ShowAll();
+        }
+
+        private void OnStartRespawn(IEventBusArgs e)
+        {
+            _gameHud.HideAll();
+            pageSwitcher.SwitchPage<RespawnScreen>();
         }
 
         private void OnMatchStarted(IEventBusArgs e)

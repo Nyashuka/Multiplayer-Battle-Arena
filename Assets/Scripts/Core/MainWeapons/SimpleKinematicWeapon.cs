@@ -25,7 +25,7 @@ namespace Core.PlayerComponents.MainWeapons
             var projectileParams = new ProjectileParams
             {
                 VisualStart = firePoint.position,
-                ServerStart = start,
+                ServerStart = firePoint.position,
                 Direction = direction,
                 Speed = speed,
                 Owner = Object.InputAuthority
