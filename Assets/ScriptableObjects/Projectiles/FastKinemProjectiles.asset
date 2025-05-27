@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88343a9b68da48cba80c5122a6a97fc9, type: 3}
+  m_Name: FastKinemProjectiles
+  m_EditorClassIdentifier: 
+  serverProjectilePrefab: {fileID: 7485984408704408302, guid: bde6a80550f0ea94e81c35a0059fa75c, type: 3}
+  dummyProjectilePrefab: {fileID: 7692256636989868483, guid: d2dc7d3601cf2db408f93ea6817245d2, type: 3}
+  explodesOnHit: 0
+  explodeRadius: 0

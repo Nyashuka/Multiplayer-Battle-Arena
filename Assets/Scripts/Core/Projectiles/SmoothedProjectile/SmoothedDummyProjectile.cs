@@ -1,8 +1,8 @@
-using System;
 using Core.Projectiles.Abstract;
+using Core.Projectiles.Data;
 using UnityEngine;
 
-namespace Core.Projectiles
+namespace Core.Projectiles.SmoothedProjectile
 {
     public class SmoothedDummyProjectile : VisualProjectileBase
     {

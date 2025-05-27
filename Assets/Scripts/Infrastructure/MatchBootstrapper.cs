@@ -70,7 +70,7 @@ namespace Infrastructure
         {
             if(!HasStateAuthority) return;
             
-            var mainWeaponFactory = new MainWeaponFactory(Runner, matchBootstrapperConfig.DefaultWeaponPrefab);
+            var mainWeaponFactory = new MainWeaponFactory(Runner, matchBootstrapperConfig.DefaultWeaponConfig);
             var playerWeapon = mainWeaponFactory.Create(playerRef, player.GetPrimaryWeaponTransform());
             player.SetWeapon(playerWeapon);
         }

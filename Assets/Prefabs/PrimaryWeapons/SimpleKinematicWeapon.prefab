@@ -181,10 +181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9141b27b953140d2adf5ab432457635b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visualProjectilePrefab: {fileID: 7692256636989868483, guid: d2dc7d3601cf2db408f93ea6817245d2, type: 3}
-  serverProjectilePrefab: {fileID: 7485984408704408302, guid: bde6a80550f0ea94e81c35a0059fa75c, type: 3}
   firePoint: {fileID: 6072789731213789381}
-  speed: 100
   audioSource: {fileID: 3867296955392047159}
 --- !u!82 &3867296955392047159
 AudioSource:
@@ -198,7 +195,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: bf75b984df8a84987bcf3a8bf6e2862d, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.741
   m_Pitch: 1
   Loop: 0
   Mute: 0

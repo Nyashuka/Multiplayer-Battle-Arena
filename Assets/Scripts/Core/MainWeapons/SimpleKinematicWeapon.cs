@@ -1,23 +1,22 @@
 using System.Collections.Generic;
-using Core.PlayerComponents.MainWeapons.Abstract;
+using Core.MainWeapons.Abstract;
 using Core.Projectiles;
 using Core.Projectiles.Abstract;
+using Core.Projectiles.Data;
+using Core.Projectiles.SmoothedProjectile;
 using Fusion;
+using ScriptableObjects.Weapons;
 using UnityEngine;
 
-namespace Core.PlayerComponents.MainWeapons
+namespace Core.MainWeapons
 {
     public class SimpleKinematicWeapon : WeaponBase
     {
-        [SerializeField] private VisualProjectileBase visualProjectilePrefab;
-        [SerializeField] private ServerProjectile serverProjectilePrefab;
         [SerializeField] private Transform firePoint;
-        [SerializeField] private float speed;
-        
         [SerializeField] private AudioSource audioSource;
 
-        private Dictionary<NetworkId, VisualProjectileBase> _visualProjectiles = new();
-        
+        private readonly Dictionary<NetworkId, VisualProjectileBase> _visualProjectiles = new();
+
         public override void Fire(Vector3 start, Vector3 direction)
         {
             if (!HasInputAuthority) return;
@@ -27,7 +26,6 @@ namespace Core.PlayerComponents.MainWeapons
                 VisualStart = firePoint.position,
                 ServerStart = firePoint.position,
                 Direction = direction,
-                Speed = speed,
                 Owner = Object.InputAuthority
             };
 
@@ -38,35 +36,46 @@ namespace Core.PlayerComponents.MainWeapons
         private void RPC_RequestFire(ProjectileParams projectileParams, RpcInfo info = default)
         {
             if (!HasStateAuthority) return;
-            
-            projectileParams.Speed = speed;
-            
-            if (Physics.Raycast(projectileParams.ServerStart, projectileParams.Direction, out RaycastHit hit, 100f))
+
+            projectileParams.Speed = _config.MuzzleVelocity;
+            projectileParams.Damage = _config.Damage;
+            projectileParams.LifeTime = _config.BulletLifeTime;
+
+            if (Physics.Raycast(projectileParams.ServerStart, projectileParams.Direction, out RaycastHit hit,
+                    _config.MaxDistance))
             {
                 projectileParams.Target = hit.point;
             }
             else
             {
-                projectileParams.Target = projectileParams.ServerStart + projectileParams.Direction * 100f;
+                projectileParams.Target =
+                    projectileParams.ServerStart + projectileParams.Direction * _config.MaxDistance;
             }
-            
-            var serverProjectile = Runner.Spawn(serverProjectilePrefab, firePoint.position, firePoint.rotation, Object.InputAuthority);
+
+            var serverPrefab = _config.ProjectileConfig.ServerProjectilePrefab;
+            var serverProjectile =
+                Runner.Spawn(serverPrefab, firePoint.position, firePoint.rotation, Object.InputAuthority,
+                    ((runner, o) =>
+                    {
+                    } ));
+            serverProjectile.Init(projectileParams);
             serverProjectile.weapon = this;
-            serverProjectile.GetComponent<IProjectileInitialize>().Init(projectileParams);
 
             RPC_SpawnDummyProjectile(serverProjectile.Object.Id, projectileParams);
         }
+    
 
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         private void RPC_SpawnDummyProjectile(NetworkId serverProjectileId, ProjectileParams projectileParams, RpcInfo info = default)
         {
-            var visualProjectile = Instantiate(visualProjectilePrefab, firePoint.position, firePoint.rotation);
+            var visualPrefab = _config.ProjectileConfig.DummyProjectilePrefab;
+            var visualProjectile = Instantiate(visualPrefab, firePoint.position, firePoint.rotation);
             visualProjectile.Init(projectileParams);
             visualProjectile.Launch();
-            
-            if(HasInputAuthority)
+
+            if (HasInputAuthority)
                 audioSource.Play();
-            
+
             _visualProjectiles[serverProjectileId] = visualProjectile;
         }
 

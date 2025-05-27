@@ -1,27 +1,24 @@
+using Core.MainWeapons;
 using Core.PlayerComponents;
-using Core.PlayerComponents.MainWeapons;
+using Core.Projectiles.Data;
 using Data;
 using Fusion;
-using Networking;
+using ScriptableObjects.Weapons.Projectiles;
 using UnityEngine;
 
-namespace Core.Projectiles
+namespace Core.Projectiles.SmoothedProjectile
 {
-    public class ServerProjectile : NetworkBehaviour, IProjectileInitialize
+    public class SmoothedServerProjectile : NetworkBehaviour, IProjectileInitialize
     {
         public SimpleKinematicWeapon weapon;
-        public PlayerRef Owner { get; private set; }
-        private float _speed = 20f;
-        public float lifetime = 2f;
+        private ProjectileParams _projectileParams;
 
         private float _timer;
-        private Vector3 _direction;
-
+        
         public void Init(ProjectileParams projectileParams)
         {
-            _speed = projectileParams.Speed;
-            _direction = _direction = (projectileParams.Target - projectileParams.VisualStart).normalized;
-            Owner = projectileParams.Owner;
+            _projectileParams = projectileParams;
+            _projectileParams.Direction = (projectileParams.Target - projectileParams.VisualStart).normalized;
         }
 
         public override void FixedUpdateNetwork()
@@ -29,10 +26,10 @@ namespace Core.Projectiles
             if (!HasStateAuthority || weapon == null) return;
 
             Vector3 currentPosition = transform.position;
-            Vector3 displacement = _direction * (_speed * Runner.DeltaTime);
+            Vector3 displacement = _projectileParams.Direction * (_projectileParams.Speed * Runner.DeltaTime);
             Vector3 nextPosition = currentPosition + displacement;
             
-            if (Runner.GetPhysicsScene().Raycast(currentPosition, _direction, out var hit, displacement.magnitude))
+            if (Runner.GetPhysicsScene().Raycast(currentPosition, _projectileParams.Direction, out var hit, displacement.magnitude))
             {
                 IDamagable damagable = null;
 
@@ -49,7 +46,7 @@ namespace Core.Projectiles
                 {
                     damagable.TakeDamage(new DamageData()
                     {
-                        Attacker = Owner,
+                        Attacker = _projectileParams.Owner,
                         Damage = 25
                     });
                     Debug.Log("Damaged");
@@ -63,7 +60,7 @@ namespace Core.Projectiles
             transform.position = nextPosition;
 
             _timer += Runner.DeltaTime;
-            if (_timer > lifetime)
+            if (_timer > _projectileParams.LifeTime)
             {
                 Runner.Despawn(Object);
             }

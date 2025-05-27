@@ -1,3 +1,5 @@
+using Core.MainWeapons;
+using Core.MainWeapons.Abstract;
 using Core.PlayerComponents;
 using Core.PlayerComponents.MainWeapons.Abstract;
 using Core.UtilityItems;
@@ -17,6 +19,7 @@ namespace Core
 		[Header("Player Components")] 
 		[SerializeField] private NetworkHealth networkHealth;
 		[SerializeField] private PlayerLives playerLives;
+		[SerializeField] private MainWeaponHandler mainWeaponHandler;
 		[SerializeField] private UtilityItemHandler utilityItemHandler;
 		[SerializeField] private PlayerInput input;
 		[SerializeField] private SimpleKCC kcc;
@@ -32,24 +35,15 @@ namespace Core
 		private Transform _cameraTransform;
 
 		[Networked] private Vector3 MoveVelocity { get; set; }
-		[Networked] private WeaponBase CurrentWeapon { get; set; }
 		
 		public PlayerLives PlayerLives => playerLives;
 		public NetworkHealth NetworkHealth => networkHealth;
 		
-		[Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-		private void Rpc_SetupPrimaryGunVisual()
-		{
-			CurrentWeapon.transform.SetParent(primaryWeaponHolder);
-			CurrentWeapon.transform.localPosition = new Vector3(0, 0, 0.5f);
-		}
-
 		public void SetWeapon(WeaponBase newWeapon)
 		{
 			if (!HasStateAuthority) return;
     
-			CurrentWeapon = newWeapon;
-			Rpc_SetupPrimaryGunVisual();
+			mainWeaponHandler.EquipWeapon(newWeapon);	
 		}
 	
 		private float GetCurrentAcceleration(Vector3 desiredMoveVelocity)
@@ -87,11 +81,8 @@ namespace Core
 		{
 			if (input.CurrentInput.Actions.WasPressed(input.PreviousInput.Actions, GameplayInput.FIRE_BUTTON))
 			{
-				if (CurrentWeapon != null)
-				{
-					GetCameraStartAndDirection(out var cameraStart, out var cameraDirection);
-					CurrentWeapon.Fire(cameraStart, cameraDirection);
-				}
+				GetCameraStartAndDirection(out var cameraStart, out var cameraDirection);
+				mainWeaponHandler.Fire(cameraStart, cameraDirection);
 			}
 			if (input.CurrentInput.Actions.WasPressed(input.PreviousInput.Actions, GameplayInput.USE_UTILITY_BUTTON))
 			{

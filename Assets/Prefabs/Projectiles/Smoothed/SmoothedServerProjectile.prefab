@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7725528079039593390}
   - component: {fileID: 7485984408704408302}
   m_Layer: 0
-  m_Name: BaseServerProjectile
+  m_Name: SmoothedServerProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

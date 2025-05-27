@@ -1,4 +1,5 @@
 using Fusion;
+using ScriptableObjects.Weapons;
 using UnityEngine;
 using UserInterface;
 using UserInterface.MatchUI;
@@ -13,10 +14,10 @@ namespace ScriptableObjects
         [SerializeField] public NetworkPrefabRef mapPrefab;
         [SerializeField] public NetworkPrefabRef playerPrefab;
         [SerializeField] public NetworkPrefabRef matchManagerPrefab;
-        [SerializeField] private NetworkPrefabRef defaultWeaponPrefab;
+        [SerializeField] private WeaponConfigBase defaultWeaponConfig;
         [SerializeField] private NetworkPrefabRef matchTimerPrefab;
 
-        public NetworkPrefabRef DefaultWeaponPrefab => defaultWeaponPrefab;
+        public WeaponConfigBase DefaultWeaponConfig => defaultWeaponConfig;
         public NetworkPrefabRef MatchTimerPrefab => matchTimerPrefab;
         
         [Header("UI Prefabs")]

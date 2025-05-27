@@ -1,5 +1,5 @@
 using Core.Projectiles.Abstract;
-using Data;
+using Core.Projectiles.Data;
 using UnityEngine;
 
 namespace Core.Projectiles

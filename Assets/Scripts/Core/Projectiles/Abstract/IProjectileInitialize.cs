@@ -1,3 +1,4 @@
+using Core.Projectiles.Data;
 using Data;
 using Fusion;
 

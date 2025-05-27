@@ -13,16 +13,14 @@ MonoBehaviour:
   m_Name: MatchBootstrapperConfig
   m_EditorClassIdentifier: 
   mapPrefab:
-    RawGuidValue: fc5a676d2c90b3d4f8a22e369c35950d
+    RawGuidValue: 286721c9734ee3d46b177f6c89f0a1e4
   playerPrefab:
     RawGuidValue: 08d2bddfa6bbc274eb957ca045b77ea3
   matchManagerPrefab:
     RawGuidValue: 0872f4c72644ede46977a512a3522677
-  defaultWeaponPrefab:
-    RawGuidValue: d93a170af5472a4499e1f66c11d0f0f1
+  defaultWeaponConfig: {fileID: 11400000, guid: 64226017dbe4f074c88f7579665b40a8, type: 2}
   matchTimerPrefab:
     RawGuidValue: 65b1be76192167c4f9c5788b9ba6898f
-  canvasPrefab: {fileID: 6772524384755994423, guid: 67646e95c45239f429f2482e1bb38624, type: 3}
   gameHUDPrefab: {fileID: 6491382689165946488, guid: 9a3fc292aeae18b4d9b4ac58a2339262, type: 3}
+  uiPageSwitcherPrefab: {fileID: 0}
   matchTimerUIPrefab: {fileID: 3577150336128456029, guid: 023b3b89d04f2f149b93934dc5e5eb44, type: 3}
-  matchUIControllerPrefab: {fileID: 295106857588282507, guid: 25a19a7ea7ca81747aa16eab90f67320, type: 3}

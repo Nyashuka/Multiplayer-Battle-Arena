@@ -1,14 +1,15 @@
 using Core.PlayerComponents.MainWeapons.Abstract;
 using Core.Projectiles;
+using Core.Projectiles.Data;
+using Core.Projectiles.SmoothedProjectile;
 using Fusion;
 using UnityEngine;
 
-namespace Core.PlayerComponents.MainWeapons
+namespace Core.MainWeapons
 {
     public class SimpleWeapon : Weapon
     {
-        [SerializeField] private ProjectilesLauncher projectilesLauncher;
-        [SerializeField] private ServerProjectile bulletPrefab; 
+        [SerializeField] private SmoothedServerProjectile bulletPrefab; 
         [Networked] private TickTimer delay { get; set; } 
         
         public override void Fire(Vector3 direction, NetworkRunner runner, PlayerRef owner)
