@@ -14,20 +14,19 @@ namespace ScriptableObjects
         [SerializeField] public NetworkPrefabRef mapPrefab;
         [SerializeField] public NetworkPrefabRef playerPrefab;
         [SerializeField] public NetworkPrefabRef matchManagerPrefab;
+        [SerializeField] private NetworkPrefabRef weaponDealerPrefab;
         [SerializeField] private WeaponConfigBase defaultWeaponConfig;
         [SerializeField] private NetworkPrefabRef matchTimerPrefab;
+        [SerializeField] private WeaponList weaponList;
 
         public WeaponConfigBase DefaultWeaponConfig => defaultWeaponConfig;
         public NetworkPrefabRef MatchTimerPrefab => matchTimerPrefab;
         
         [Header("UI Prefabs")]
         [SerializeField] private GameHUD gameHUDPrefab;
-        [SerializeField] private UIPageSwitcher uiPageSwitcherPrefab;
-        [SerializeField] private MatchTimerUI matchTimerUIPrefab;
-        
         public GameHUD GameHUDPrefab => gameHUDPrefab;
-        public MatchTimerUI MatchTimerUIPrefab => matchTimerUIPrefab;
-        public UIPageSwitcher UIPageSwitcherPrefab => uiPageSwitcherPrefab;
+        public WeaponList WeaponList => weaponList;
+        public NetworkPrefabRef WeaponDealerPrefab => weaponDealerPrefab;
     }
     
 }

@@ -25,12 +25,18 @@ namespace UserInterface.MatchUI
             
             _currentPage = GetPage<T>();
             _currentPage.Open();
+            
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
 
         public void ClosePage()
         {
             if(_currentPage != null)
                 _currentPage.Close();
+            
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
     }
 }

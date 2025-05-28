@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Grenade
   m_EditorClassIdentifier: 
   id: grenade
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 6b761a358298089499f474631e4ae231, type: 3}
   ability: {fileID: 11400000, guid: 5a100bf42e68a3f408dc787192e2109d, type: 2}
   grenadePrefab:
     RawGuidValue: 37324c3fa633de441b18a64eceb8669c
   damage: 100
   range: 10
   throwForce: 20
-  explodeDelay: 5
+  explodeDelay: 3

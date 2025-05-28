@@ -47,12 +47,12 @@ namespace Core.Projectiles.SmoothedProjectile
                     damagable.TakeDamage(new DamageData()
                     {
                         Attacker = _projectileParams.Owner,
-                        Damage = 25
+                        Damage = _projectileParams.Damage
                     });
                     Debug.Log("Damaged");
                 }
                 
-                weapon.RPC_DestroyDummyProjectile(Object.Id, hit.point);
+                weapon.RPC_DestroyDummyProjectile(_projectileParams.Id, hit.point);
                 Runner.Despawn(Object);
                 return;
             }
@@ -62,6 +62,7 @@ namespace Core.Projectiles.SmoothedProjectile
             _timer += Runner.DeltaTime;
             if (_timer > _projectileParams.LifeTime)
             {
+                weapon.RPC_DestroyDummyProjectile(_projectileParams.Id, hit.point);
                 Runner.Despawn(Object);
             }
         }

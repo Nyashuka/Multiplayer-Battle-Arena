@@ -1,11 +1,11 @@
+using System;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using Core.MainWeapons.Abstract;
-using Core.Projectiles;
 using Core.Projectiles.Abstract;
 using Core.Projectiles.Data;
-using Core.Projectiles.SmoothedProjectile;
 using Fusion;
-using ScriptableObjects.Weapons;
+using Infrastructure.Factories;
 using UnityEngine;
 
 namespace Core.MainWeapons
@@ -15,7 +15,21 @@ namespace Core.MainWeapons
         [SerializeField] private Transform firePoint;
         [SerializeField] private AudioSource audioSource;
 
-        private readonly Dictionary<NetworkId, VisualProjectileBase> _visualProjectiles = new();
+        private readonly Dictionary<Guid, VisualProjectileBase> _spawnedProjectiles = new();
+        private ServerProjectileFactory _serverProjectileFactory;
+
+        [Networked] private TickTimer CooldownTimer { get; set; }
+        private TickTimer LocalCooldownTimer { get; set; }
+        
+        public override void Spawned()
+        {
+            base.Spawned();
+            if (HasStateAuthority)
+            {
+                _serverProjectileFactory = new ServerProjectileFactory(Runner, _config);
+                CooldownTimer = default;
+            }
+        }
 
         public override void Fire(Vector3 start, Vector3 direction)
         {
@@ -23,24 +37,24 @@ namespace Core.MainWeapons
 
             var projectileParams = new ProjectileParams
             {
+                Id = Guid.NewGuid(),
                 VisualStart = firePoint.position,
-                ServerStart = firePoint.position,
+                ServerStart = start,
                 Direction = direction,
+                Speed = _config.MuzzleVelocity,
+                LifeTime = _config.BulletLifeTime,
                 Owner = Object.InputAuthority
             };
-
-            RPC_RequestFire(projectileParams);
+            if (LocalCooldownTimer.ExpiredOrNotRunning(Runner) && CooldownTimer.ExpiredOrNotRunning(Runner))
+            {
+                StartFire(projectileParams);
+            }
         }
 
-        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-        private void RPC_RequestFire(ProjectileParams projectileParams, RpcInfo info = default)
+        private void StartFire(ProjectileParams projectileParams)
         {
-            if (!HasStateAuthority) return;
-
-            projectileParams.Speed = _config.MuzzleVelocity;
-            projectileParams.Damage = _config.Damage;
-            projectileParams.LifeTime = _config.BulletLifeTime;
-
+            LocalCooldownTimer = TickTimer.CreateFromSeconds(Runner, _config.FireRate);
+            
             if (Physics.Raycast(projectileParams.ServerStart, projectileParams.Direction, out RaycastHit hit,
                     _config.MaxDistance))
             {
@@ -51,23 +65,7 @@ namespace Core.MainWeapons
                 projectileParams.Target =
                     projectileParams.ServerStart + projectileParams.Direction * _config.MaxDistance;
             }
-
-            var serverPrefab = _config.ProjectileConfig.ServerProjectilePrefab;
-            var serverProjectile =
-                Runner.Spawn(serverPrefab, firePoint.position, firePoint.rotation, Object.InputAuthority,
-                    ((runner, o) =>
-                    {
-                    } ));
-            serverProjectile.Init(projectileParams);
-            serverProjectile.weapon = this;
-
-            RPC_SpawnDummyProjectile(serverProjectile.Object.Id, projectileParams);
-        }
-    
-
-        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-        private void RPC_SpawnDummyProjectile(NetworkId serverProjectileId, ProjectileParams projectileParams, RpcInfo info = default)
-        {
+ 
             var visualPrefab = _config.ProjectileConfig.DummyProjectilePrefab;
             var visualProjectile = Instantiate(visualPrefab, firePoint.position, firePoint.rotation);
             visualProjectile.Init(projectileParams);
@@ -76,16 +74,50 @@ namespace Core.MainWeapons
             if (HasInputAuthority)
                 audioSource.Play();
 
-            _visualProjectiles[serverProjectileId] = visualProjectile;
+            _spawnedProjectiles[projectileParams.Id] = visualProjectile;   
+            Rpc_ServerFire(projectileParams);
         }
-
-        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-        public void RPC_DestroyDummyProjectile(NetworkId serverProjectileId, Vector3 position, RpcInfo info = default)
+        
+        [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+        private void Rpc_ServerFire(ProjectileParams projectileParams, RpcInfo info = default)
         {
-            var visualProjectile = _visualProjectiles[serverProjectileId];
-            visualProjectile.Explose(position);
-            Destroy(visualProjectile.gameObject);
-            _visualProjectiles.Remove(serverProjectileId);
+            if (!HasStateAuthority) return;
+
+            if (CooldownTimer.ExpiredOrNotRunning(Runner))
+            {
+                CooldownTimer = TickTimer.CreateFromSeconds(Runner, _config.FireRate);
+
+                _serverProjectileFactory.Create(projectileParams, this, firePoint, Object.InputAuthority);
+                
+                RPC_SpawnDummyProjectileInOthers(projectileParams);
+            }
+        }
+        
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_SpawnDummyProjectileInOthers(ProjectileParams projectileParams)
+        {
+            if(HasInputAuthority) return;
+            
+            var visualPrefab = _config.ProjectileConfig.DummyProjectilePrefab;
+            var visualProjectile = Instantiate(visualPrefab, firePoint.position, firePoint.rotation);
+            visualProjectile.Init(projectileParams);
+            visualProjectile.Launch();
+            
+            _spawnedProjectiles[projectileParams.Id] = visualProjectile;
+        }
+        
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        public void RPC_DestroyDummyProjectile(Guid id, Vector3 position, RpcInfo info = default)
+        {
+            if (!_spawnedProjectiles.TryGetValue(id, out var visualProjectile)) return;
+
+            if (visualProjectile)
+            {
+                visualProjectile.Explose(position);
+                Destroy(visualProjectile.gameObject);
+            }
+
+            _spawnedProjectiles.Remove(id);
         }
     }
 }

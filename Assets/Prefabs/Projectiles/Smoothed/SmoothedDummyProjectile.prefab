@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 19d42872bc66e364f9605b123ea8fc36, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -129,4 +129,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   explosiveEffect: {fileID: 2515155264409389057, guid: 12c147930b825ff42b17cd57c9fed941, type: 3}
-  lifetime: 5

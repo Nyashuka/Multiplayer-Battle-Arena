@@ -724,6 +724,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   arsenal:
   - {fileID: 11400000, guid: 64226017dbe4f074c88f7579665b40a8, type: 2}
+  - {fileID: 11400000, guid: 1d3e431e779e8af48832d79c3f04bf33, type: 2}
   defaultWeapon: {fileID: 11400000, guid: 64226017dbe4f074c88f7579665b40a8, type: 2}
   gunHolder: {fileID: 6015483494481926346}
 --- !u!1 &6583056719686401792

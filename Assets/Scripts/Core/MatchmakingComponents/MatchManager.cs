@@ -14,11 +14,11 @@ namespace Core.MatchmakingComponents
     public class MatchManager : NetworkBehaviour
     {
         public static MatchManager Instance { get; private set; }
-
         private Dictionary<PlayerRef, Player> Players { get; set; }
 
         private MatchScore _matchScore;
         private MatchStatistic _matchStatistic;
+        private WeaponDealer _weaponDealer;
         public MatchTimer MatchTimer { get; private set; }
         
         private Map _map;
@@ -26,11 +26,14 @@ namespace Core.MatchmakingComponents
         private readonly float _respawnTime = 10f;
         private readonly Dictionary<PlayerRef, TickTimer> _respawnTimers = new();
 
-        public void Initialize(Dictionary<PlayerRef, Player> players, MatchTimer matchTimer, Map map)
+        public void Initialize(Dictionary<PlayerRef, Player> players, MatchTimer matchTimer, Map map, WeaponDealer weaponDealer)
         {
             Players = players;
             MatchTimer = matchTimer;
             _map = map;
+            
+            _weaponDealer = weaponDealer;
+            _weaponDealer.Initialize(players);
             
             if (HasStateAuthority)
             {
@@ -55,7 +58,6 @@ namespace Core.MatchmakingComponents
 
             _matchScore = new MatchScore();
             _matchStatistic = new MatchStatistic();
-
         }
 
         public override void FixedUpdateNetwork()
@@ -115,7 +117,9 @@ namespace Core.MatchmakingComponents
             
             if (Runner.LocalPlayer == playerRef)
             {
-                GameEventBus.Instance.RaiseEvent(GameEventDefinitions.StartRespawn, new StartRespawnEventArgs(respawnAt));
+                GameEventBus.Instance.RaiseEvent(GameEventDefinitions.StartRespawn, 
+                    new StartRespawnEventArgs(respawnAt, 
+                        _weaponDealer.GetWeapons()));
             }
         }
 
@@ -129,6 +133,11 @@ namespace Core.MatchmakingComponents
                 
                 HandlePlayerDeath(playerKilledEventArgs.DeathData.Victim);
             }
+        }
+
+        private void OnRequestWeapon(IEventBusArgs args)
+        {
+            
         }
     }
 }

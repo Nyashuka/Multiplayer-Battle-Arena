@@ -13,7 +13,7 @@ namespace ScriptableObjects.Weapons
         [SerializeField] private Sprite icon;
         
         [Header("Weapon Config")]
-        [SerializeField] private float damage;
+        [SerializeField] private int damage;
         [SerializeField] private float fireRate;
         [SerializeField] private float muzzleVelocity;
         [SerializeField] private float maxDistance = 100f;
@@ -25,7 +25,7 @@ namespace ScriptableObjects.Weapons
         
         public string ID => id;
         public Sprite Icon => icon;
-        public float Damage => damage;
+        public int Damage => damage;
         public float FireRate => fireRate;
         public float MuzzleVelocity => muzzleVelocity;
         public float MaxDistance => maxDistance;

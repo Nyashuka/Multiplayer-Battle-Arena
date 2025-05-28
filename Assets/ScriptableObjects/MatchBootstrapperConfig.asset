@@ -18,9 +18,10 @@ MonoBehaviour:
     RawGuidValue: 08d2bddfa6bbc274eb957ca045b77ea3
   matchManagerPrefab:
     RawGuidValue: 0872f4c72644ede46977a512a3522677
+  weaponDealerPrefab:
+    RawGuidValue: ae0cff77b19a65a4e94da6d13d693a35
   defaultWeaponConfig: {fileID: 11400000, guid: 64226017dbe4f074c88f7579665b40a8, type: 2}
   matchTimerPrefab:
     RawGuidValue: 65b1be76192167c4f9c5788b9ba6898f
-  gameHUDPrefab: {fileID: 6491382689165946488, guid: 9a3fc292aeae18b4d9b4ac58a2339262, type: 3}
-  uiPageSwitcherPrefab: {fileID: 0}
-  matchTimerUIPrefab: {fileID: 3577150336128456029, guid: 023b3b89d04f2f149b93934dc5e5eb44, type: 3}
+  weaponList: {fileID: 11400000, guid: ce59aef8ef5f20844b5364507b402808, type: 2}
+  gameHUDPrefab: {fileID: 3203968107808635327, guid: 9a3fc292aeae18b4d9b4ac58a2339262, type: 3}

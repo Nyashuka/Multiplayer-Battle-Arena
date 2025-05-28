@@ -7,6 +7,7 @@ using Fusion;
 using Infrastructure.Factories;
 using Infrastructure.Factories.UI;
 using ScriptableObjects;
+using Services;
 using UnityEngine;
 using UserInterface.MatchUI;
 
@@ -15,15 +16,18 @@ namespace Infrastructure
     public class MatchBootstrapper : NetworkBehaviour
     {
         [SerializeField] private MatchBootstrapperConfig matchBootstrapperConfig;
+
+        [Networked] private MatchManager MatchManager { get; set; }
+        [Networked] private MatchTimer MatchTimer { get; set; }
+        [Networked] private WeaponDealer WeaponDealer { get; set; }
         
         private Map _map;
-        [Networked] private MatchManager MatchManager { get; set; }
-        
-        [Networked] private MatchTimer MatchTimer { get; set; }
         private Dictionary<PlayerRef, Player> Players { get; set; } = new();
         
         public override void Spawned()
         { 
+            WeaponService.Instance.SetWeaponList(matchBootstrapperConfig.WeaponList);
+            
             // state authority
             InitializeMap();
             InitializePlayers();
@@ -89,9 +93,12 @@ namespace Infrastructure
             {
                 var matchManagerFactory = new MatchManagerFactory(Runner, matchBootstrapperConfig.matchManagerPrefab);
                 MatchManager = matchManagerFactory.Create();
+
+                var weaponDealerFactory = new WeaponDealerFactory(Runner, matchBootstrapperConfig.WeaponDealerPrefab);
+                WeaponDealer = weaponDealerFactory.Create();     
             }            
             
-            MatchManager.Initialize(Players, MatchTimer, _map);
+            MatchManager.Initialize(Players, MatchTimer, _map, WeaponDealer);
         }
 
         private Vector3 GetSpawnPosition(List<SpawnPoint> spawnPoints)

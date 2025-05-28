@@ -9,6 +9,7 @@ namespace Core.MainWeapons.Abstract
         [Networked] public PlayerRef Owner { get; set; }
         
         protected WeaponConfigBase _config;
+        public WeaponConfigBase Config => _config;
 
         public void Initialize(WeaponConfigBase config)
         {

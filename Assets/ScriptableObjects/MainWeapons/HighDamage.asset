@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 26271be886364f28a34fd8f4b7c046e0, type: 3}
-  m_Name: SimpleKinematicConfig
+  m_Name: HighDamage
   m_EditorClassIdentifier: 
-  id: fast-kin-w
-  icon: {fileID: 21300000, guid: 07ae6b36f7f6e6d4db2ceef163ee33b6, type: 3}
-  damage: 5
-  fireRate: 0.1
-  muzzleVelocity: 100
+  id: h-dmg-kin
+  icon: {fileID: 21300000, guid: 6a72e86948a7a73419a8d0fbd7c0dc1f, type: 3}
+  damage: 50
+  fireRate: 1
+  muzzleVelocity: 20
   maxDistance: 100
-  bulletLifeTime: 2.5
+  bulletLifeTime: 5
   weaponPrefabRef:
     RawGuidValue: d93a170af5472a4499e1f66c11d0f0f1
   projectileConfig: {fileID: 11400000, guid: f5d6f6ccb9b41864881797a79f31ca09, type: 2}

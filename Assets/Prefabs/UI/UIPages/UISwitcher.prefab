@@ -267,7 +267,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 241021808013199287, guid: 0c6de93d1062fbd4ba8db28b4f24f344, type: 3}
       propertyPath: m_Alpha
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 241021808013199287, guid: 0c6de93d1062fbd4ba8db28b4f24f344, type: 3}
       propertyPath: m_Interactable
@@ -275,6 +275,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 241021808013199287, guid: 0c6de93d1062fbd4ba8db28b4f24f344, type: 3}
       propertyPath: m_BlocksRaycasts
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 712898752911029132, guid: 0c6de93d1062fbd4ba8db28b4f24f344, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 712898752911029132, guid: 0c6de93d1062fbd4ba8db28b4f24f344, type: 3}
+      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 951897820722847121, guid: 0c6de93d1062fbd4ba8db28b4f24f344, type: 3}
@@ -364,6 +372,10 @@ PrefabInstance:
     - target: {fileID: 3435919194125381495, guid: 0c6de93d1062fbd4ba8db28b4f24f344, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3817244119920504034, guid: 0c6de93d1062fbd4ba8db28b4f24f344, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7291928451914732505, guid: 0c6de93d1062fbd4ba8db28b4f24f344, type: 3}
       propertyPath: canvasGroup
