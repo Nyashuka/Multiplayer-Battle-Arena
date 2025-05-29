@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Core.PlayerComponents;
 using Data;
 using Fusion;
 using ScriptableObjects.AdditionWeapons;
@@ -18,16 +16,15 @@ namespace Core.UtilityItems
 
         [SerializeField] private UtilityItemConfig defaultItem;
         
-        [SerializeField] private PlayerInput input;
-        
         public void Awake()
         {
-            _itemDatabase = itemConfigs.ToDictionary(c => c.name);
+            _itemDatabase = itemConfigs.ToDictionary(c => c.Id);
         }
 
         public override void Spawned()
         {
-            EquippedItemId = defaultItem.name;
+            if(HasStateAuthority)
+                EquippedItemId = defaultItem.Id;
         }
 
         public void UseItem(ItemUseContext itemUseContext)
@@ -52,6 +49,13 @@ namespace Core.UtilityItems
 
             itemUseContext.User = this;
             config.Ability.Use(config, itemUseContext);
+        }
+
+        public void SetItem(string id)
+        {
+            if(!HasStateAuthority) return;
+
+            EquippedItemId = id;
         }
     }
 }

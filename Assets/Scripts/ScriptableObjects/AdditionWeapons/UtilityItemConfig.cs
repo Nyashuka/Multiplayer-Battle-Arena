@@ -10,6 +10,9 @@ namespace ScriptableObjects.AdditionWeapons
         [SerializeField] private Sprite icon;
         [Header("Ability")]
         [SerializeField] private UtilityItemAbilityBase ability;
-        public UtilityItemAbilityBase Ability => ability; 
+        
+        public string Id => id;
+        public UtilityItemAbilityBase Ability => ability;
+        public Sprite Icon => icon;
     }
 }

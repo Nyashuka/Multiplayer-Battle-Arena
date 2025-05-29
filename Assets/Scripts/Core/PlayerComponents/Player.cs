@@ -1,7 +1,5 @@
 using Core.MainWeapons;
 using Core.MainWeapons.Abstract;
-using Core.PlayerComponents;
-using Core.PlayerComponents.MainWeapons.Abstract;
 using Core.UtilityItems;
 using Data;
 using Fusion;
@@ -11,7 +9,7 @@ using Services.EventBus;
 using Services.EventBus.EventBusArguments;
 using UnityEngine;
 
-namespace Core
+namespace Core.PlayerComponents
 {
 	[DefaultExecutionOrder(-5)]
 	public sealed class Player : NetworkBehaviour
@@ -44,6 +42,13 @@ namespace Core
 			if (!HasStateAuthority) return;
     
 			mainWeaponHandler.EquipWeapon(newWeapon);	
+		}
+		
+		public void SetUtilityItem(string id)
+		{
+			if(!HasStateAuthority) return;
+			
+			utilityItemHandler.SetItem(id);
 		}
 	
 		private float GetCurrentAcceleration(Vector3 desiredMoveVelocity)
@@ -242,5 +247,6 @@ namespace Core
 			
 			AimGun();
 		}
+
 	}
 }

@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 128becd54cae7bd4d94e4579879f1005, type: 2}
+  - {fileID: 2100000, guid: 3663487a860310b4981a41649116c0c2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -127,7 +127,7 @@ GameObject:
   - component: {fileID: 1422448416794264196}
   - component: {fileID: 3867296955392047159}
   m_Layer: 0
-  m_Name: SimpleKinematicWeapon
+  m_Name: HighDamageWeapon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -162,7 +162,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SortKey: 348719170
+  SortKey: 2331388920
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []

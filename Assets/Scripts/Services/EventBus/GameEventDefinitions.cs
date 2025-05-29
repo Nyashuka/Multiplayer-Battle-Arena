@@ -11,5 +11,6 @@ namespace Services.EventBus
         public const string PlayerSpawned = "PlayerSpawned";
         public const string MatchStarted = "MatchStarted";
         public const string WeaponRequested = "WeaponRequested";
+        public const string UtilityItemRequested = "UtilityItemRequested";
     }
 }

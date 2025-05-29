@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Core;
+using Core.PlayerComponents;
 using Fusion;
 
 namespace Data

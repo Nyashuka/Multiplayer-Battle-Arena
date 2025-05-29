@@ -119,7 +119,8 @@ namespace Core.MatchmakingComponents
             {
                 GameEventBus.Instance.RaiseEvent(GameEventDefinitions.StartRespawn, 
                     new StartRespawnEventArgs(respawnAt, 
-                        _weaponDealer.GetWeapons()));
+                        _weaponDealer.GetWeapons(),
+                        _weaponDealer.GetUtilityItems()));
             }
         }
 

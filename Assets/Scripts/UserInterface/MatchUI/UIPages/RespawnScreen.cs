@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
-using Core.MatchmakingComponents;
 using Fusion;
-using Services;
 using Services.EventBus;
 using Services.EventBus.EventBusArguments;
 using TMPro;
@@ -22,7 +19,8 @@ namespace UserInterface.MatchUI.UIPages
         private float _respawnAt;
         private NetworkRunner _networkRunner;
 
-        private List<SelectWeaponButton> _selectWeaponButtons = new();
+        private readonly List<SelectWeaponButton> _selectWeaponButtons = new();
+        private List<SelectWeaponButton> _selectUtilityItemButtons = new();
 
         private void OnEnable()
         {
@@ -60,13 +58,24 @@ namespace UserInterface.MatchUI.UIPages
                         weaponButton.OnClick += OnWeaponSelected;
                     }
                 }
-                // foreach (var utilityItem in WeaponService.Instance.GetAllWeapons())
-                // {
-                //     var weaponButton = Instantiate(selectWeaponButtonPrefab, mainWeaponsParent);
-                //     weaponButton.SetWeapon(weapon.Icon, weapon.ID);
-                //     weaponButton.OnClick += OnWeaponSelected;
-                // }
+
+                if (_selectUtilityItemButtons.Count == 0)
+                {
+                    foreach (var utilityItem in startRespawnEventArgs.AvailableUtilityItems)
+                    {
+                        var weaponButton = Instantiate(selectWeaponButtonPrefab, utilityItemsParent);
+                        _selectUtilityItemButtons.Add(weaponButton);
+                        weaponButton.SetWeapon(utilityItem.Icon, utilityItem.Id);
+                        weaponButton.OnClick += OnUtilityItemSelected;
+                    }
+                }
             }
+        }
+
+        private void OnUtilityItemSelected(string id)
+        {
+            GameEventBus.Instance.RaiseEvent(GameEventDefinitions.UtilityItemRequested, new UtilityItemRequestedEventArgs(id));
+            Debug.Log("Raised request utility " + id);
         }
 
         private void OnWeaponSelected(string id)

@@ -1,9 +1,8 @@
-using System.ComponentModel;
 using Core.PlayerComponents;
 using Fusion;
 using UnityEngine;
 
-namespace Core
+namespace Core.EnemyComponents
 {
     public class EnemyCanvasHandler : NetworkBehaviour
     {

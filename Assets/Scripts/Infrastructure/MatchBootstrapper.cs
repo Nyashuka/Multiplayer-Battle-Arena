@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Core;
 using Core.MatchmakingComponents;
+using Core.PlayerComponents;
 using Data;
 using Environment;
 using Fusion;

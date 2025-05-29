@@ -1,4 +1,4 @@
-using System;
+using Core.EnemyComponents;
 using Fusion.Addons.SimpleKCC;
 using UnityEngine;
 

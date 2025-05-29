@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponList: {fileID: 11400000, guid: ce59aef8ef5f20844b5364507b402808, type: 2}
+  utilityItemsList: {fileID: 11400000, guid: 550aedf696cf0e14bbfe8f10ddd235f6, type: 2}
 --- !u!114 &1773695610593480584
 MonoBehaviour:
   m_ObjectHideFlags: 0

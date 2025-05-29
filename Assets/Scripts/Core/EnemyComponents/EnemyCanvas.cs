@@ -1,7 +1,7 @@
 using Core.PlayerComponents;
 using UnityEngine;
 
-namespace Core
+namespace Core.EnemyComponents
 {
     public class EnemyCanvas : MonoBehaviour
     {

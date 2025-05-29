@@ -51,6 +51,8 @@ namespace Core.MainWeapons
             EquippedWeapon.Initialize(arsenal.Find(x => x.ID == EquippedWeaponId));
             EquippedWeapon.transform.SetParent(gunHolder);
             EquippedWeapon.transform.localPosition = new Vector3(0, 0, 0.5f);
+            EquippedWeapon.transform.localRotation = Quaternion.identity;
+            
         }
     }
 }

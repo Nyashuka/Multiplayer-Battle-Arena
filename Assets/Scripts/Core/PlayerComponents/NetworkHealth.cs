@@ -1,4 +1,6 @@
 using System;
+using System.Net.NetworkInformation;
+using Core.Modifiers;
 using Data;
 using Fusion;
 using Services.EventBus;
@@ -9,12 +11,14 @@ namespace Core.PlayerComponents
 {
     public class NetworkHealth : NetworkBehaviour, IDamagable, IHealable, IHealthSource
     {
+        [SerializeField] private int maxHealth = 100;
+        
         [Networked] public PlayerRef Owner { get; set; }
         [Networked] private PlayerRef LastAttacker { get; set; }
         [Networked] private int NetworkHealthValue { get; set; }
-        public Health Health { get; private set; }
 
-        [SerializeField] private int maxHealth = 100;
+        private ModifierStack<int> IncomingDamageModifiers { get; } = new();
+        private Health Health { get; set; }
 
         public bool IsAlive => NetworkHealthValue > 0;
         public event Action<DeathData> DeathEvent;
@@ -25,6 +29,11 @@ namespace Core.PlayerComponents
         public override void Spawned()
         {
             Reset();
+        }
+
+        public void AddIncomingDamageModifier(IModifier<int> modifier)
+        {
+            IncomingDamageModifiers.AddModifier(modifier);
         }
         
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -70,6 +79,8 @@ namespace Core.PlayerComponents
         {
             if (!HasStateAuthority || !Health.IsAlive)
                 return;
+            
+            data.Damage = IncomingDamageModifiers.ApplyModifiers(data.Damage);
 
             LastAttacker = data.Attacker;
             Health.TakeDamage(data);

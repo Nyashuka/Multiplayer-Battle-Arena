@@ -7,5 +7,7 @@ namespace ScriptableObjects.AdditionWeapons
     {   
         [Header("Config")]
         [SerializeField] private int healAmount;
+        
+        public int HealAmount => healAmount;
     }
 }

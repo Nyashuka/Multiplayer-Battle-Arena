@@ -2,7 +2,7 @@ using Core.PlayerComponents;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Core
+namespace Core.EnemyComponents
 {
     public class EnemyHealthBar : MonoBehaviour
     {

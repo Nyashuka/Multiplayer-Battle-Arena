@@ -9,10 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aac68350e58845db8232c232cc4c76a1, type: 3}
-  m_Name: MedkitConfig
+  m_Script: {fileID: 11500000, guid: 4a681a94d2e64a8fa2aeba615cafa93d, type: 3}
+  m_Name: UtilityItemsList
   m_EditorClassIdentifier: 
-  id: medkit
-  icon: {fileID: 21300000, guid: a033c0d8e19915043b2dd63095cb9745, type: 3}
-  ability: {fileID: 11400000, guid: c98174f679cc42b4295856c1c5275f2c, type: 2}
-  healAmount: 50
+  utilityItemConfigs:
+  - {fileID: 11400000, guid: cba8399d90f4aae44b7c63a0ae79ea31, type: 2}
+  - {fileID: 11400000, guid: dbb8e4265e2bfe04e9703746fb58d0c5, type: 2}
