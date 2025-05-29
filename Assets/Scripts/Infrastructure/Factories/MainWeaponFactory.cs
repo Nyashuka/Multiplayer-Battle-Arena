@@ -1,5 +1,4 @@
 using Core.MainWeapons.Abstract;
-using Core.PlayerComponents.MainWeapons.Abstract;
 using Fusion;
 using ScriptableObjects.Weapons;
 using Unity.VisualScripting;
@@ -22,7 +21,8 @@ namespace Infrastructure.Factories
         {
             WeaponBase weapon = null;
             
-            _runner.Spawn(_weaponConfig.WeaponPrefabRef, parent.position, parent.rotation, owner, (runner, obj) => {
+            _runner.Spawn(_weaponConfig.WeaponPrefabRef, parent.position, parent.rotation, owner, 
+                (runner, obj) => {
                 weapon = obj.GetComponent<WeaponBase>();
                 weapon.Owner = owner;
                 weapon.transform.SetParent(parent);

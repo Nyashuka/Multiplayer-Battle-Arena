@@ -1,6 +1,6 @@
 using Data;
 
-namespace Core.PlayerComponents
+namespace Core.PlayerComponents.HealthComponent
 {
     public interface IDamagable
     {

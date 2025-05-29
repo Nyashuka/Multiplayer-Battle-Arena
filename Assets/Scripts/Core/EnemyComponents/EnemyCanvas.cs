@@ -1,4 +1,5 @@
 using Core.PlayerComponents;
+using Core.PlayerComponents.HealthComponent;
 using UnityEngine;
 
 namespace Core.EnemyComponents

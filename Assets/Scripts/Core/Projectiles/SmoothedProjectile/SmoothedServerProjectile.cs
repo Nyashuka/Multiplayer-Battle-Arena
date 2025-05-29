@@ -1,5 +1,6 @@
 using Core.MainWeapons;
 using Core.PlayerComponents;
+using Core.PlayerComponents.HealthComponent;
 using Core.Projectiles.Data;
 using Data;
 using Fusion;

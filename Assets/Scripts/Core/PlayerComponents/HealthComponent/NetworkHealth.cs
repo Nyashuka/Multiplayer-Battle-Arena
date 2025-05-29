@@ -1,5 +1,4 @@
 using System;
-using System.Net.NetworkInformation;
 using Core.Modifiers;
 using Data;
 using Fusion;
@@ -7,7 +6,7 @@ using Services.EventBus;
 using Services.EventBus.EventBusArguments;
 using UnityEngine;
 
-namespace Core.PlayerComponents
+namespace Core.PlayerComponents.HealthComponent
 {
     public class NetworkHealth : NetworkBehaviour, IDamagable, IHealable, IHealthSource
     {
@@ -17,20 +16,15 @@ namespace Core.PlayerComponents
         [Networked] private PlayerRef LastAttacker { get; set; }
         [Networked] private int NetworkHealthValue { get; set; }
 
-        private ModifierStack<int> IncomingDamageModifiers { get; } = new();
         private Health Health { get; set; }
-
+        private ModifierStack<int> IncomingDamageModifiers { get; } = new();
         public bool IsAlive => NetworkHealthValue > 0;
-        public event Action<DeathData> DeathEvent;
-        public event Action<int> HealthChanged;
         public int CurrentHealth => NetworkHealthValue;
         public int MaxHealth => Health.MaxHealth;
         
-        public override void Spawned()
-        {
-            Reset();
-        }
-
+        public event Action<DeathData> DeathEvent;
+        public event Action<int> HealthChanged;
+        
         public void AddIncomingDamageModifier(IModifier<int> modifier)
         {
             IncomingDamageModifiers.AddModifier(modifier);

@@ -1,4 +1,5 @@
 using Fusion;
+using ScriptableObjects.AdditionWeapons;
 using ScriptableObjects.Weapons;
 using UnityEngine;
 using UserInterface;
@@ -18,6 +19,7 @@ namespace ScriptableObjects
         [SerializeField] private WeaponConfigBase defaultWeaponConfig;
         [SerializeField] private NetworkPrefabRef matchTimerPrefab;
         [SerializeField] private WeaponList weaponList;
+        [SerializeField] private UtilityItemsList utilityItemList;
 
         public WeaponConfigBase DefaultWeaponConfig => defaultWeaponConfig;
         public NetworkPrefabRef MatchTimerPrefab => matchTimerPrefab;
@@ -26,6 +28,7 @@ namespace ScriptableObjects
         [SerializeField] private GameHUD gameHUDPrefab;
         public GameHUD GameHUDPrefab => gameHUDPrefab;
         public WeaponList WeaponList => weaponList;
+        public UtilityItemsList UtilityItemsList => utilityItemList;
         public NetworkPrefabRef WeaponDealerPrefab => weaponDealerPrefab;
     }
     

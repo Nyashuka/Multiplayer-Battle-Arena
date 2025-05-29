@@ -9,6 +9,7 @@ using Infrastructure.Factories;
 using Infrastructure.Factories.UI;
 using ScriptableObjects;
 using Services;
+using Services.ServiceLocator;
 using UnityEngine;
 using UserInterface.MatchUI;
 
@@ -23,11 +24,12 @@ namespace Infrastructure
         [Networked] private WeaponDealer WeaponDealer { get; set; }
         
         private Map _map;
-        private Dictionary<PlayerRef, Player> Players { get; set; } = new();
+        private Dictionary<PlayerRef, Player> Players { get; } = new();
         
         public override void Spawned()
         { 
-            WeaponService.Instance.SetWeaponList(matchBootstrapperConfig.WeaponList);
+            // all
+            RegisterServices();
             
             // state authority
             InitializeMap();
@@ -36,6 +38,12 @@ namespace Infrastructure
             InitializeMatchManager(); 
             // all clients
             InitializeUI();
+        }
+
+        private void RegisterServices()
+        {
+            ServiceLocator.Instance.Register(new WeaponDatabaseService(matchBootstrapperConfig.WeaponList));
+            ServiceLocator.Instance.Register(new UtilityItemsDatabaseService(matchBootstrapperConfig.UtilityItemsList));
         }
 
         private void InitializeMatchTimer()
@@ -76,7 +84,7 @@ namespace Infrastructure
             if(!HasStateAuthority) return;
             
             var mainWeaponFactory = new MainWeaponFactory(Runner, matchBootstrapperConfig.DefaultWeaponConfig);
-            var playerWeapon = mainWeaponFactory.Create(playerRef, player.GetPrimaryWeaponTransform());
+            var playerWeapon = mainWeaponFactory.Create(playerRef, player.MainWeaponTransform);
             player.SetWeapon(playerWeapon);
         }
 

@@ -6,16 +6,11 @@ namespace Services.EventBus.EventBusArguments
 {
     public class StartRespawnEventArgs : IEventBusArgs
     {
-        public StartRespawnEventArgs(float respawnAt, IReadOnlyList<WeaponConfigBase> availableWeapons, IReadOnlyList<UtilityItemConfig> availableUtilityItems)
+        public StartRespawnEventArgs(float respawnAt)
         {
             RespawnAt = respawnAt;
-            AvailableWeapons = availableWeapons;
-            AvailableUtilityItems = availableUtilityItems;
         }
 
         public float RespawnAt { get; private set; }
-        public IReadOnlyList<WeaponConfigBase> AvailableWeapons { get; private set; }
-        public IReadOnlyList<UtilityItemConfig> AvailableUtilityItems { get; private set; }
-        
     }
 }

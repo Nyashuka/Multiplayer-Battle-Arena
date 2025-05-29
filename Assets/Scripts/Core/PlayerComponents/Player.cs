@@ -1,10 +1,10 @@
 using Core.MainWeapons;
 using Core.MainWeapons.Abstract;
+using Core.PlayerComponents.HealthComponent;
 using Core.UtilityItems;
 using Data;
 using Fusion;
 using Fusion.Addons.SimpleKCC;
-using ScriptableObjects;
 using Services.EventBus;
 using Services.EventBus.EventBusArguments;
 using UnityEngine;
@@ -14,28 +14,58 @@ namespace Core.PlayerComponents
 	[DefaultExecutionOrder(-5)]
 	public sealed class Player : NetworkBehaviour
 	{
-		[Header("Player Components")] 
-		[SerializeField] private NetworkHealth networkHealth;
-		[SerializeField] private PlayerLives playerLives;
+		[Header("Player Modules")] 
+		[SerializeField] private PlayerMovement playerMovement;
+		[SerializeField] private PlayerCamera playerCamera;
+		[SerializeField] private PlayerCombat playerCombat;
+		[SerializeField] private PlayerLifecycle playerLifecycle;
 		[SerializeField] private MainWeaponHandler mainWeaponHandler;
 		[SerializeField] private UtilityItemHandler utilityItemHandler;
+		[SerializeField] private NetworkHealth networkHealth;
 		[SerializeField] private PlayerInput input;
+		[Header("Player Components")] 
 		[SerializeField] private SimpleKCC kcc;
-		[SerializeField] private PlayerLifecycle playerLifecycle;
-		[SerializeField] private Transform primaryWeaponHolder;
-		[SerializeField] private Transform cameraHandle;
+		[SerializeField] private Transform mainWeaponTransform;
 
-		[Header("Movement Settings")] [SerializeField]
-		private PlayerMovementSettings playerMovementSettings;
-
-		private MovementConfig _movementConfig;
-		private float _jumpImpulse;
-		private Transform _cameraTransform;
-
-		[Networked] private Vector3 MoveVelocity { get; set; }
-		
-		public PlayerLives PlayerLives => playerLives;
 		public NetworkHealth NetworkHealth => networkHealth;
+		public Transform MainWeaponTransform => mainWeaponTransform;
+		
+		public override void Spawned()
+		{
+			networkHealth.Reset();
+			if (HasStateAuthority)
+			{
+				networkHealth.Owner = Object.InputAuthority;
+				networkHealth.DeathEvent += OnDeath;
+			}
+			
+			playerCombat.Init(input, playerCamera, this);
+			playerMovement.Init(Runner, input);
+			playerCamera.Init(input);
+
+			if (Runner.LocalPlayer == Object.InputAuthority)
+			{
+				Debug.Log(Object.InputAuthority);
+				GameEventBus.Instance.RaiseEvent(GameEventDefinitions.PlayerSpawned, 
+					new PlayerSpawnedEventArgs(this), 
+					true);
+			}
+		}
+		
+		public override void FixedUpdateNetwork()
+		{
+			if(!networkHealth.IsAlive) return; 
+			
+			playerMovement.Tick();
+			playerCombat.Tick();
+		}
+
+		private void LateUpdate()
+		{
+			if (HasInputAuthority)	
+				playerCamera.Tick();			
+		}
+		
 		
 		public void SetWeapon(WeaponBase newWeapon)
 		{
@@ -51,202 +81,19 @@ namespace Core.PlayerComponents
 			utilityItemHandler.SetItem(id);
 		}
 	
-		private float GetCurrentAcceleration(Vector3 desiredMoveVelocity)
-		{
-			if (desiredMoveVelocity == Vector3.zero)
-			{
-				// No desired move velocity - we are stopping.
-				return kcc.IsGrounded ? _movementConfig.GroundDeceleration : _movementConfig.AirDeceleration;
-			}
-
-			return kcc.IsGrounded ? _movementConfig.GroundAcceleration : _movementConfig.AirAcceleration;
-		}
-
-		private void HandleLookRotation()
-		{
-			// Apply look rotation delta. This propagates to Transform component immediately.
-			kcc.AddLookRotation(input.CurrentInput.LookRotationDelta);
-		}
-		
-		private void HandleJumpInput()
-		{
-			_jumpImpulse = 0f;
-
-			// Comparing current input to previous input - this prevents glitches when input is lost.
-			if (input.CurrentInput.Actions.WasPressed(input.PreviousInput.Actions, GameplayInput.JUMP_BUTTON))
-			{
-				if (kcc.IsGrounded)
-				{
-					_jumpImpulse = _movementConfig.JumpImpulse;
-				}
-			}
-		}
-
-		private void HandleShootingInput()
-		{
-			if (input.CurrentInput.Actions.WasPressed(input.PreviousInput.Actions, GameplayInput.FIRE_BUTTON))
-			{
-				GetCameraStartAndDirection(out var cameraStart, out var cameraDirection);
-				mainWeaponHandler.Fire(cameraStart, cameraDirection);
-			}
-			if (input.CurrentInput.Actions.WasPressed(input.PreviousInput.Actions, GameplayInput.USE_UTILITY_BUTTON))
-			{
-				GetCameraStartAndDirection(out var cameraStart, out var cameraDirection);
-				var useItemContext = new ItemUseContext()
-				{
-					AimDirection = cameraDirection,
-					ThrowFrom = cameraStart,
-					User = this
-				};
-				utilityItemHandler.UseItem(useItemContext);
-			}
-		}
-
-		private void ApplyGravity()
-		{
-			// It feels better when the player falls quicker.
-			float gravity = kcc.RealVelocity.y >= 0.0f ? _movementConfig.UpGravity : _movementConfig.DownGravity;
-			kcc.SetGravity(gravity);
-		}
-		
-		private void HandleMovement()
-		{
-			// Set default world space input direction and jump impulse.
-			Vector3 inputDirection = kcc.TransformRotation * new Vector3(
-				input.CurrentInput.MoveDirection.x,
-				0.0f,
-				input.CurrentInput.MoveDirection.y
-			);
-
-			Vector3 desiredMoveVelocity = inputDirection * _movementConfig.MoveSpeed;
-
-			if (kcc.ProjectOnGround(desiredMoveVelocity, out Vector3 projectedDesiredMoveVelocity))
-			{
-				desiredMoveVelocity = Vector3.Normalize(projectedDesiredMoveVelocity) * _movementConfig.MoveSpeed;
-			}
-
-			float acceleration = GetCurrentAcceleration(desiredMoveVelocity);
-			MoveVelocity = Vector3.Lerp(MoveVelocity, desiredMoveVelocity, acceleration * Runner.DeltaTime);
-
-			kcc.Move(MoveVelocity, _jumpImpulse);
-		}
-		
-		private void AimGun()
-		{
-			Ray ray = new Ray(_cameraTransform.position, _cameraTransform.forward);
-			Vector3 lookTarget;
-        
-			int layerMask = ~LayerMask.GetMask("Projectile");
-			if (Physics.Raycast(ray, out RaycastHit hit, 100f, layerMask))
-				lookTarget = hit.point;
-			else
-				lookTarget = ray.GetPoint(100f);
-        
-			Vector3 direction = (lookTarget - primaryWeaponHolder.position).normalized;
-			primaryWeaponHolder.rotation = Quaternion.LookRotation(direction);
-		}
-		
-		private void GetCameraStartAndDirection(out Vector3 cameraStart, out Vector3 cameraDirection)
-		{
-			Camera cam = Camera.main;
-			Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-			
-			cameraDirection = ray.direction;
-			cameraStart = ray.origin;	
-		}
 
 		private void OnDeath(DeathData deathData)
 		{
 			if(!HasStateAuthority) return;
 			
-			Rpc_DeathPlayer();
+			playerLifecycle.Die();
 		}
 		
-		[Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-		private void Rpc_DeathPlayer()
-		{
-			if (!networkHealth.IsAlive && playerLifecycle.IsEnabled)
-			{
-				playerLifecycle.Die();
-			}
-		}
-
-		public void Respawn(Transform respawnPosition)
+		public void Respawn(Transform spawnPoint)
 		{
 			if(!HasStateAuthority) return;
 			
-			kcc.SetPosition(respawnPosition.position);
-			kcc.SetLookRotation(respawnPosition.rotation);
-			Rpc_RespawnPlayer();
-			networkHealth.Reset();
+			playerLifecycle.Respawn(spawnPoint);
 		}
-		
-		[Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-		private void Rpc_RespawnPlayer()
-		{
-			playerLifecycle.Respawn();
-		}
-
-		private void InitializeCamera()
-		{
-			var mainCamera = Camera.main;
-			if (mainCamera != null)
-			{
-				_cameraTransform = mainCamera.transform;
-			}
-		}
-
-		public Transform GetPrimaryWeaponTransform()
-		{
-			return primaryWeaponHolder;
-		}
-		
-		public override void Spawned()
-		{
-			if (HasStateAuthority)
-			{
-				networkHealth.Owner = Object.InputAuthority;
-				networkHealth.DeathEvent += OnDeath;
-			}
-
-			if (Runner.LocalPlayer == Object.InputAuthority)
-			{
-				GameEventBus.Instance.RaiseEvent(GameEventDefinitions.PlayerSpawned, new PlayerSpawnedEventArgs(this), true);
-			}
-			
-			_movementConfig = playerMovementSettings.GetConfig();
-			InitializeCamera();
-			
-		}
-		
-		public override void FixedUpdateNetwork()
-		{
-			if(!networkHealth.IsAlive) return; 
-			
-			HandleLookRotation();
-			HandleJumpInput();
-			HandleShootingInput();
-			ApplyGravity();
-			HandleMovement();
-		}
-
-		private void LateUpdate()
-		{
-			// Only InputAuthority needs to update camera.
-			if (HasInputAuthority == false)
-				return;
-
-			// Update camera pivot and transfer properties from camera handle to Main Camera.
-			// Render() is executed before KCC because of [OrderBefore(typeof(KCC))].
-			// So we have to do it from LateUpdate() - which is called after Render().
-
-			Vector2 pitchRotation = kcc.GetLookRotation(true, false);
-			cameraHandle.localRotation = Quaternion.Euler(pitchRotation);
-
-			_cameraTransform.SetPositionAndRotation(cameraHandle.position, cameraHandle.rotation);
-			
-			AimGun();
-		}
-
 	}
 }

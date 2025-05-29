@@ -5,7 +5,6 @@ namespace Services
 {
     public class WeaponService
     {
-        public static WeaponService Instance { get; } = new();
         private WeaponService() {}
         
         private WeaponList _weaponList;

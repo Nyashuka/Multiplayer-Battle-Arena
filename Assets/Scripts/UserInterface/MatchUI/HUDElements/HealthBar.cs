@@ -1,4 +1,4 @@
-using Core.PlayerComponents;
+using Core.PlayerComponents.HealthComponent;
 using Services.EventBus;
 using Services.EventBus.EventBusArguments;
 using UnityEngine;

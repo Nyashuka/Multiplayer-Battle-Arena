@@ -24,4 +24,5 @@ MonoBehaviour:
   matchTimerPrefab:
     RawGuidValue: 65b1be76192167c4f9c5788b9ba6898f
   weaponList: {fileID: 11400000, guid: ce59aef8ef5f20844b5364507b402808, type: 2}
+  utilityItemList: {fileID: 11400000, guid: 550aedf696cf0e14bbfe8f10ddd235f6, type: 2}
   gameHUDPrefab: {fileID: 3203968107808635327, guid: 9a3fc292aeae18b4d9b4ac58a2339262, type: 3}

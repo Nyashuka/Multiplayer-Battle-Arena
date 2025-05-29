@@ -6,18 +6,20 @@ using Fusion;
 using Infrastructure.Factories;
 using ScriptableObjects.AdditionWeapons;
 using ScriptableObjects.Weapons;
+using Services;
 using Services.EventBus;
 using Services.EventBus.EventBusArguments;
+using Services.ServiceLocator;
 using UnityEngine;
 
 namespace Core.MatchmakingComponents
 {
     public class WeaponDealer : NetworkBehaviour
     {
-        [SerializeField] private WeaponList weaponList;
         [SerializeField] private UtilityItemsList utilityItemsList;
 
         private Dictionary<PlayerRef, Player> _players = new();
+        private WeaponDatabaseService _weaponDatabase;
 
         public void Initialize(Dictionary<PlayerRef, Player> players)
         {
@@ -28,6 +30,7 @@ namespace Core.MatchmakingComponents
         {
             GameEventBus.Instance.Subscribe(GameEventDefinitions.WeaponRequested, OnWeaponRequested);
             GameEventBus.Instance.Subscribe(GameEventDefinitions.UtilityItemRequested, OnUtilityItemsRequested);
+            _weaponDatabase = ServiceLocator.Instance.GetService<WeaponDatabaseService>();
         }
 
         private void OnUtilityItemsRequested(IEventBusArgs args)
@@ -75,25 +78,15 @@ namespace Core.MatchmakingComponents
 
             if (!_players.TryGetValue(source, out Player player)) return;
             
-            var weaponConfig = weaponList.Weapons.FirstOrDefault(x => x.ID == weaponId);
+            var weaponConfig = _weaponDatabase.GetById(weaponId);
 
             if (weaponConfig == null) return;
             
             var weaponFactory = new MainWeaponFactory(Runner, weaponConfig);
-            var weapon = weaponFactory.Create(source, player.GetPrimaryWeaponTransform());
+            var weapon = weaponFactory.Create(source, player.MainWeaponTransform);
                     
             player.SetWeapon(weapon);
             Debug.Log("Success got " + weaponId);
-        }
-
-        public IReadOnlyList<WeaponConfigBase> GetWeapons()
-        {
-            return weaponList.Weapons;
-        }
-        
-        public IReadOnlyList<UtilityItemConfig> GetUtilityItems()
-        {
-            return utilityItemsList.UtilityItemConfigs;
         }
     }
 }

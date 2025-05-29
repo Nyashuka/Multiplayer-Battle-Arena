@@ -1,4 +1,4 @@
-namespace Core.PlayerComponents
+namespace Core.PlayerComponents.HealthComponent
 {
     public interface IHealable
     {

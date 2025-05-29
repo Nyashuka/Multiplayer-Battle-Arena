@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using Fusion;
+using Services;
 using Services.EventBus;
 using Services.EventBus.EventBusArguments;
+using Services.ServiceLocator;
 using TMPro;
 using UnityEngine;
 
@@ -20,7 +22,7 @@ namespace UserInterface.MatchUI.UIPages
         private NetworkRunner _networkRunner;
 
         private readonly List<SelectWeaponButton> _selectWeaponButtons = new();
-        private List<SelectWeaponButton> _selectUtilityItemButtons = new();
+        private readonly List<SelectWeaponButton> _selectUtilityItemButtons = new();
 
         private void OnEnable()
         {
@@ -50,7 +52,8 @@ namespace UserInterface.MatchUI.UIPages
 
                 if (_selectWeaponButtons.Count == 0)
                 {
-                    foreach (var weapon in startRespawnEventArgs.AvailableWeapons)
+                    var weapons = ServiceLocator.Instance.GetService<WeaponDatabaseService>().GetAll();
+                    foreach (var weapon in weapons)
                     {
                         var weaponButton = Instantiate(selectWeaponButtonPrefab, mainWeaponsParent);
                         _selectWeaponButtons.Add(weaponButton);
@@ -61,7 +64,8 @@ namespace UserInterface.MatchUI.UIPages
 
                 if (_selectUtilityItemButtons.Count == 0)
                 {
-                    foreach (var utilityItem in startRespawnEventArgs.AvailableUtilityItems)
+                    var utilities = ServiceLocator.Instance.GetService<UtilityItemsDatabaseService>().GetAll();
+                    foreach (var utilityItem in utilities)
                     {
                         var weaponButton = Instantiate(selectWeaponButtonPrefab, utilityItemsParent);
                         _selectUtilityItemButtons.Add(weaponButton);

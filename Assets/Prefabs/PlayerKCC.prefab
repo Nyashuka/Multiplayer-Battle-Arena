@@ -476,15 +476,18 @@ GameObject:
   - component: {fileID: 5626103267642141300}
   - component: {fileID: 3930603472061822657}
   - component: {fileID: 5501855737433633615}
+  - component: {fileID: 8099439676080870667}
+  - component: {fileID: 628349530710625693}
+  - component: {fileID: -730318171107650257}
+  - component: {fileID: 7998170421048873409}
+  - component: {fileID: 4429941599079911357}
+  - component: {fileID: 7366802892924089786}
   - component: {fileID: 2051969095714818444}
   - component: {fileID: 6112807823872140600}
   - component: {fileID: 6705351624214254461}
-  - component: {fileID: 7678491000565604077}
-  - component: {fileID: 7366802892924089786}
-  - component: {fileID: 8099439676080870667}
-  - component: {fileID: 4429941599079911357}
   - component: {fileID: 4282971843036753778}
   - component: {fileID: 8325408206188637467}
+  - component: {fileID: 7678491000565604077}
   m_Layer: 0
   m_Name: PlayerKCC
   m_TagString: Untagged
@@ -527,14 +530,15 @@ MonoBehaviour:
   Flags: 262145
   NestedObjects: []
   NetworkedBehaviours:
+  - {fileID: 8099439676080870667}
+  - {fileID: 4429941599079911357}
+  - {fileID: 7366802892924089786}
   - {fileID: 2051969095714818444}
   - {fileID: 6112807823872140600}
   - {fileID: 6705351624214254461}
-  - {fileID: 7678491000565604077}
-  - {fileID: 7366802892924089786}
-  - {fileID: 8099439676080870667}
   - {fileID: 4282971843036753778}
   - {fileID: 8325408206188637467}
+  - {fileID: 7678491000565604077}
   ForceRemoteRenderTimeframe: 0
 --- !u!54 &5501855737433633615
 Rigidbody:
@@ -563,6 +567,103 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &8099439676080870667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6485119306318585325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ac8a5d152b44aa7b4c75b4ddda07c54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerMovement: {fileID: 628349530710625693}
+  playerCamera: {fileID: -730318171107650257}
+  playerCombat: {fileID: 7998170421048873409}
+  playerLifecycle: {fileID: 4429941599079911357}
+  mainWeaponHandler: {fileID: 8325408206188637467}
+  utilityItemHandler: {fileID: 4282971843036753778}
+  networkHealth: {fileID: 6705351624214254461}
+  input: {fileID: 6112807823872140600}
+  kcc: {fileID: 2051969095714818444}
+  mainWeaponTransform: {fileID: 6015483494481926346}
+--- !u!114 &628349530710625693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6485119306318585325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34e3b55f8d4a464fb595de7fda02e6e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  kcc: {fileID: 2051969095714818444}
+  movementSettings: {fileID: 11400000, guid: 7ec946cb778dff64d978d53d52e95b77, type: 2}
+--- !u!114 &-730318171107650257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6485119306318585325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb7a45897f764867ba6f5e58ec2ccfac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraHandle: {fileID: 3225618391890603553}
+  gunTarget: {fileID: 6015483494481926346}
+  kcc: {fileID: 2051969095714818444}
+--- !u!114 &7998170421048873409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6485119306318585325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45092c0dc5b04aaf8fd50c6eab123318, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponHandler: {fileID: 8325408206188637467}
+  utilityHandler: {fileID: 4282971843036753778}
+  gunOrigin: {fileID: 6015483494481926346}
+--- !u!114 &4429941599079911357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6485119306318585325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 638d3130a12646f08b815d75cfb1433c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  kcc: {fileID: 2051969095714818444}
+  gunRoot: {fileID: 5420522709548134788}
+  playerVisualRoot: {fileID: 342994751608196818}
+  enemyCanvasHandler: {fileID: 7678491000565604077}
+  networkHealth: {fileID: 6705351624214254461}
+--- !u!114 &7366802892924089786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6485119306318585325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9662b138bc8e43568bca82e6feb8f042, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _Lives: 0
+  initialLives: 3
 --- !u!114 &2051969095714818444
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -626,73 +727,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
---- !u!114 &7678491000565604077
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6485119306318585325}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3dad7d14434481a91ab35b354b5eeee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  networkHealth: {fileID: 6705351624214254461}
-  enemyCanvasPrefab: {fileID: 123717014050820840, guid: b10bdfa519bf5cc4a840d0ebfff3b14d, type: 3}
---- !u!114 &7366802892924089786
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6485119306318585325}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9662b138bc8e43568bca82e6feb8f042, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _Lives: 0
-  initialLives: 3
---- !u!114 &8099439676080870667
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6485119306318585325}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ac8a5d152b44aa7b4c75b4ddda07c54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  networkHealth: {fileID: 6705351624214254461}
-  playerLives: {fileID: 7366802892924089786}
-  mainWeaponHandler: {fileID: 8325408206188637467}
-  utilityItemHandler: {fileID: 4282971843036753778}
-  input: {fileID: 6112807823872140600}
-  kcc: {fileID: 2051969095714818444}
-  playerLifecycle: {fileID: 4429941599079911357}
-  primaryWeaponHolder: {fileID: 6015483494481926346}
-  cameraHandle: {fileID: 3225618391890603553}
-  playerMovementSettings: {fileID: 11400000, guid: 7ec946cb778dff64d978d53d52e95b77, type: 2}
---- !u!114 &4429941599079911357
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6485119306318585325}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 638d3130a12646f08b815d75cfb1433c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  simpleKcc: {fileID: 2051969095714818444}
-  gunRoot: {fileID: 5420522709548134788}
-  playerVisualRoot: {fileID: 342994751608196818}
-  enemyCanvasHandler: {fileID: 7678491000565604077}
-  networkHealth: {fileID: 6705351624214254461}
 --- !u!114 &4282971843036753778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -709,7 +743,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: dbb8e4265e2bfe04e9703746fb58d0c5, type: 2}
   - {fileID: 11400000, guid: cba8399d90f4aae44b7c63a0ae79ea31, type: 2}
   defaultItem: {fileID: 11400000, guid: cba8399d90f4aae44b7c63a0ae79ea31, type: 2}
-  input: {fileID: 6112807823872140600}
 --- !u!114 &8325408206188637467
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -727,6 +760,20 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1d3e431e779e8af48832d79c3f04bf33, type: 2}
   defaultWeapon: {fileID: 11400000, guid: 64226017dbe4f074c88f7579665b40a8, type: 2}
   gunHolder: {fileID: 6015483494481926346}
+--- !u!114 &7678491000565604077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6485119306318585325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3dad7d14434481a91ab35b354b5eeee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  networkHealth: {fileID: 6705351624214254461}
+  enemyCanvasPrefab: {fileID: 123717014050820840, guid: b10bdfa519bf5cc4a840d0ebfff3b14d, type: 3}
 --- !u!1 &6583056719686401792
 GameObject:
   m_ObjectHideFlags: 0

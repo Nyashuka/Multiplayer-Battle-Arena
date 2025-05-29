@@ -1,6 +1,6 @@
 using System;
 
-namespace Core.PlayerComponents
+namespace Core.PlayerComponents.HealthComponent
 {
     public interface IHealthSource
     {

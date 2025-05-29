@@ -2,7 +2,7 @@ using System;
 using Data;
 using UnityEngine;
 
-namespace Core.PlayerComponents
+namespace Core.PlayerComponents.HealthComponent
 {
     public class Health : IDamagable, IHealable, IHealthSource
     {

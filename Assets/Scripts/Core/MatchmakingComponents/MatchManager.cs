@@ -13,7 +13,6 @@ namespace Core.MatchmakingComponents
 {
     public class MatchManager : NetworkBehaviour
     {
-        public static MatchManager Instance { get; private set; }
         private Dictionary<PlayerRef, Player> Players { get; set; }
 
         private MatchScore _matchScore;
@@ -46,16 +45,6 @@ namespace Core.MatchmakingComponents
 
         public override void Spawned()
         {
-            if (Instance)
-            {
-                if (HasStateAuthority)
-                    Runner.Despawn(Object);
-            }
-            else
-            {
-                Instance = this;
-            }
-
             _matchScore = new MatchScore();
             _matchStatistic = new MatchStatistic();
         }
@@ -73,7 +62,7 @@ namespace Core.MatchmakingComponents
                     expiredPlayers.Add(player);
                     if (HasStateAuthority)
                     {
-                        Respawn(player);
+                        RespawnPlayer(player);
                     }
                 }
             }
@@ -84,7 +73,7 @@ namespace Core.MatchmakingComponents
             }
         }
 
-        private void Respawn(PlayerRef playerRef)
+        private void RespawnPlayer(PlayerRef playerRef)
         {
             var spawnPoint = _map.SpawnPoints[Random.Range(0, _map.SpawnPoints.Count)];
             
@@ -118,9 +107,7 @@ namespace Core.MatchmakingComponents
             if (Runner.LocalPlayer == playerRef)
             {
                 GameEventBus.Instance.RaiseEvent(GameEventDefinitions.StartRespawn, 
-                    new StartRespawnEventArgs(respawnAt, 
-                        _weaponDealer.GetWeapons(),
-                        _weaponDealer.GetUtilityItems()));
+                    new StartRespawnEventArgs(respawnAt));
             }
         }
 
@@ -134,11 +121,6 @@ namespace Core.MatchmakingComponents
                 
                 HandlePlayerDeath(playerKilledEventArgs.DeathData.Victim);
             }
-        }
-
-        private void OnRequestWeapon(IEventBusArgs args)
-        {
-            
         }
     }
 }
