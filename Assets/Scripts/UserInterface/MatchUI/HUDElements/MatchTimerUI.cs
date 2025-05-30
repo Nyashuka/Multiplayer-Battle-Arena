@@ -17,14 +17,14 @@ namespace UserInterface.MatchUI.HUDElements
 
         private void OnEnable()
         {
-            GameEventBus.Instance.Subscribe(GameEventDefinitions.MatchStarted, OnMatchStarted, true);
+            GameEventBus.Instance.Subscribe(GameEventDefinitions.MatchTimerChanged, OnMatchTimerChanged, true);
         }
 
-        private void OnMatchStarted(IEventBusArgs e)
+        private void OnMatchTimerChanged(IEventBusArgs args)
         {
-            if (e is MatchStartedEventArgs matchStartedEventArgs)
+            if (args is MatchTimerChangedEventArgs timer)
             {
-                _matchTimer = matchStartedEventArgs.MatchTimer;
+                _matchTimer = timer.MatchTimer;
                 StartCoroutine(Timer());
             }
         }

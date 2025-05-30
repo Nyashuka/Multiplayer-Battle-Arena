@@ -16,10 +16,9 @@ namespace Core.MatchmakingComponents
 {
     public class WeaponDealer : NetworkBehaviour
     {
-        [SerializeField] private UtilityItemsList utilityItemsList;
-
         private Dictionary<PlayerRef, Player> _players = new();
         private WeaponDatabaseService _weaponDatabase;
+        private UtilityItemsDatabaseService _utilityDatabase;
 
         public void Initialize(Dictionary<PlayerRef, Player> players)
         {
@@ -31,6 +30,7 @@ namespace Core.MatchmakingComponents
             GameEventBus.Instance.Subscribe(GameEventDefinitions.WeaponRequested, OnWeaponRequested);
             GameEventBus.Instance.Subscribe(GameEventDefinitions.UtilityItemRequested, OnUtilityItemsRequested);
             _weaponDatabase = ServiceLocator.Instance.GetService<WeaponDatabaseService>();
+            _utilityDatabase = ServiceLocator.Instance.GetService<UtilityItemsDatabaseService>();
         }
 
         private void OnUtilityItemsRequested(IEventBusArgs args)
@@ -50,8 +50,7 @@ namespace Core.MatchmakingComponents
 
             if (!_players.TryGetValue(source, out Player player)) return;
             
-            var utilityItemConfig = utilityItemsList.UtilityItemConfigs
-                .FirstOrDefault(x => x.Id == utilityItemId);
+            var utilityItemConfig = _utilityDatabase.GetById(utilityItemId);
 
             if (utilityItemConfig == null) return;
             

@@ -12,5 +12,7 @@ namespace Services.EventBus
         public const string MatchStarted = "MatchStarted";
         public const string WeaponRequested = "WeaponRequested";
         public const string UtilityItemRequested = "UtilityItemRequested";
+        public const string MatchTimerChanged = "MatchTimerChanged";
+        public const string MatchStateChanged = "MatchStateChanged";
     }
 }

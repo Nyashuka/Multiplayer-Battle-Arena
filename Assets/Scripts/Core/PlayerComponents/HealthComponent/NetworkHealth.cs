@@ -24,6 +24,11 @@ namespace Core.PlayerComponents.HealthComponent
         
         public event Action<DeathData> DeathEvent;
         public event Action<int> HealthChanged;
+
+        public override void Spawned()
+        {
+            Reset();
+        }
         
         public void AddIncomingDamageModifier(IModifier<int> modifier)
         {

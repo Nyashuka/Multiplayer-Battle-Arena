@@ -1,81 +1,74 @@
 using System.Collections.Generic;
-using System.Linq;
 using Core.MatchmakingComponents.ScoreSystem;
 using Core.PlayerComponents;
-using Data;
 using Environment;
 using Fusion;
+using Infrastructure.MatchStates;
 using Services.EventBus;
 using Services.EventBus.EventBusArguments;
 using UnityEngine;
 
 namespace Core.MatchmakingComponents
 {
-    public class MatchManager : NetworkBehaviour
+    public class MatchManager : NetworkBehaviour, IMatchContext
     {
-        private Dictionary<PlayerRef, Player> Players { get; set; }
-
-        private MatchScore _matchScore;
-        private MatchStatistic _matchStatistic;
-        private WeaponDealer _weaponDealer;
+        public Dictionary<PlayerRef, Player> Players { get; private set;  }
         public MatchTimer MatchTimer { get; private set; }
+        public Map Map { get; private set; }
+        public MatchScore MatchScore { get; private set; }
+        public MatchStatistic MatchStatistic { get; private set; }
         
-        private Map _map;
-
-        private readonly float _respawnTime = 10f;
-        private readonly Dictionary<PlayerRef, TickTimer> _respawnTimers = new();
-
-        public void Initialize(Dictionary<PlayerRef, Player> players, MatchTimer matchTimer, Map map, WeaponDealer weaponDealer)
-        {
-            Players = players;
-            MatchTimer = matchTimer;
-            _map = map;
-            
-            _weaponDealer = weaponDealer;
-            _weaponDealer.Initialize(players);
-            
-            if (HasStateAuthority)
-            {
-                MatchTimer.StartMatchTimer();
-            }
-            
-            GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerDeath, OnPlayerDeath);
-            GameEventBus.Instance.RaiseEvent(GameEventDefinitions.MatchStarted, new MatchStartedEventArgs(Runner, MatchTimer),true);
-        }
-
+        private WeaponDealer _weaponDealer;
+        private PlayersRespawner _playersRespawner;
+        
+        private IMatchState CurrentState { get; set; }
+        
         public override void Spawned()
         {
-            _matchScore = new MatchScore();
-            _matchStatistic = new MatchStatistic();
+            MatchScore = new MatchScore();
+            MatchStatistic = new MatchStatistic();
+            _playersRespawner = new PlayersRespawner(this);
         }
 
         public override void FixedUpdateNetwork()
         {
             if(!HasStateAuthority) return;
             
-            var expiredPlayers = new List<PlayerRef>();
-
-            foreach (var (player, timer) in _respawnTimers)
-            {
-                if (timer.Expired(Runner))
-                {
-                    expiredPlayers.Add(player);
-                    if (HasStateAuthority)
-                    {
-                        RespawnPlayer(player);
-                    }
-                }
-            }
-
-            foreach (var player in expiredPlayers)
-            {
-                _respawnTimers.Remove(player);
-            }
+            CurrentState?.Update();
+            _playersRespawner?.Update(Runner);
         }
-
-        private void RespawnPlayer(PlayerRef playerRef)
+        
+        public void Initialize(Dictionary<PlayerRef, Player> players, MatchTimer matchTimer, Map map, WeaponDealer weaponDealer)
         {
-            var spawnPoint = _map.SpawnPoints[Random.Range(0, _map.SpawnPoints.Count)];
+            Players = players;
+            MatchTimer = matchTimer;
+            Map = map;
+                 
+            _weaponDealer = weaponDealer;
+            _weaponDealer.Initialize(players);
+                 
+            if (HasStateAuthority)
+            {
+                SetState(new MatchWarmupState(this));
+            }
+                 
+            GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerDeath, OnPlayerDeath);
+        }   
+        
+        public void SetState(IMatchState newState)
+        {
+            CurrentState?.Exit();
+            CurrentState = newState;
+            CurrentState.Enter();
+            
+            Rpc_OnStateChanged(CurrentState.ToEnum());
+        }
+        
+        public void RespawnPlayer(PlayerRef playerRef)
+        {
+            if(!HasStateAuthority) return;
+            
+            var spawnPoint = Map.SpawnPoints[Random.Range(0, Map.SpawnPoints.Count)];
             
             Players[playerRef].Respawn(spawnPoint.transform);
             Rpc_PlayerRespawned(playerRef);
@@ -92,22 +85,27 @@ namespace Core.MatchmakingComponents
 
         private void HandlePlayerDeath(PlayerRef playerRef)
         {
-            if (!_respawnTimers.ContainsKey(playerRef))
-            {
-                _respawnTimers.Add(playerRef, TickTimer.CreateFromSeconds(Runner, _respawnTime));
-            }
-
-            var respawnAt = Runner.SimulationTime + _respawnTime;
+            if(!HasStateAuthority) return;
+            
+            MatchStatistic.AddDeath(playerRef);
+            
+            _playersRespawner.AddPlayerToRespawn(playerRef, Runner);
+            var respawnAt = _playersRespawner.GetRespawnAt(playerRef, Runner);
+            Rpc_StartRespawn(playerRef, respawnAt);
             
             GameEventBus.Instance.RaiseEvent(
                 GameEventDefinitions.StatisticsChanged, 
-                new StatisticsChangedEventArgs(Runner.LocalPlayer, _matchStatistic)
+                new StatisticsChangedEventArgs(Runner.LocalPlayer, MatchStatistic)
             );
-            
+        }
+        
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void Rpc_StartRespawn(PlayerRef playerRef, float respawnAt)
+        {
             if (Runner.LocalPlayer == playerRef)
             {
                 GameEventBus.Instance.RaiseEvent(GameEventDefinitions.StartRespawn, 
-                    new StartRespawnEventArgs(respawnAt));
+                    new StartRespawnEventArgs(respawnAt, Runner));
             }
         }
 
@@ -115,12 +113,25 @@ namespace Core.MatchmakingComponents
         {
             if (args is PlayerDeathEventArgs playerKilledEventArgs)
             {
-                _matchStatistic.AddKill(playerKilledEventArgs.DeathData.Killer);
-                _matchStatistic.AddDeath(playerKilledEventArgs.DeathData.Victim);
-                _matchScore.AddScore(playerKilledEventArgs.DeathData.Killer, 1);
-                
-                HandlePlayerDeath(playerKilledEventArgs.DeathData.Victim);
+                CurrentState?.OnPlayerDeath(playerKilledEventArgs.DeathData.Victim, playerKilledEventArgs.DeathData.Killer);
             }
+        }
+
+        public void ProcessDeath(PlayerRef victim, PlayerRef killer)
+        {
+            if(!HasStateAuthority) return;
+            
+            MatchStatistic.AddKill(killer);
+            MatchScore.AddScore(killer, 1);
+                
+            HandlePlayerDeath(victim);
+        }
+
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void Rpc_OnStateChanged(MatchStateEnum matchStateEnum)
+        {
+            GameEventBus.Instance.RaiseEvent(GameEventDefinitions.MatchStateChanged,
+                new MatchStateChangedEventArgs(matchStateEnum));
         }
     }
 }

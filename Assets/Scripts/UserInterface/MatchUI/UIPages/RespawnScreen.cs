@@ -26,28 +26,19 @@ namespace UserInterface.MatchUI.UIPages
 
         private void OnEnable()
         {
-            GameEventBus.Instance.Subscribe(GameEventDefinitions.MatchStarted, OnMatchStarted);
             GameEventBus.Instance.Subscribe(GameEventDefinitions.StartRespawn, OnStartRespawn);
         }
         
         private void OnDisable()
         {
-            GameEventBus.Instance.Unsubscribe(GameEventDefinitions.MatchStarted, OnMatchStarted);
             GameEventBus.Instance.Unsubscribe(GameEventDefinitions.StartRespawn, OnStartRespawn);
-        }
-
-        private void OnMatchStarted(IEventBusArgs e)
-        {
-            if (e is MatchStartedEventArgs matchStartedEventArgs)
-            {
-                _networkRunner = matchStartedEventArgs.NetworkRunner;
-            }
         }
 
         private void OnStartRespawn(IEventBusArgs args)
         {
             if (args is StartRespawnEventArgs startRespawnEventArgs)
             {
+                _networkRunner = startRespawnEventArgs.Runner;
                 SetRespawnTime(startRespawnEventArgs.RespawnAt);
 
                 if (_selectWeaponButtons.Count == 0)

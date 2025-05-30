@@ -66,7 +66,6 @@ namespace Core.PlayerComponents
 				playerCamera.Tick();			
 		}
 		
-		
 		public void SetWeapon(WeaponBase newWeapon)
 		{
 			if (!HasStateAuthority) return;
@@ -81,7 +80,6 @@ namespace Core.PlayerComponents
 			utilityItemHandler.SetItem(id);
 		}
 	
-
 		private void OnDeath(DeathData deathData)
 		{
 			if(!HasStateAuthority) return;

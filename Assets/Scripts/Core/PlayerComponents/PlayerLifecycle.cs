@@ -57,7 +57,6 @@ namespace Core.PlayerComponents
             HideLocalVisual();
         }
 
-		
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         private void Rpc_RespawnPlayer()
         {

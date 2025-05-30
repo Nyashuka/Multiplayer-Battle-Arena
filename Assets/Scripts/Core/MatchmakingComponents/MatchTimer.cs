@@ -1,5 +1,7 @@
 using System;
 using Fusion;
+using Services.EventBus;
+using Services.EventBus.EventBusArguments;
 using UnityEngine;
 
 namespace Core.MatchmakingComponents
@@ -33,12 +35,22 @@ namespace Core.MatchmakingComponents
             }
         }
 
-        public void StartMatchTimer()
+        public void StartMatchTimer(float durationSeconds)
         {
             if (!HasStateAuthority) return;
             
-            NetworkTimer = TickTimer.CreateFromSeconds(Runner, matchDurationSeconds);
+            NetworkTimer = TickTimer.CreateFromSeconds(Runner, durationSeconds);
             IsRunning = true;
+            
+            Rpc_MatchTimerChanged();
+        }
+
+
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        public void Rpc_MatchTimerChanged()
+        {
+            GameEventBus.Instance.RaiseEvent(GameEventDefinitions.MatchTimerChanged, 
+                new MatchTimerChangedEventArgs(Runner, this), true);
         }
 
         public float? GetRemainingTime()
