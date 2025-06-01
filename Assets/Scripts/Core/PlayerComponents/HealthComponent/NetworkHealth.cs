@@ -11,15 +11,18 @@ namespace Core.PlayerComponents.HealthComponent
     public class NetworkHealth : NetworkBehaviour, IDamagable, IHealable, IHealthSource
     {
         [SerializeField] private int maxHealth = 100;
+        [SerializeField] private int maxlives = 3;
         
         [Networked] public PlayerRef Owner { get; set; }
         [Networked] private PlayerRef LastAttacker { get; set; }
         [Networked] private int NetworkHealthValue { get; set; }
+        [Networked] private int NetworkLivesValue { get; set; }
 
         private Health Health { get; set; }
         private ModifierStack<int> IncomingDamageModifiers { get; } = new();
         public bool IsAlive => NetworkHealthValue > 0;
         public int CurrentHealth => NetworkHealthValue;
+        public int CurrentLives => NetworkLivesValue;
         public int MaxHealth => Health.MaxHealth;
         
         public event Action<DeathData> DeathEvent;
@@ -27,9 +30,17 @@ namespace Core.PlayerComponents.HealthComponent
 
         public override void Spawned()
         {
-            Reset();
+            ResetHealth();
+            ResetLives();
         }
-        
+
+        public void ResetLives()
+        {
+            if(!HasStateAuthority) return;
+            
+            NetworkLivesValue = maxlives;
+        }
+
         public void AddIncomingDamageModifier(IModifier<int> modifier)
         {
             IncomingDamageModifiers.AddModifier(modifier);
@@ -71,6 +82,8 @@ namespace Core.PlayerComponents.HealthComponent
         {
             if(!HasStateAuthority) return;
             
+            NetworkLivesValue--;
+            Debug.Log(Owner + "  Lives: " + NetworkLivesValue);
             Rpc_NotifyDeathEvent();
         }
 
@@ -93,9 +106,10 @@ namespace Core.PlayerComponents.HealthComponent
             Health.Heal(amount);
         }
 
-        public void Reset()
+        public void ResetHealth()
         {
             Health = new Health(maxHealth);
+            
             OnHealthChanged(Health.CurrentHealth);
 
             Health.HealthChanged += OnHealthChanged;

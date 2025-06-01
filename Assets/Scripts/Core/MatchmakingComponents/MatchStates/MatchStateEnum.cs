@@ -1,4 +1,4 @@
-namespace Infrastructure.MatchStates
+namespace Core.MatchmakingComponents.MatchStates
 {
     public enum MatchStateEnum
     {

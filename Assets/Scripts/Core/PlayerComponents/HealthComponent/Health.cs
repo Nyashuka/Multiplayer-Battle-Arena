@@ -1,5 +1,6 @@
 using System;
 using Data;
+using Fusion;
 using UnityEngine;
 
 namespace Core.PlayerComponents.HealthComponent
@@ -37,6 +38,8 @@ namespace Core.PlayerComponents.HealthComponent
 
             SetHealth(Mathf.Max(0, CurrentHealth - data.Damage));
         }
+
+        public PlayerRef Owner { get; set; }
 
         public void Heal(int amount)
         {

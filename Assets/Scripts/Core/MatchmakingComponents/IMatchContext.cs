@@ -11,11 +11,14 @@ namespace Core.MatchmakingComponents
     {
         MatchTimer MatchTimer { get; }
         Dictionary<PlayerRef, Player> Players { get; }
+        List<PlayerRef> AlivePlayers { get; }
         Map Map { get; }
         MatchScore MatchScore { get; }
         MatchStatistic MatchStatistic { get; }
 
         void SetState(IMatchState newState);
         void RespawnPlayer(PlayerRef playerRef);
+        void ProcessDeath(PlayerRef victim, PlayerRef killer);
+        void SendAllStatistic();
     }
 }

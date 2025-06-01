@@ -18,7 +18,7 @@ namespace UserInterface.MatchUI
             return uiPages.OfType<T>().FirstOrDefault();
         }
         
-        public void SwitchPage<T>() where T : UIPage
+        public T SwitchPage<T>() where T : UIPage
         {
             if(_currentPage != null)
                 _currentPage.Close();
@@ -28,6 +28,8 @@ namespace UserInterface.MatchUI
             
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+
+            return (T)_currentPage;
         }
 
         public void ClosePage()

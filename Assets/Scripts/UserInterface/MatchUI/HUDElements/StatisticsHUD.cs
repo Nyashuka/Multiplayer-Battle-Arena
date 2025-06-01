@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace UserInterface.MatchUI.HUDElements
 {
-    public class Statistics : HUDElement
+    public class StatisticsHUD : HUDElement
     {
         [SerializeField] private TMP_Text statisticsText;
         
@@ -17,26 +17,22 @@ namespace UserInterface.MatchUI.HUDElements
         
         private void OnStatisticsChanged(IEventBusArgs args)
         {
-            if (args is StatisticsChangedEventArgs statisticsChangedEvent)
+            if (args is PlayerStatsChangedEventArgs statisticsChangedEvent)
             {
-                var playerStatistic = statisticsChangedEvent
-                    .MatchStatistic.GetPlayerStatistic(statisticsChangedEvent.Owner);
+                var playerStatistic = statisticsChangedEvent.PlayerStatistic;
                         
-                if (playerStatistic != null)
-                {
-                    UpdateStatistic(playerStatistic);
-                }
+                UpdateStatistic(playerStatistic);
             }
         }
                 
         private void OnEnable()
         {
-            GameEventBus.Instance.Subscribe(GameEventDefinitions.StatisticsChanged, OnStatisticsChanged);
+            GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerStatsChanged, OnStatisticsChanged);
         }
                 
         private void OnDisable()
         {
-            GameEventBus.Instance.Unsubscribe(GameEventDefinitions.StatisticsChanged, OnStatisticsChanged);
+            GameEventBus.Instance.Unsubscribe(GameEventDefinitions.PlayerStatsChanged, OnStatisticsChanged);
         }
     }
 }

@@ -26,13 +26,15 @@ namespace Core.PlayerComponents
 		[Header("Player Components")] 
 		[SerializeField] private SimpleKCC kcc;
 		[SerializeField] private Transform mainWeaponTransform;
+		[SerializeField] private GameObject[] playerVisualParts;
+		[SerializeField] private LayerMask playerVisualLayer;
 
 		public NetworkHealth NetworkHealth => networkHealth;
 		public Transform MainWeaponTransform => mainWeaponTransform;
 		
 		public override void Spawned()
 		{
-			networkHealth.Reset();
+			networkHealth.ResetHealth();
 			if (HasStateAuthority)
 			{
 				networkHealth.Owner = Object.InputAuthority;
@@ -43,12 +45,25 @@ namespace Core.PlayerComponents
 			playerMovement.Init(Runner, input);
 			playerCamera.Init(input);
 
+			LocalPlayerSetup();
+		}
+
+		private void LocalPlayerSetup()
+		{
 			if (Runner.LocalPlayer == Object.InputAuthority)
 			{
 				Debug.Log(Object.InputAuthority);
 				GameEventBus.Instance.RaiseEvent(GameEventDefinitions.PlayerSpawned, 
 					new PlayerSpawnedEventArgs(this), 
 					true);
+				
+				int layerIndex = Mathf.RoundToInt(Mathf.Log(playerVisualLayer.value, 2));
+				foreach (GameObject obj in playerVisualParts)
+				{
+					obj.layer = layerIndex;
+				}
+				
+				kcc.Collider.gameObject.layer = LayerMask.NameToLayer("Player");
 			}
 		}
 		

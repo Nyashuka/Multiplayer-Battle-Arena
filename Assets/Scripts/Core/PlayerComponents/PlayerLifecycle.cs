@@ -30,7 +30,7 @@ namespace Core.PlayerComponents
             
             kcc.SetPosition(respawnPosition.position);
             kcc.SetLookRotation(respawnPosition.rotation);
-            networkHealth.Reset();
+            networkHealth.ResetHealth();
             
             Rpc_RespawnPlayer();
         }

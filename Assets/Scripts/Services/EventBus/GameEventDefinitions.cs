@@ -1,18 +1,21 @@
+using Unity.VisualScripting;
+
 namespace Services.EventBus
 {
     public static class GameEventDefinitions
     {
-        public const string PlayerDeath = "PlayerDeath";
-        public const string StatisticsChanged = "StatisticsChanged";
-        public const string StartMatchSearchRequested = "StartMatchSearchRequested";
-        public const string StopMatchSearchRequested = "StopMatchSearchRequested";
-        public const string StartRespawn = "StartRespawn";
-        public const string PlayerRespawned = "PlayerRespawned";
-        public const string PlayerSpawned = "PlayerSpawned";
-        public const string MatchStarted = "MatchStarted";
-        public const string WeaponRequested = "WeaponRequested";
-        public const string UtilityItemRequested = "UtilityItemRequested";
-        public const string MatchTimerChanged = "MatchTimerChanged";
-        public const string MatchStateChanged = "MatchStateChanged";
+        public static string PlayerDeath => "PlayerDeath";
+        public static string PlayerStatsChanged => "PlayerStatsChanged";
+        public static string StartMatchSearchRequested => "StartMatchSearchRequested";
+        public static string StopMatchSearchRequested => "StopMatchSearchRequested";
+        public static string StartRespawn => "StartRespawn";
+        public static string PlayerRespawned => "PlayerRespawned";
+        public static string PlayerSpawned => "PlayerSpawned";
+        public static string MatchStarted => "MatchStarted";
+        public static string WeaponRequested => "WeaponRequested";
+        public static string UtilityItemRequested => "UtilityItemRequested";
+        public static string MatchTimerChanged => "MatchTimerChanged";
+        public static string MatchStateChanged => "MatchStateChanged";
+        public static string ShowLeaderboard => "ShowLeaderboard";
     }
 }

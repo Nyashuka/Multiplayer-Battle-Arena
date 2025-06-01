@@ -11,9 +11,6 @@ namespace Core.MatchmakingComponents
         [Networked]
         private TickTimer NetworkTimer { get; set; }
 
-        [SerializeField]
-        private float matchDurationSeconds = 180f;
-
         public event Action<float> TimerUpdatedEvent;
         public event Action TimerEndedEvent;
 
@@ -21,7 +18,7 @@ namespace Core.MatchmakingComponents
         
         public override void FixedUpdateNetwork()
         {
-            if (!HasStateAuthority && !IsRunning) return;
+            if (!HasStateAuthority || !IsRunning) return;
 
             if (NetworkTimer.Expired(Runner))
             {
@@ -47,7 +44,7 @@ namespace Core.MatchmakingComponents
 
 
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-        public void Rpc_MatchTimerChanged()
+        private void Rpc_MatchTimerChanged()
         {
             GameEventBus.Instance.RaiseEvent(GameEventDefinitions.MatchTimerChanged, 
                 new MatchTimerChangedEventArgs(Runner, this), true);

@@ -236,7 +236,7 @@ GameObject:
   - component: {fileID: 638853776564668311}
   - component: {fileID: 7428350125228336260}
   m_Layer: 0
-  m_Name: Sphere
+  m_Name: Left_eye_apple
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -481,7 +481,6 @@ GameObject:
   - component: {fileID: -730318171107650257}
   - component: {fileID: 7998170421048873409}
   - component: {fileID: 4429941599079911357}
-  - component: {fileID: 7366802892924089786}
   - component: {fileID: 2051969095714818444}
   - component: {fileID: 6112807823872140600}
   - component: {fileID: 6705351624214254461}
@@ -532,7 +531,6 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 8099439676080870667}
   - {fileID: 4429941599079911357}
-  - {fileID: 7366802892924089786}
   - {fileID: 2051969095714818444}
   - {fileID: 6112807823872140600}
   - {fileID: 6705351624214254461}
@@ -589,6 +587,14 @@ MonoBehaviour:
   input: {fileID: 6112807823872140600}
   kcc: {fileID: 2051969095714818444}
   mainWeaponTransform: {fileID: 6015483494481926346}
+  playerVisualParts:
+  - {fileID: 3487692347007355975}
+  - {fileID: 6583056719686401792}
+  - {fileID: 6343099237312407510}
+  - {fileID: 308835071339290387}
+  playerVisualLayer:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!114 &628349530710625693
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -618,6 +624,7 @@ MonoBehaviour:
   cameraHandle: {fileID: 3225618391890603553}
   gunTarget: {fileID: 6015483494481926346}
   kcc: {fileID: 2051969095714818444}
+  minDistance: 2
 --- !u!114 &7998170421048873409
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -650,20 +657,6 @@ MonoBehaviour:
   playerVisualRoot: {fileID: 342994751608196818}
   enemyCanvasHandler: {fileID: 7678491000565604077}
   networkHealth: {fileID: 6705351624214254461}
---- !u!114 &7366802892924089786
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6485119306318585325}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9662b138bc8e43568bca82e6feb8f042, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _Lives: 0
-  initialLives: 3
 --- !u!114 &2051969095714818444
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -727,6 +720,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
+  maxlives: 1
 --- !u!114 &4282971843036753778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -787,7 +781,7 @@ GameObject:
   - component: {fileID: 7464971472692789261}
   - component: {fileID: 5090081632242044656}
   m_Layer: 0
-  m_Name: Sphere
+  m_Name: Right_eye_apple
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -904,7 +898,7 @@ Transform:
   m_GameObject: {fileID: 8310859302153340165}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.54, z: 0.433}
+  m_LocalPosition: {x: 0, y: 1.499, z: 0.517}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -1,7 +1,9 @@
 
+using Fusion;
+
 namespace Core.MatchmakingComponents.ScoreSystem
 {
-    public class PlayerStatistic
+    public struct PlayerStatistic : INetworkStruct
     {
         public int Kills { get; set; }
         public int Deaths { get; set; }

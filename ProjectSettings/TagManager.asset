@@ -14,7 +14,7 @@ TagManager:
   - Player
   - DeadPlayer
   - Projectile
-  - 
+  - LocalPlayerVisual
   - 
   - 
   - 

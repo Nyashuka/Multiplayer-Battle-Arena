@@ -1,4 +1,5 @@
 using System;
+using Core.MatchmakingComponents.MatchStates;
 using Services.EventBus;
 using Services.EventBus.EventBusArguments;
 using UnityEngine;
@@ -33,6 +34,20 @@ namespace UserInterface.MatchUI
             GameEventBus.Instance.Subscribe(GameEventDefinitions.MatchStateChanged, OnMatchStateChanged);
             GameEventBus.Instance.Subscribe(GameEventDefinitions.StartRespawn, OnStartRespawn);
             GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerRespawned, OnPlayerRespawned);
+            GameEventBus.Instance.Subscribe(GameEventDefinitions.ShowLeaderboard, OnShowLeaderboard);
+        }
+
+        private void OnShowLeaderboard(IEventBusArgs e)
+        {
+            Debug.Log("LeaderBoard event");
+            if (e is ShowLeaderboardEventArgs leaderboardEventArgs)
+            {
+                Debug.Log("Leaderboard");
+                _gameHud.HideAll();
+                var page = pageSwitcher.SwitchPage<ScoreBoard>();
+                page.Initialize(leaderboardEventArgs.LeaderboardData);
+            }
+            
         }
 
         private void OnPlayerRespawned(IEventBusArgs e)
@@ -49,7 +64,13 @@ namespace UserInterface.MatchUI
 
         private void OnMatchStateChanged(IEventBusArgs e)
         {
-            pageSwitcher.ClosePage();
+            if (e is MatchStateChangedEventArgs matchStateChangedEventArgs)
+            {
+                if (matchStateChangedEventArgs.State != MatchStateEnum.Ending)
+                {
+                    pageSwitcher.ClosePage();
+                }
+            }
         }
 
         public void SetHud(GameHUD gameHud)

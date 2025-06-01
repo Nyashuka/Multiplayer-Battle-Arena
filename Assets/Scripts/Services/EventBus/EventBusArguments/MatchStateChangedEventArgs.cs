@@ -1,3 +1,4 @@
+using Core.MatchmakingComponents.MatchStates;
 using Infrastructure.MatchStates;
 
 namespace Services.EventBus.EventBusArguments

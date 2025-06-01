@@ -33,7 +33,7 @@ namespace Core.Projectiles.SmoothedProjectile
             if (Runner.GetPhysicsScene().Raycast(currentPosition, _projectileParams.Direction, out var hit, displacement.magnitude))
             {
                 IDamagable damagable = null;
-
+                
                 if (hit.collider.TryGetComponent<IDamagable>(out var directHit))
                 {
                     damagable = directHit;
@@ -43,7 +43,7 @@ namespace Core.Projectiles.SmoothedProjectile
                     damagable = rootHit;
                 }
 
-                if (damagable != null)
+                if (damagable != null && damagable.Owner != _projectileParams.Owner)
                 {
                     damagable.TakeDamage(new DamageData()
                     {
@@ -52,10 +52,13 @@ namespace Core.Projectiles.SmoothedProjectile
                     });
                     Debug.Log("Damaged");
                 }
-                
-                weapon.RPC_DestroyDummyProjectile(_projectileParams.Id, hit.point);
-                Runner.Despawn(Object);
-                return;
+
+                if (damagable == null || damagable.Owner != _projectileParams.Owner)
+                {
+                    weapon.RPC_DestroyDummyProjectile(_projectileParams.Id, hit.point);
+                    Runner.Despawn(Object);
+                    return;
+                }
             }
 
             transform.position = nextPosition;
