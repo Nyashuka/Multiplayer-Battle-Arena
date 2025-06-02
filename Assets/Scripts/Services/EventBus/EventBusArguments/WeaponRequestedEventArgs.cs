@@ -1,5 +1,3 @@
-using Fusion;
-
 namespace Services.EventBus.EventBusArguments
 {
     public class WeaponRequestedEventArgs : IEventBusArgs

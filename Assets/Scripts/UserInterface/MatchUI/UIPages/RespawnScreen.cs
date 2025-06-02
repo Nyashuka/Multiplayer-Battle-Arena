@@ -26,12 +26,12 @@ namespace UserInterface.MatchUI.UIPages
 
         private void OnEnable()
         {
-            GameEventBus.Instance.Subscribe(GameEventDefinitions.StartRespawn, OnStartRespawn);
+            GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerRespawnStarted, OnStartRespawn);
         }
         
         private void OnDisable()
         {
-            GameEventBus.Instance.Unsubscribe(GameEventDefinitions.StartRespawn, OnStartRespawn);
+            GameEventBus.Instance.Unsubscribe(GameEventDefinitions.PlayerRespawnStarted, OnStartRespawn);
         }
 
         private void OnStartRespawn(IEventBusArgs args)

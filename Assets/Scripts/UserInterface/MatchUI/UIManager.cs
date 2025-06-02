@@ -32,9 +32,9 @@ namespace UserInterface.MatchUI
         public void OnEnable()
         {
             GameEventBus.Instance.Subscribe(GameEventDefinitions.MatchStateChanged, OnMatchStateChanged);
-            GameEventBus.Instance.Subscribe(GameEventDefinitions.StartRespawn, OnStartRespawn);
+            GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerRespawnStarted, OnStartRespawn);
             GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerRespawned, OnPlayerRespawned);
-            GameEventBus.Instance.Subscribe(GameEventDefinitions.ShowLeaderboard, OnShowLeaderboard);
+            GameEventBus.Instance.Subscribe(GameEventDefinitions.LeaderboardDataAvailable, OnShowLeaderboard);
         }
 
         private void OnShowLeaderboard(IEventBusArgs e)

@@ -1,7 +1,4 @@
-using System.Collections.Generic;
 using Fusion;
-using ScriptableObjects.AdditionWeapons;
-using ScriptableObjects.Weapons;
 
 namespace Services.EventBus.EventBusArguments
 {

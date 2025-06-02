@@ -27,12 +27,12 @@ namespace UserInterface.MatchUI.HUDElements
                 
         private void OnEnable()
         {
-            GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerStatsChanged, OnStatisticsChanged);
+            GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerMatchStatsChanged, OnStatisticsChanged);
         }
                 
         private void OnDisable()
         {
-            GameEventBus.Instance.Unsubscribe(GameEventDefinitions.PlayerStatsChanged, OnStatisticsChanged);
+            GameEventBus.Instance.Unsubscribe(GameEventDefinitions.PlayerMatchStatsChanged, OnStatisticsChanged);
         }
     }
 }

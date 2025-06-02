@@ -101,7 +101,7 @@ namespace Core.MatchmakingComponents
             if (Runner.LocalPlayer == player)
             {
                 GameEventBus.Instance.RaiseEvent(
-                    GameEventDefinitions.PlayerStatsChanged,
+                    GameEventDefinitions.PlayerMatchStatsChanged,
                     new PlayerStatsChangedEventArgs(player, playerStatistic)
                 );
             }
@@ -142,7 +142,7 @@ namespace Core.MatchmakingComponents
         {
             if (Runner.LocalPlayer == playerRef)
             {
-                GameEventBus.Instance.RaiseEvent(GameEventDefinitions.StartRespawn, 
+                GameEventBus.Instance.RaiseEvent(GameEventDefinitions.PlayerRespawnStarted, 
                     new StartRespawnEventArgs(respawnAt, Runner));
             }
         }
@@ -181,7 +181,7 @@ namespace Core.MatchmakingComponents
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         private void Rpc_SendAllStatistics(NetworkStatsData[] statsData)
         {
-            GameEventBus.Instance.RaiseEvent(GameEventDefinitions.ShowLeaderboard, new ShowLeaderboardEventArgs(statsData));
+            GameEventBus.Instance.RaiseEvent(GameEventDefinitions.LeaderboardDataAvailable, new ShowLeaderboardEventArgs(statsData));
             foreach (var stat in statsData) 
             {
                 Debug.Log($"{stat.Owner} - Kills: {stat.Kills}, Deaths: {stat.Deaths}");

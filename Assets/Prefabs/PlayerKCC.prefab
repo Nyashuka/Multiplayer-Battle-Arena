@@ -477,13 +477,13 @@ GameObject:
   - component: {fileID: 3930603472061822657}
   - component: {fileID: 5501855737433633615}
   - component: {fileID: 8099439676080870667}
+  - component: {fileID: 6705351624214254461}
+  - component: {fileID: 4429941599079911357}
   - component: {fileID: 628349530710625693}
   - component: {fileID: -730318171107650257}
   - component: {fileID: 7998170421048873409}
-  - component: {fileID: 4429941599079911357}
   - component: {fileID: 2051969095714818444}
   - component: {fileID: 6112807823872140600}
-  - component: {fileID: 6705351624214254461}
   - component: {fileID: 4282971843036753778}
   - component: {fileID: 8325408206188637467}
   - component: {fileID: 7678491000565604077}
@@ -530,10 +530,10 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 8099439676080870667}
+  - {fileID: 6705351624214254461}
   - {fileID: 4429941599079911357}
   - {fileID: 2051969095714818444}
   - {fileID: 6112807823872140600}
-  - {fileID: 6705351624214254461}
   - {fileID: 4282971843036753778}
   - {fileID: 8325408206188637467}
   - {fileID: 7678491000565604077}
@@ -595,6 +595,37 @@ MonoBehaviour:
   playerVisualLayer:
     serializedVersion: 2
     m_Bits: 512
+--- !u!114 &6705351624214254461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6485119306318585325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f67b39e18874d2fa09500b65f72542e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  maxlives: 2
+--- !u!114 &4429941599079911357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6485119306318585325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 638d3130a12646f08b815d75cfb1433c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  kcc: {fileID: 2051969095714818444}
+  gunRoot: {fileID: 5420522709548134788}
+  playerVisualRoot: {fileID: 342994751608196818}
+  enemyCanvasHandler: {fileID: 7678491000565604077}
+  networkHealth: {fileID: 6705351624214254461}
 --- !u!114 &628349530710625693
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -640,23 +671,6 @@ MonoBehaviour:
   weaponHandler: {fileID: 8325408206188637467}
   utilityHandler: {fileID: 4282971843036753778}
   gunOrigin: {fileID: 6015483494481926346}
---- !u!114 &4429941599079911357
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6485119306318585325}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 638d3130a12646f08b815d75cfb1433c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  kcc: {fileID: 2051969095714818444}
-  gunRoot: {fileID: 5420522709548134788}
-  playerVisualRoot: {fileID: 342994751608196818}
-  enemyCanvasHandler: {fileID: 7678491000565604077}
-  networkHealth: {fileID: 6705351624214254461}
 --- !u!114 &2051969095714818444
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -707,20 +721,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _lookSensitivity: {x: 0.1, y: 0.1}
---- !u!114 &6705351624214254461
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6485119306318585325}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f67b39e18874d2fa09500b65f72542e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  maxlives: 1
 --- !u!114 &4282971843036753778
 MonoBehaviour:
   m_ObjectHideFlags: 0

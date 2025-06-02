@@ -17,11 +17,13 @@ namespace ScriptableObjects
         [SerializeField] public NetworkPrefabRef matchManagerPrefab;
         [SerializeField] private NetworkPrefabRef weaponDealerPrefab;
         [SerializeField] private WeaponConfigBase defaultWeaponConfig;
+        [SerializeField] private UtilityItemConfig defaultUtilityItemConfig;
         [SerializeField] private NetworkPrefabRef matchTimerPrefab;
         [SerializeField] private WeaponList weaponList;
         [SerializeField] private UtilityItemsList utilityItemList;
 
         public WeaponConfigBase DefaultWeaponConfig => defaultWeaponConfig;
+        public UtilityItemConfig DefaultUtilityItemConfig => defaultUtilityItemConfig;
         public NetworkPrefabRef MatchTimerPrefab => matchTimerPrefab;
         
         [Header("UI Prefabs")]

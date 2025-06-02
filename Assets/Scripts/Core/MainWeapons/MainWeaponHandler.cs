@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using Core.MainWeapons.Abstract;
 using Fusion;
 using ScriptableObjects.Weapons;
+using Services.EventBus;
+using Services.EventBus.EventBusArguments;
 using UnityEngine;
 
 namespace Core.MainWeapons
@@ -42,17 +44,22 @@ namespace Core.MainWeapons
             
             EquippedWeapon = weapon;
             EquippedWeaponId = EquippedWeapon.Config.ID;
-            Rpc_SetupPrimaryGunVisual();
+            Rpc_LocalSetup();
         }
         
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-        private void Rpc_SetupPrimaryGunVisual()
+        private void Rpc_LocalSetup()
         {
             EquippedWeapon.Initialize(arsenal.Find(x => x.ID == EquippedWeaponId));
             EquippedWeapon.transform.SetParent(gunHolder);
             EquippedWeapon.transform.localPosition = new Vector3(0, 0, 0.5f);
             EquippedWeapon.transform.localRotation = Quaternion.identity;
             
+            if (Runner.LocalPlayer == Object.InputAuthority)
+            {
+                GameEventBus.Instance.RaiseEvent(GameEventDefinitions.WeaponReceived, 
+                    new WeaponReceivedEventArgs(EquippedWeaponId), true);
+            }
         }
     }
 }

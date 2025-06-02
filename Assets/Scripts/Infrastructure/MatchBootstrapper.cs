@@ -76,7 +76,15 @@ namespace Infrastructure
                 Players.Add(activePlayer, player);
                 
                 SetupDefaultPlayerWeapon(activePlayer, player);
+                SetupDefaultUtilityItem(player);
             }
+        }
+
+        private void SetupDefaultUtilityItem(Player player)
+        {
+            if(!HasStateAuthority) return;
+            
+            player.SetUtilityItem(matchBootstrapperConfig.DefaultUtilityItemConfig.Id);
         }
 
         private void SetupDefaultPlayerWeapon(PlayerRef playerRef, Player player)

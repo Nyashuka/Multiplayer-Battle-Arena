@@ -21,6 +21,7 @@ MonoBehaviour:
   weaponDealerPrefab:
     RawGuidValue: ae0cff77b19a65a4e94da6d13d693a35
   defaultWeaponConfig: {fileID: 11400000, guid: 64226017dbe4f074c88f7579665b40a8, type: 2}
+  defaultUtilityItemConfig: {fileID: 11400000, guid: cba8399d90f4aae44b7c63a0ae79ea31, type: 2}
   matchTimerPrefab:
     RawGuidValue: 65b1be76192167c4f9c5788b9ba6898f
   weaponList: {fileID: 11400000, guid: ce59aef8ef5f20844b5364507b402808, type: 2}

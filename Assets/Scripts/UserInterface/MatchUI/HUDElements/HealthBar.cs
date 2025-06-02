@@ -14,7 +14,7 @@ namespace UserInterface.MatchUI.HUDElements
 
         public void OnEnable()
         {
-            GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerSpawned, OnPlayerSpawned, true);            
+            GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerInitialSpawned, OnPlayerSpawned, true);            
         }
 
         private void OnPlayerSpawned(IEventBusArgs args)

@@ -53,7 +53,7 @@ namespace Core.PlayerComponents
 			if (Runner.LocalPlayer == Object.InputAuthority)
 			{
 				Debug.Log(Object.InputAuthority);
-				GameEventBus.Instance.RaiseEvent(GameEventDefinitions.PlayerSpawned, 
+				GameEventBus.Instance.RaiseEvent(GameEventDefinitions.PlayerInitialSpawned, 
 					new PlayerSpawnedEventArgs(this), 
 					true);
 				
