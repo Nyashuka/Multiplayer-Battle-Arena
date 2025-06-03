@@ -1,13 +1,26 @@
+using ScriptableObjects;
+using Services.ServiceLocator;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Infrastructure
 {
+    [DefaultExecutionOrder(-100)]
     public class GameBootstrapper : MonoBehaviour
     {
-        public void Start()
+        [SerializeField] private GameBootstrapperConfig config;
+        
+        public void Awake()
         {
-            SceneManager.LoadScene("MainMenu");
+            RegisterAudioService();
+            SceneManager.LoadScene(config.StartScene);
+        }
+
+        private void RegisterAudioService()
+        {
+            var audioService = Object.Instantiate(config.AudioServicePrefab);
+            DontDestroyOnLoad(audioService.gameObject);
+            ServiceLocator.Instance.Register(audioService);
         }
     }
 }

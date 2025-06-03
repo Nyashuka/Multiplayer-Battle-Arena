@@ -96,24 +96,24 @@ namespace Core.MatchmakingComponents
         }
 
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-        private void Rpc_StatisticChanged(PlayerRef player, PlayerStatistic playerStatistic)
+        private void Rpc_StatisticChanged(PlayerRef player, PlayerStatisticNetwork playerStatisticNetwork)
         {
             if (Runner.LocalPlayer == player)
             {
                 GameEventBus.Instance.RaiseEvent(
                     GameEventDefinitions.PlayerMatchStatsChanged,
-                    new PlayerStatsChangedEventArgs(player, playerStatistic)
+                    new PlayerStatsChangedEventArgs(player, playerStatisticNetwork)
                 );
             }
         }
         
-        private void HandlePlayerDeath(PlayerRef victim)
+        private void HandlePlayerDeath(PlayerRef victim, PlayerRef killer)
         {
             if (!HasStateAuthority) return;
 
             MatchStatistic.AddDeath(victim);
-            
-            Rpc_StatisticChanged(victim, MatchStatistic.GetPlayerStatistic(victim));
+
+            Rpc_StatisticChanged(victim,  MatchStatistic.GetNetworkPlayerStatistic(victim));
 
             if (Players.TryGetValue(victim, out var player))
             {
@@ -129,12 +129,15 @@ namespace Core.MatchmakingComponents
             Rpc_StartRespawn(victim, respawnAt);
         }
 
-        private void HandleKill(PlayerRef killer)
+        private void HandleKill(PlayerRef killer, PlayerRef victim)
         {
+            if(killer == victim)
+               return;
+            
             MatchStatistic.AddKill(killer);
             MatchScore.AddScore(killer, 1);
             
-            Rpc_StatisticChanged(killer, MatchStatistic.GetPlayerStatistic(killer));
+            Rpc_StatisticChanged(killer, MatchStatistic.GetNetworkPlayerStatistic(killer));
         }
 
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -158,9 +161,14 @@ namespace Core.MatchmakingComponents
         public void ProcessDeath(PlayerRef victim, PlayerRef killer)
         {
             if(!HasStateAuthority) return;
-            
-            HandleKill(killer);
-            HandlePlayerDeath(victim);
+
+            if (victim == PlayerRef.None)
+            {
+                Debug.Log("Victim is not defined");
+                return;
+            }
+            HandleKill(killer, victim);
+            HandlePlayerDeath(victim, killer);
         }
         
 

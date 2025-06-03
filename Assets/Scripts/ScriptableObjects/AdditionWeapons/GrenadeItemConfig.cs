@@ -16,10 +16,14 @@ namespace ScriptableObjects.AdditionWeapons
         [SerializeField] private float throwForce;
         [SerializeField] private float explodeDelay;
         
+        [Header("Audio")]
+        [SerializeField] private AudioClip explodeSound;
+        
         public NetworkPrefabRef GrenadePrefab => grenadePrefab;
         public int Damage => damage;
         public float Range => range;
         public float ThrowForce => throwForce;
         public float ExplodeDelay => explodeDelay;
+        public AudioClip ExplodeSound => explodeSound;
     }
 }

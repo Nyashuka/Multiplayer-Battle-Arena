@@ -1,13 +1,10 @@
-
-using Fusion;
-
 namespace Core.MatchmakingComponents.ScoreSystem
 {
-    public struct PlayerStatistic : INetworkStruct
+    public class PlayerStatistic
     {
-        public int Kills { get; set; }
-        public int Deaths { get; set; }
-        
+        public int Kills { get; private set; }
+        public int Deaths { get; private set; }
+                
         public PlayerStatistic(int kills, int deaths)
         {
             Kills = kills;
@@ -18,7 +15,7 @@ namespace Core.MatchmakingComponents.ScoreSystem
         {
             Kills++;
         }
-        
+
         public void AddDeath()
         {
             Deaths++;

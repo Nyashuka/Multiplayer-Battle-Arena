@@ -22,3 +22,4 @@ MonoBehaviour:
   weaponPrefabRef:
     RawGuidValue: d93a170af5472a4499e1f66c11d0f0f1
   projectileConfig: {fileID: 11400000, guid: f5d6f6ccb9b41864881797a79f31ca09, type: 2}
+  fireSound: {fileID: 8300000, guid: 91f2e1ef8acd8de49afc7220bdd66352, type: 3}

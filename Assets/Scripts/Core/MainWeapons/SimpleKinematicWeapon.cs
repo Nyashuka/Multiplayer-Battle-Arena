@@ -6,6 +6,8 @@ using Core.Projectiles.Abstract;
 using Core.Projectiles.Data;
 using Fusion;
 using Infrastructure.Factories;
+using Services.Audio;
+using Services.ServiceLocator;
 using UnityEngine;
 
 namespace Core.MainWeapons
@@ -13,7 +15,6 @@ namespace Core.MainWeapons
     public class SimpleKinematicWeapon : WeaponBase
     {
         [SerializeField] private Transform firePoint;
-        [SerializeField] private AudioSource audioSource;
 
         private readonly Dictionary<Guid, VisualProjectileBase> _spawnedProjectiles = new();
         private ServerProjectileFactory _serverProjectileFactory;
@@ -72,7 +73,10 @@ namespace Core.MainWeapons
             visualProjectile.Launch();
 
             if (HasInputAuthority)
-                audioSource.Play();
+            {
+                ServiceLocator.Instance.GetService<AudioService>()
+                    .PlaySfx(_config.FireSound, firePoint.position);
+            }
 
             _spawnedProjectiles[projectileParams.Id] = visualProjectile;   
             Rpc_ServerFire(projectileParams);

@@ -22,28 +22,29 @@ namespace Core.UtilityItems
             _itemDatabase = itemConfigs.ToDictionary(c => c.Id);
         }
 
-        public void UseItem(ItemUseContext itemUseContext)
+        public void UseItem(UtilityItemUseContext utilityItemUseContext)
         {
             if (HasInputAuthority)
             {
-                Rpc_UseItem(itemUseContext);
+                Rpc_UseItem(utilityItemUseContext);
             }
         }
 
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-        private void Rpc_UseItem(ItemUseContext itemUseContext)
+        private void Rpc_UseItem(UtilityItemUseContext utilityItemUseContext, RpcInfo info = default)
         {
-            ServerUse(itemUseContext);
+            ServerUse(utilityItemUseContext, 
+                info.Source == PlayerRef.None && Runner.IsServer ? Runner.LocalPlayer : info.Source);
         }
         
-        private void ServerUse(ItemUseContext itemUseContext)
+        private void ServerUse(UtilityItemUseContext utilityItemUseContext, PlayerRef owner)
         {
             if(!HasStateAuthority) return;    
             
             if (!_itemDatabase.TryGetValue(EquippedItemId, out var config)) return;
 
-            itemUseContext.User = this;
-            config.Ability.Use(config, itemUseContext);
+            utilityItemUseContext.Owner = owner;
+            config.Ability.Use(Runner, config, utilityItemUseContext);
         }
 
         public void SetItem(string id)

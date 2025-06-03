@@ -10,16 +10,16 @@ namespace UserInterface.MatchUI.HUDElements
     {
         [SerializeField] private TMP_Text statisticsText;
         
-        public void UpdateStatistic(PlayerStatistic playerStatistic)
+        public void UpdateStatistic(PlayerStatisticNetwork playerStatisticNetwork)
         {
-            statisticsText.text = $"k: {playerStatistic.Kills}, d: {playerStatistic.Deaths}";
+            statisticsText.text = $"k: {playerStatisticNetwork.Kills}, d: {playerStatisticNetwork.Deaths}";
         }
         
         private void OnStatisticsChanged(IEventBusArgs args)
         {
             if (args is PlayerStatsChangedEventArgs statisticsChangedEvent)
             {
-                var playerStatistic = statisticsChangedEvent.PlayerStatistic;
+                var playerStatistic = statisticsChangedEvent.PlayerStatisticNetwork;
                         
                 UpdateStatistic(playerStatistic);
             }

@@ -41,7 +41,10 @@ namespace Core.MatchmakingComponents
             {
                 var score = _score.GetScore(player);
                 var stats = _statistic.GetPlayerStatistic(player);
-                statsArray[i] = new NetworkStatsData(player, stats.Kills, stats.Deaths, (float)stats.Kills/stats.Deaths, score);
+                statsArray[i] = new NetworkStatsData(player, 
+                    stats.Kills, stats.Deaths, 
+                    stats.Deaths == 0 ? (float)stats.Kills : (float)stats.Kills/stats.Deaths, 
+                    score);
         
                 i++;
             }

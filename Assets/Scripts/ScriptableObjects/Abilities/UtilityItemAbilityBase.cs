@@ -7,6 +7,6 @@ namespace ScriptableObjects.Abilities
 {
     public abstract class UtilityItemAbilityBase : ScriptableObject, IUtilityItemAbility
     {
-        public abstract void Use(UtilityItemConfig config, ItemUseContext itemUseContext);
+        public abstract void Use(NetworkRunner runner, UtilityItemConfig config, UtilityItemUseContext utilityItemUseContext);
     }
 }

@@ -1,4 +1,3 @@
-using System.Net.NetworkInformation;
 using Core.MainWeapons;
 using Core.UtilityItems;
 using Data;
@@ -37,11 +36,10 @@ namespace Core.PlayerComponents
             if (_input.CurrentInput.Actions.WasPressed(_input.PreviousInput.Actions, GameplayInput.USE_UTILITY_BUTTON))
             {
                 _playerCamera.GetAim(out var origin, out var dir);
-                var context = new ItemUseContext
+                var context = new UtilityItemUseContext
                 {
                     AimDirection = dir,
                     ThrowFrom = origin,
-                    User = _player
                 };
                 utilityHandler.UseItem(context);
             }

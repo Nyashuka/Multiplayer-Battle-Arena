@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace Data
 {
-    public struct ItemUseContext : INetworkStruct
+    public struct UtilityItemUseContext : INetworkStruct
     {
         public Vector3 ThrowFrom;
         public Vector3 AimDirection;
-        public NetworkBehaviour User;
+        public PlayerRef Owner;
     }
 }

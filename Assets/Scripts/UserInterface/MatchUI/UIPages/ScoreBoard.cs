@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Data;
 using UnityEngine;
 
@@ -25,8 +26,9 @@ namespace UserInterface.MatchUI.UIPages
             {
                 Destroy(scoreBoardItem.gameObject);
             }
-            
-            foreach (var record in data)
+
+            var sortedData = data.OrderByDescending(x => x.Points).ToList();
+            foreach (var record in sortedData)
             {
                 var scoreBoardItem = Instantiate(scoreBoardItemPrefab, scoreBoardItemContainer);
                 scoreBoardItem.Initialize(record.Owner.ToString(), record.Kills, record.Deaths, record.Kd, record.Points);

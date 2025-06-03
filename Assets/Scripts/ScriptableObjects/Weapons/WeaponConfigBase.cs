@@ -23,6 +23,9 @@ namespace ScriptableObjects.Weapons
         [Header("Projectile Config")]
         [SerializeField] private ProjectileConfig projectileConfig;
         
+        [Header("Sound Config")]
+        [SerializeField] private AudioClip fireSound;
+        
         public string ID => id;
         public Sprite Icon => icon;
         public int Damage => damage;
@@ -32,5 +35,6 @@ namespace ScriptableObjects.Weapons
         public float BulletLifeTime => bulletLifeTime;
         public ProjectileConfig ProjectileConfig => projectileConfig;
         public NetworkPrefabRef WeaponPrefabRef => weaponPrefabRef;
+        public AudioClip FireSound => fireSound;
     }
 }

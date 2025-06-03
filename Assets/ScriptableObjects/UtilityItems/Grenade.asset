@@ -21,3 +21,4 @@ MonoBehaviour:
   range: 10
   throwForce: 20
   explodeDelay: 3
+  explodeSound: {fileID: 8300000, guid: 6306a95a631fd65458cdceaf1264d8cd, type: 3}
