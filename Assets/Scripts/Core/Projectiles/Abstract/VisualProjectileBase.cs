@@ -1,4 +1,5 @@
 using Core.Projectiles.Data;
+using Services.VFXs;
 using UnityEngine;
 using VFX;
 
@@ -6,15 +7,15 @@ namespace Core.Projectiles.Abstract
 {
     public abstract class VisualProjectileBase : MonoBehaviour, IProjectileInitialize
     {
-        [SerializeField] protected SimpleExplosiveEffect explosiveEffect;
+        [SerializeField] protected ParticleSystem burstEffectPrefab;
+        protected VFXService _vfxService;
+        
         public abstract void Init(ProjectileParams projectileParams);
         public abstract void Launch();
-
-        public void Explose(Vector3 position)
+        
+        public void Explode(Vector3 position)
         {
-            var explosion = Instantiate(explosiveEffect, position, Quaternion.identity);
-            explosion.Play();
-            Destroy(explosion.gameObject, 1f);
+            _vfxService.PlayLocalVFX(burstEffectPrefab, position, Quaternion.identity);
         }
     }
 }

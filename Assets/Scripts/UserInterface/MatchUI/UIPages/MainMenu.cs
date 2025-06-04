@@ -16,7 +16,26 @@ namespace UserInterface.MatchUI.UIPages
 
         private float _searchingTime;
         private bool _isSearching;
-        
+
+        private void OnClose()
+        {
+            _searchingTime = 0;
+            _isSearching = false;
+            StopCoroutine(CalcMatchTime());
+            findMatchButton.SetText("Find Match");
+            timer.text = "";
+        }
+
+        private void OnEnable()
+        {
+            OnCloseEvent += OnClose;
+        }
+
+        private void OnDisable()
+        {
+            OnCloseEvent -= OnClose;
+        }
+
         private void Start()
         {
             timer.text = "";

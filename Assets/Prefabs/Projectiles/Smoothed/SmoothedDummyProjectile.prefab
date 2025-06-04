@@ -128,4 +128,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0ec807ea99c4dbfb57ca208728777e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosiveEffect: {fileID: 2515155264409389057, guid: 12c147930b825ff42b17cd57c9fed941, type: 3}
+  burstEffectPrefab: {fileID: 8466908896058820128, guid: a62fa74ef77a3804f9c8ffa8acf8e652, type: 3}

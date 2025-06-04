@@ -3,7 +3,7 @@ using Fusion;
 using Services;
 using Services.EventBus;
 using Services.EventBus.EventBusArguments;
-using Services.ServiceLocator;
+using Services.ServiceLocatorModule;
 using TMPro;
 using UnityEngine;
 

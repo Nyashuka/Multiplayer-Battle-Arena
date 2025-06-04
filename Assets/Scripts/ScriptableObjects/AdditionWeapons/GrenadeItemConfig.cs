@@ -19,11 +19,15 @@ namespace ScriptableObjects.AdditionWeapons
         [Header("Audio")]
         [SerializeField] private AudioClip explodeSound;
         
+        [Header("Effects")]
+        [SerializeField] private ParticleSystem explodeEffect;
+        
         public NetworkPrefabRef GrenadePrefab => grenadePrefab;
         public int Damage => damage;
         public float Range => range;
         public float ThrowForce => throwForce;
         public float ExplodeDelay => explodeDelay;
         public AudioClip ExplodeSound => explodeSound;
+        public ParticleSystem ExplodeEffect => explodeEffect;
     }
 }

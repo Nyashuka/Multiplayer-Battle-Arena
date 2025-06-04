@@ -607,8 +607,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f67b39e18874d2fa09500b65f72542e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 200
   maxlives: 2
+  deathEffectPrefab: {fileID: 8919521212402550275, guid: d828eff29fa8871469772cd87174a021, type: 3}
 --- !u!114 &4429941599079911357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -626,6 +627,8 @@ MonoBehaviour:
   playerVisualRoot: {fileID: 342994751608196818}
   enemyCanvasHandler: {fileID: 7678491000565604077}
   networkHealth: {fileID: 6705351624214254461}
+  deathSound: {fileID: 8300000, guid: ff535b1a2d9c74f4984c90f325035a92, type: 3}
+  respawnedSound: {fileID: 8300000, guid: 94ea9f2ccabf81a46927278343861c6c, type: 3}
 --- !u!114 &628349530710625693
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -736,7 +739,7 @@ MonoBehaviour:
   itemConfigs:
   - {fileID: 11400000, guid: dbb8e4265e2bfe04e9703746fb58d0c5, type: 2}
   - {fileID: 11400000, guid: cba8399d90f4aae44b7c63a0ae79ea31, type: 2}
-  defaultItem: {fileID: 11400000, guid: cba8399d90f4aae44b7c63a0ae79ea31, type: 2}
+  itemCooldown: 15
 --- !u!114 &8325408206188637467
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -18,7 +18,8 @@ MonoBehaviour:
   grenadePrefab:
     RawGuidValue: 37324c3fa633de441b18a64eceb8669c
   damage: 100
-  range: 10
+  range: 5
   throwForce: 20
-  explodeDelay: 3
+  explodeDelay: 1.3
   explodeSound: {fileID: 8300000, guid: 6306a95a631fd65458cdceaf1264d8cd, type: 3}
+  explodeEffect: {fileID: 5533346207535068982, guid: 3b65c6d400ac7624aa2148e719b27601, type: 3}

@@ -25,8 +25,14 @@ namespace UserInterface.MatchUI
             {
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
-                pageSwitcher.SwitchPage<MainMenu>();
             }
+            
+            OpenInitialPage();
+        }
+
+        public void OpenInitialPage()
+        {
+            pageSwitcher.SwitchPage<MainMenu>();
         }
 
         public void OnEnable()

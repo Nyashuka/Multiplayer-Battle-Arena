@@ -3,7 +3,7 @@ using System.Collections;
 using Core.MatchmakingComponents.MatchStates;
 using Services.EventBus;
 using Services.EventBus.EventBusArguments;
-using Services.ServiceLocator.Abstract;
+using Services.ServiceLocatorModule.Abstract;
 using UnityEngine;
 using UnityEngine.Audio;
 

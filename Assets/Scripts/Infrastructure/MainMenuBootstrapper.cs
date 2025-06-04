@@ -1,8 +1,8 @@
-using Core.MatchmakingComponents;
 using Infrastructure.Factories;
-using Infrastructure.Factories.UI;
+using Networking;
 using ScriptableObjects;
 using UnityEngine;
+using UserInterface.MatchUI;
 
 namespace Infrastructure
 {
@@ -10,13 +10,21 @@ namespace Infrastructure
     {
         [SerializeField] private MainMenuConfig mainMenuConfig;
         
-        public void Start()
+        public void Awake()
         {
-            var uiManagerFactory = new UIManagerFactory(mainMenuConfig.UIManagerPrefab);
-            uiManagerFactory.Create();
+            if (!UIManager.Instance)
+            {
+                var uiManagerFactory = new UIManagerFactory(mainMenuConfig.UIManagerPrefab);
+                uiManagerFactory.Create();
+            }
             
-            var networkRunnerFactory = new NetworkRunnerHandlerFactory(mainMenuConfig.networkRunnerHandlerPrefab);
-            networkRunnerFactory.Create();
+            UIManager.Instance.OpenInitialPage();
+
+            if (!MainNetworkRunnerHandler.Instance)
+            {
+                var networkRunnerFactory = new NetworkRunnerHandlerFactory(mainMenuConfig.networkRunnerHandlerPrefab);
+                networkRunnerFactory.Create();
+            }
         }
     }
 }

@@ -3,6 +3,8 @@ using Core.PlayerComponents.HealthComponent;
 using Data;
 using Fusion;
 using Fusion.Addons.SimpleKCC;
+using Services.Audio;
+using Services.ServiceLocatorModule;
 using UnityEngine;
 
 namespace Core.PlayerComponents
@@ -14,6 +16,8 @@ namespace Core.PlayerComponents
         [SerializeField] private GameObject playerVisualRoot;
         [SerializeField] private EnemyCanvasHandler enemyCanvasHandler;
         [SerializeField] private NetworkHealth networkHealth;
+        [SerializeField] private AudioClip deathSound;
+        [SerializeField] private AudioClip respawnedSound;
         
         public bool IsEnabled { get; private set;  } = true;
 
@@ -55,12 +59,22 @@ namespace Core.PlayerComponents
         private void Rpc_DeathPlayer()
         {
             HideLocalVisual();
+            if (HasInputAuthority)
+            {
+                ServiceLocator.Instance.GetService<AudioService>()
+                    .PlaySfx(deathSound, transform.position);
+            }
         }
 
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         private void Rpc_RespawnPlayer()
         {
             ShowLocalVisual();
+            if (HasInputAuthority)
+            {
+                ServiceLocator.Instance.GetService<AudioService>()
+                    .PlaySfx(respawnedSound, transform.position);
+            }
         } 
     }
 }

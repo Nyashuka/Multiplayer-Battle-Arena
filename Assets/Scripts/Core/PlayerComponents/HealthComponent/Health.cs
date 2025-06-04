@@ -12,6 +12,7 @@ namespace Core.PlayerComponents.HealthComponent
         public int CurrentHealth { get; private set; }
         public int MaxHealth => _maxHealth;
         public bool IsAlive => CurrentHealth > 0;
+        private bool IsDead { get; set; }
         
         public event Action<int> HealthChanged;
         public event Action DeathEvent;
@@ -27,8 +28,11 @@ namespace Core.PlayerComponents.HealthComponent
             CurrentHealth = value;
             HealthChanged?.Invoke(CurrentHealth);
     
-            if (!IsAlive)
+            if (CurrentHealth <= 0 && !IsDead)
+            {
+                IsDead = true;
                 DeathEvent?.Invoke();
+            }
         }
 
         public void TakeDamage(DamageData data)

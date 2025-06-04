@@ -36,6 +36,7 @@ namespace Core.MatchmakingComponents.MatchStates
 
         public void OnPlayerDeath(PlayerRef victim, PlayerRef killer)
         {
+            _manager.RespawnPlayer(victim);
         }
 
         public MatchStateEnum ToEnum()

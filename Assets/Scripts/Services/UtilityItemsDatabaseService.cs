@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ScriptableObjects.AdditionWeapons;
-using Services.ServiceLocator.Abstract;
+using Services.ServiceLocatorModule.Abstract;
 
 namespace Services
 {

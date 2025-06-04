@@ -1,7 +1,7 @@
 using Services;
 using Services.EventBus;
 using Services.EventBus.EventBusArguments;
-using Services.ServiceLocator;
+using Services.ServiceLocatorModule;
 using UnityEngine;
 using UnityEngine.UI;
 

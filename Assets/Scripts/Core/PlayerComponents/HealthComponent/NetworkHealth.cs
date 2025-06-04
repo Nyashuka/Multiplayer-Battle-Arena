@@ -4,6 +4,8 @@ using Data;
 using Fusion;
 using Services.EventBus;
 using Services.EventBus.EventBusArguments;
+using Services.ServiceLocatorModule;
+using Services.VFXs;
 using UnityEngine;
 
 namespace Core.PlayerComponents.HealthComponent
@@ -12,18 +14,20 @@ namespace Core.PlayerComponents.HealthComponent
     {
         [SerializeField] private int maxHealth = 100;
         [SerializeField] private int maxlives = 3;
+        [SerializeField] private ParticleSystem deathEffectPrefab;
         
         [Networked] public PlayerRef Owner { get; set; }
         [Networked] private PlayerRef LastAttacker { get; set; }
         [Networked] private int NetworkHealthValue { get; set; }
         [Networked] private int NetworkLivesValue { get; set; }
+        [Networked] private bool AlreadyDead { get; set; }
 
-        private Health Health { get; set; }
         private ModifierStack<int> IncomingDamageModifiers { get; } = new();
+        
         public bool IsAlive => NetworkHealthValue > 0;
         public int CurrentHealth => NetworkHealthValue;
         public int CurrentLives => NetworkLivesValue;
-        public int MaxHealth => Health.MaxHealth;
+        public int MaxHealth => maxHealth;
         
         public event Action<DeathData> DeathEvent;
         public event Action<int> HealthChanged;
@@ -34,7 +38,13 @@ namespace Core.PlayerComponents.HealthComponent
             ResetLives();
         }
 
-        public void ResetLives()
+        public void ResetHealth()
+        {
+            NetworkHealthValue = maxHealth;
+            OnHealthChanged();
+        }
+        
+        private void ResetLives()
         {
             if(!HasStateAuthority) return;
             
@@ -63,57 +73,62 @@ namespace Core.PlayerComponents.HealthComponent
             
             DeathEvent?.Invoke(deathData);
             
+            
+            ServiceLocator.Instance.GetService<VFXService>()
+                .PlayLocalVFX(deathEffectPrefab, transform.position + transform.up, transform.rotation);
+            
+            Debug.Log("RPC Notify Death Event");
+            
             GameEventBus.Instance.RaiseEvent(
-                    GameEventDefinitions.PlayerDeath, 
-                    new PlayerDeathEventArgs(deathData)
-                );
+                GameEventDefinitions.PlayerDeath, 
+                new PlayerDeathEventArgs(deathData)
+            );
         } 
         
-        private void OnHealthChanged(int value)
+        private void OnHealthChanged()
         {
             if (!HasStateAuthority) return;
             
-            NetworkHealthValue = value;
             HealthChanged?.Invoke(NetworkHealthValue);
             Rpc_NotifyHealthChanged();
         }
         
-        private void OnDeathEvent()
+        private void Die()
         {
             if(!HasStateAuthority) return;
             
+            
             NetworkLivesValue--;
             Debug.Log(Owner + "  Lives: " + NetworkLivesValue);
+            
             Rpc_NotifyDeathEvent();
         }
 
         public void TakeDamage(DamageData data)
         {
-            if (!HasStateAuthority || !Health.IsAlive)
+            if (!HasStateAuthority || !IsAlive)
                 return;
             
             data.Damage = IncomingDamageModifiers.ApplyModifiers(data.Damage);
 
             LastAttacker = data.Attacker;
-            Health.TakeDamage(data);
+            NetworkHealthValue -= data.Damage;
+            OnHealthChanged();
+
+            if (IsAlive && !AlreadyDead)
+            {
+                Die();
+            }
         }
 
         public void Heal(int amount)
         {
-            if (!HasStateAuthority || !Health.IsAlive)
+            if (!HasStateAuthority || !IsAlive || amount <= 0)
                 return;
 
-            Health.Heal(amount);
+            NetworkHealthValue += amount;
+            OnHealthChanged();
         }
 
-        public void ResetHealth()
-        {
-            Health = new Health(maxHealth);
-            
-            OnHealthChanged(Health.CurrentHealth);
-
-            Health.HealthChanged += OnHealthChanged;
-            Health.DeathEvent += OnDeathEvent;
-        }
     }
 }

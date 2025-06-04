@@ -1,15 +1,14 @@
 using System.Collections.Generic;
-using Core;
 using Core.MatchmakingComponents;
 using Core.PlayerComponents;
-using Data;
 using Environment;
 using Fusion;
 using Infrastructure.Factories;
 using Infrastructure.Factories.UI;
 using ScriptableObjects;
 using Services;
-using Services.ServiceLocator;
+using Services.ServiceLocatorModule;
+using Services.VFXs;
 using UnityEngine;
 using UserInterface.MatchUI;
 
@@ -36,6 +35,7 @@ namespace Infrastructure
             InitializePlayers();
             InitializeMatchTimer();
             InitializeMatchManager(); 
+            
             // all clients
             InitializeUI();
         }
@@ -44,6 +44,18 @@ namespace Infrastructure
         {
             ServiceLocator.Instance.Register(new WeaponDatabaseService(matchBootstrapperConfig.WeaponList));
             ServiceLocator.Instance.Register(new UtilityItemsDatabaseService(matchBootstrapperConfig.UtilityItemsList));
+            ServiceLocator.Instance.Register(new VFXService());
+        }
+
+        public override void Despawned(NetworkRunner runner, bool hasState)
+        {
+            UnregisterServices();
+        }
+
+        private void UnregisterServices()
+        {
+            ServiceLocator.Instance.UnRegister<WeaponDatabaseService>();
+            ServiceLocator.Instance.UnRegister<UtilityItemsDatabaseService>();
         }
 
         private void InitializeMatchTimer()
@@ -113,9 +125,11 @@ namespace Infrastructure
 
                 var weaponDealerFactory = new WeaponDealerFactory(Runner, matchBootstrapperConfig.WeaponDealerPrefab);
                 WeaponDealer = weaponDealerFactory.Create();     
+                
             }            
             
             MatchManager.Initialize(Players, MatchTimer, _map, WeaponDealer);
+            ServiceLocator.Instance.Register<IPlayersListContext>(MatchManager);
         }
 
         private Vector3 GetSpawnPosition(List<SpawnPoint> spawnPoints)

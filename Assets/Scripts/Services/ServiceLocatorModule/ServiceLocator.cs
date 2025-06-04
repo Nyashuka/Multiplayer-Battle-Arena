@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Services.ServiceLocator.Abstract;
+using Services.ServiceLocatorModule.Abstract;
 
-namespace Services.ServiceLocator
+namespace Services.ServiceLocatorModule
 {
     public class ServiceLocator : IServiceLocator
     {
@@ -22,14 +22,12 @@ namespace Services.ServiceLocator
 
         public void Register<T>(T service) where T : IService
         {
-            Type type = service.GetType();
-
-            _services.Add(type, service);
+            _services.Add(typeof(T), service);
         }
 
-        public void UnRegister<T>(T service) where T : IService
+        public void UnRegister<T>() where T : IService
         {
-            Type type = service.GetType();
+            Type type = typeof(T);
 
             if (!_services.Remove(type))
                 throw new ArgumentException();

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Core.MatchmakingComponents;
 using Data;
 using Fusion;
 using Fusion.Addons.Physics;
@@ -17,6 +16,21 @@ namespace Networking
 {
     public class MainNetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
     {
+        public static MainNetworkRunnerHandler Instance { get; private set; }
+
+        public void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
+        }        
+        
         [SerializeField] private MatchStartConfig startConfig;
         
         private int _playersToStart;
@@ -32,10 +46,15 @@ namespace Networking
         private void Start()
         {
             DontDestroyOnLoad(gameObject);
-            _matchState = MatchStateEnum.Lobby;
-            _findMatchStarter = new FindMatchStarter();
+            Reset();
             GameEventBus.Instance.Subscribe(GameEventDefinitions.StartMatchSearchRequested, OnStartSearchMatchRequested);
             GameEventBus.Instance.Subscribe(GameEventDefinitions.StopMatchSearchRequested, OnStopSearchMatchRequested);
+        }
+
+        private void Reset()
+        {
+            _matchState = MatchStateEnum.Lobby;
+            _findMatchStarter = new FindMatchStarter();
         }
 
         private NetworkRunner InstantiateNetworkRunner()
@@ -133,10 +152,13 @@ namespace Networking
 
         public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
         {
+            SceneManager.LoadScene("BootScene");
+            Reset();
         }
 
         public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
         {
+            _networkRunner.Shutdown();
         }
 
         public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)

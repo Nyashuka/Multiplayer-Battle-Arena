@@ -1,12 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
+using Core.MatchmakingComponents;
+using Core.UtilityItems.Abstract;
 using Data;
 using Fusion;
 using ScriptableObjects.AdditionWeapons;
 using Services.EventBus;
 using Services.EventBus.EventBusArguments;
+using Services.ServiceLocatorModule;
 using UnityEngine;
-using UnityEngine.InputSystem.DualShock;
 
 namespace Core.UtilityItems
 {
@@ -15,7 +17,12 @@ namespace Core.UtilityItems
         [Networked] private string EquippedItemId { get; set; }
         
         [SerializeField] private List<UtilityItemConfig> itemConfigs;
+        [SerializeField] private float itemCooldown;
+        
         private Dictionary<string, UtilityItemConfig> _itemDatabase;
+        
+        [Networked] private TickTimer TimerCooldownServer { get; set; }
+        private TickTimer TimerCooldownClient { get; set; }
 
         public void Awake()
         {
@@ -26,7 +33,11 @@ namespace Core.UtilityItems
         {
             if (HasInputAuthority)
             {
-                Rpc_UseItem(utilityItemUseContext);
+                if (TimerCooldownClient.ExpiredOrNotRunning(Runner) && TimerCooldownServer.ExpiredOrNotRunning(Runner))
+                {
+                    Rpc_UseItem(utilityItemUseContext);
+                    TimerCooldownClient = TickTimer.CreateFromSeconds(Runner, itemCooldown);
+                }
             }
         }
 
@@ -41,10 +52,19 @@ namespace Core.UtilityItems
         {
             if(!HasStateAuthority) return;    
             
+            if(!TimerCooldownServer.ExpiredOrNotRunning(Runner)) return;
+            
+            TimerCooldownClient = TickTimer.CreateFromSeconds(Runner, itemCooldown);
+            
             if (!_itemDatabase.TryGetValue(EquippedItemId, out var config)) return;
 
             utilityItemUseContext.Owner = owner;
-            config.Ability.Use(Runner, config, utilityItemUseContext);
+
+            var playersContext = ServiceLocator.Instance.GetService<IPlayersListContext>();
+            if (playersContext!= null && playersContext.Players.TryGetValue(owner, out var user))
+            {
+                config.Ability.Use(Runner, user, config, utilityItemUseContext);
+            } 
         }
 
         public void SetItem(string id)

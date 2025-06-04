@@ -14,7 +14,7 @@ using MatchStateEnum = Core.MatchmakingComponents.MatchStates.MatchStateEnum;
 
 namespace Core.MatchmakingComponents
 {
-    public class MatchManager : NetworkBehaviour, IMatchContext
+    public class MatchManager : NetworkBehaviour, IMatchContext, IPlayersListContext
     {
         public Dictionary<PlayerRef, Player> Players { get; private set; }
         public List<PlayerRef> AlivePlayers { get; private set; }
@@ -57,9 +57,8 @@ namespace Core.MatchmakingComponents
             if (HasStateAuthority)
             {
                 SetState(new MatchWarmupState(this));
+                GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerDeath, OnPlayerDeath);
             }
-
-            GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerDeath, OnPlayerDeath);
         }
 
         public void SetState(IMatchState newState)
@@ -113,7 +112,7 @@ namespace Core.MatchmakingComponents
 
             MatchStatistic.AddDeath(victim);
 
-            Rpc_StatisticChanged(victim,  MatchStatistic.GetNetworkPlayerStatistic(victim));
+            Rpc_StatisticChanged(victim, MatchStatistic.GetNetworkPlayerStatistic(victim));
 
             if (Players.TryGetValue(victim, out var player))
             {
@@ -154,7 +153,9 @@ namespace Core.MatchmakingComponents
         {
             if (args is PlayerDeathEventArgs playerKilledEventArgs)
             {
-                CurrentState?.OnPlayerDeath(playerKilledEventArgs.DeathData.Victim, playerKilledEventArgs.DeathData.Killer);
+                Debug.Log("On Player death match manager");
+                CurrentState?.OnPlayerDeath(playerKilledEventArgs.DeathData.Victim, 
+                    playerKilledEventArgs.DeathData.Killer);
             }
         }
 
@@ -167,6 +168,7 @@ namespace Core.MatchmakingComponents
                 Debug.Log("Victim is not defined");
                 return;
             }
+            Debug.Log("Processing Death in Match Manager");
             HandleKill(killer, victim);
             HandlePlayerDeath(victim, killer);
         }

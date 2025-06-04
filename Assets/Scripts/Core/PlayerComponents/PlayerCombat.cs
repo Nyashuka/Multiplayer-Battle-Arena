@@ -39,7 +39,7 @@ namespace Core.PlayerComponents
                 var context = new UtilityItemUseContext
                 {
                     AimDirection = dir,
-                    ThrowFrom = origin,
+                    ThrowFrom = origin + dir.normalized,
                 };
                 utilityHandler.UseItem(context);
             }

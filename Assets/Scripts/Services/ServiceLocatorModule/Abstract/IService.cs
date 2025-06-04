@@ -1,4 +1,4 @@
-namespace Services.ServiceLocator.Abstract
+namespace Services.ServiceLocatorModule.Abstract
 {
     public interface IService
     {

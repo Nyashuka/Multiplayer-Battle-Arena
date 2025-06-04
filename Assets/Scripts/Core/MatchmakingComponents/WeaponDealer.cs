@@ -1,15 +1,11 @@
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.NetworkInformation;
 using Core.PlayerComponents;
 using Fusion;
 using Infrastructure.Factories;
-using ScriptableObjects.AdditionWeapons;
-using ScriptableObjects.Weapons;
 using Services;
 using Services.EventBus;
 using Services.EventBus.EventBusArguments;
-using Services.ServiceLocator;
+using Services.ServiceLocatorModule;
 using UnityEngine;
 
 namespace Core.MatchmakingComponents

@@ -7,7 +7,7 @@ using Core.Projectiles.Data;
 using Fusion;
 using Infrastructure.Factories;
 using Services.Audio;
-using Services.ServiceLocator;
+using Services.ServiceLocatorModule;
 using UnityEngine;
 
 namespace Core.MainWeapons
@@ -117,7 +117,7 @@ namespace Core.MainWeapons
 
             if (visualProjectile)
             {
-                visualProjectile.Explose(position);
+                visualProjectile.Explode(position);
                 Destroy(visualProjectile.gameObject);
             }
 

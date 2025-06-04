@@ -38,10 +38,10 @@ namespace Core.MatchmakingComponents.MatchStates
         {
             _context.ProcessDeath(victim, killer);
 
-            if (_context.AlivePlayers.Count <= 1)
-            {
-                _context.SetState(new MatchEndedState(_context));        
-            }
+            // if (_context.AlivePlayers.Count <= 1)
+            // {
+            //     _context.SetState(new MatchEndedState(_context));        
+            // }
         }
 
         public MatchStateEnum ToEnum()

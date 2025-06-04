@@ -16,3 +16,6 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: a033c0d8e19915043b2dd63095cb9745, type: 3}
   ability: {fileID: 11400000, guid: c98174f679cc42b4295856c1c5275f2c, type: 2}
   healAmount: 50
+  medKitPrefab:
+    RawGuidValue: 3f0a09653aa4c774ea1cf8443159a602
+  medKitEffect: {fileID: 2413333106277601229, guid: 108ca465382c11742bd2c91fe4fdb13f, type: 3}

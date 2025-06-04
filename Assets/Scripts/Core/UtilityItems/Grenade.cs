@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Core.PlayerComponents.HealthComponent;
 using Core.UtilityItems.Abstract;
 using Data;
@@ -5,7 +6,8 @@ using Fusion;
 using ScriptableObjects.AdditionWeapons;
 using Services;
 using Services.Audio;
-using Services.ServiceLocator;
+using Services.ServiceLocatorModule;
+using Services.VFXs;
 using UnityEngine;
 
 namespace Core.UtilityItems
@@ -40,17 +42,11 @@ namespace Core.UtilityItems
             } 
         }
 
-        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-        private void Rpc_PlayExplodeSound(string id)
-        {
-            var itemConfig = 
-                (GrenadeItemConfig)ServiceLocator.Instance.GetService<UtilityItemsDatabaseService>().GetById(id);
-            ServiceLocator.Instance.GetService<AudioService>().PlaySfx(itemConfig.ExplodeSound, transform.position);
-        }
-        
         private void Explode() 
         {
             Collider[] hits = Physics.OverlapSphere(transform.position, _config.Range);
+
+            HashSet<IDamagable> damagedTargets = new HashSet<IDamagable>();
 
             foreach (var hit in hits)
             {
@@ -64,8 +60,10 @@ namespace Core.UtilityItems
                     damagable = rootHit;
                 }
 
-                if (damagable != null)
+                if (damagable != null && !damagedTargets.Contains(damagable))
                 {
+                    damagedTargets.Add(damagable);
+
                     var damageData = new DamageData()
                     {
                         Attacker = Owner,
@@ -75,9 +73,10 @@ namespace Core.UtilityItems
                     damagable.TakeDamage(damageData);
                 }
             }
+
             DestroySelf();
         }
-
+        
         private void DestroySelf()
         {
             Runner.Despawn(Object);
@@ -87,7 +86,12 @@ namespace Core.UtilityItems
         {
             var itemConfig = 
                 (GrenadeItemConfig)ServiceLocator.Instance.GetService<UtilityItemsDatabaseService>().GetById(Id);
-            ServiceLocator.Instance.GetService<AudioService>().PlaySfx(itemConfig.ExplodeSound, transform.position);
+            
+            ServiceLocator.Instance.GetService<AudioService>()
+                .PlaySfx(itemConfig.ExplodeSound, transform.position);
+            
+            ServiceLocator.Instance.GetService<VFXService>()
+                .PlayLocalVFX(itemConfig.ExplodeEffect, transform.position, transform.rotation);
         }
     }
 }

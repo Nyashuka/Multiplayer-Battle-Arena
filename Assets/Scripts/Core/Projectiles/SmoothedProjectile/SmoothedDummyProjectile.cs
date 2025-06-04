@@ -1,5 +1,7 @@
 using Core.Projectiles.Abstract;
 using Core.Projectiles.Data;
+using Services.ServiceLocatorModule;
+using Services.VFXs;
 using UnityEngine;
 
 namespace Core.Projectiles.SmoothedProjectile
@@ -14,6 +16,7 @@ namespace Core.Projectiles.SmoothedProjectile
         
         public override void Init(ProjectileParams projectileParams)
         {
+            _vfxService = ServiceLocator.Instance.GetService<VFXService>();
             _projectileParams = projectileParams;
             _direction = (projectileParams.Target - projectileParams.VisualStart).normalized;
         }
