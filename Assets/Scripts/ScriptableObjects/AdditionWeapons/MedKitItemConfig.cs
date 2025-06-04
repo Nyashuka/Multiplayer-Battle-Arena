@@ -15,8 +15,12 @@ namespace ScriptableObjects.AdditionWeapons
         [Header("Effects")]
         [SerializeField] private ParticleSystem medKitEffect;
         
+        [Header("Sound")]
+        [SerializeField] private AudioClip medKitSound;
+        
         public int HealAmount => healAmount;
         public NetworkPrefabRef MedKitPrefab => medKitPrefab;
         public ParticleSystem MedKitEffect => medKitEffect;
+        public AudioClip MedKitSound => medKitSound;
     }
 }

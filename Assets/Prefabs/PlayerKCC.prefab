@@ -607,7 +607,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f67b39e18874d2fa09500b65f72542e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 200
+  maxHealth: 100
   maxlives: 2
   deathEffectPrefab: {fileID: 8919521212402550275, guid: d828eff29fa8871469772cd87174a021, type: 3}
 --- !u!114 &4429941599079911357

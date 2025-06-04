@@ -19,3 +19,4 @@ MonoBehaviour:
   medKitPrefab:
     RawGuidValue: 3f0a09653aa4c774ea1cf8443159a602
   medKitEffect: {fileID: 2413333106277601229, guid: 108ca465382c11742bd2c91fe4fdb13f, type: 3}
+  medKitSound: {fileID: 8300000, guid: 3b1a3ca0d0518534d93b6ad3ee6defae, type: 3}

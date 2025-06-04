@@ -19,7 +19,12 @@ namespace ScriptableObjects.Abilities
             if(user)
             {
                 user.NetworkHealth.Heal(medKitConfig.HealAmount);
-                var medKit = runner.Spawn(medKitConfig.MedKitPrefab).GetComponent<MedKit>();
+                var medKit = runner.Spawn(medKitConfig.MedKitPrefab, 
+                    user.transform.position, 
+                    Quaternion.identity, 
+                    user.Object.InputAuthority)
+                    .GetComponent<MedKit>();
+                
                 medKit.Initialize(medKitConfig.Id, user.transform);
             }
         }

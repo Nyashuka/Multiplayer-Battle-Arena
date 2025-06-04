@@ -40,6 +40,9 @@ namespace Core.PlayerComponents.HealthComponent
 
         public void ResetHealth()
         {
+            if(!HasStateAuthority) return;
+            
+            AlreadyDead = false;
             NetworkHealthValue = maxHealth;
             OnHealthChanged();
         }
@@ -73,7 +76,6 @@ namespace Core.PlayerComponents.HealthComponent
             
             DeathEvent?.Invoke(deathData);
             
-            
             ServiceLocator.Instance.GetService<VFXService>()
                 .PlayLocalVFX(deathEffectPrefab, transform.position + transform.up, transform.rotation);
             
@@ -96,7 +98,8 @@ namespace Core.PlayerComponents.HealthComponent
         private void Die()
         {
             if(!HasStateAuthority) return;
-            
+
+            AlreadyDead = true;
             
             NetworkLivesValue--;
             Debug.Log(Owner + "  Lives: " + NetworkLivesValue);
@@ -115,7 +118,7 @@ namespace Core.PlayerComponents.HealthComponent
             NetworkHealthValue -= data.Damage;
             OnHealthChanged();
 
-            if (IsAlive && !AlreadyDead)
+            if (!IsAlive && !AlreadyDead)
             {
                 Die();
             }
