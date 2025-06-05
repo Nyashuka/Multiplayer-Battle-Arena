@@ -51,10 +51,12 @@ namespace Core.PlayerComponents
             Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
     
             int mask = ~LayerMask.GetMask("Player");
-    
+
+            Vector3 cameraHit = Vector3.zero;
             if (Physics.Raycast(ray, out RaycastHit hit, 100f, mask))
             {
                 origin = ray.origin;
+                cameraHit = hit.point;
                 direction = (hit.point - origin).normalized;
             }
             else
@@ -63,7 +65,7 @@ namespace Core.PlayerComponents
                 direction = ray.direction;
             }
             
-            Debug.DrawRay(ray.origin, ray.direction * _maxDistance, Color.red, 2f);
+            Debug.DrawRay(ray.origin, cameraHit, Color.red, 2f);
         }
     }
 }

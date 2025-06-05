@@ -13,11 +13,14 @@ namespace UserInterface.MatchUI.UIPages
         public event Action OnOpenEvent;
         public event Action OnCloseEvent;
         
+        public bool Opened { get; private set; }
+        
         public void Open()
         {
             canvasGroup.alpha = 1;     
             canvasGroup.interactable = true;
             canvasGroup.blocksRaycasts = true;
+            Opened = true;
             OnOpenEvent?.Invoke();
         }
 
@@ -26,6 +29,7 @@ namespace UserInterface.MatchUI.UIPages
             canvasGroup.alpha = 0;
             canvasGroup.interactable = false;
             canvasGroup.blocksRaycasts = false;
+            Opened = false;
             OnCloseEvent?.Invoke();
         }
     }

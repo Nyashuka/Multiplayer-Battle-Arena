@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Data;
+using Networking;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UserInterface.MatchUI.UIPages
 {
@@ -10,6 +12,7 @@ namespace UserInterface.MatchUI.UIPages
     {
         [SerializeField] private ScoreBoardItem scoreBoardItemPrefab;
         [SerializeField] private Transform scoreBoardItemContainer;
+        [SerializeField] private Button leftMatchButton;
         
         private ScoreBoardItem _header;
         private readonly List<ScoreBoardItem> _scoreBoardItems = new();
@@ -18,6 +21,13 @@ namespace UserInterface.MatchUI.UIPages
         {
             _header = Instantiate(scoreBoardItemPrefab, scoreBoardItemContainer);
             _header.SetBold();
+            
+            leftMatchButton.onClick.AddListener(OnLeftMatchClicked);
+        }
+
+        private void OnLeftMatchClicked()
+        {
+            MainNetworkRunnerHandler.Instance.LeftMatch();
         }
 
         public void Initialize(NetworkStatsData[] data)

@@ -15,8 +15,6 @@ namespace Core.PlayerComponents
 	[DefaultExecutionOrder(-5)]
 	public sealed class Player : NetworkBehaviour
 	{
-		[Networked] public string PlayerName { get; private set; }
-		
 		[Header("Player Modules")] 
 		[SerializeField] private PlayerMovement playerMovement;
 		[SerializeField] private PlayerCamera playerCamera;
@@ -49,16 +47,6 @@ namespace Core.PlayerComponents
 			playerCamera.Init(input);
 
 			LocalPlayerSetup();
-			if (HasInputAuthority)
-			{
-				Rpc_SetPlayerName(MainNetworkRunnerHandler.Instance.PlayerName);
-			}
-		}
-
-		[Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-		private void Rpc_SetPlayerName(string instancePlayerName)
-		{
-			SetPlayerName(instancePlayerName);
 		}
 
 		private void LocalPlayerSetup()
@@ -82,8 +70,8 @@ namespace Core.PlayerComponents
 		
 		public override void FixedUpdateNetwork()
 		{
-			if(!networkHealth.IsAlive) return; 
-			
+			if(!networkHealth.IsAlive) return;
+
 			playerMovement.Tick();
 			playerCombat.Tick();
 		}
@@ -120,13 +108,6 @@ namespace Core.PlayerComponents
 			if(!HasStateAuthority) return;
 			
 			playerLifecycle.Respawn(spawnPoint);
-		}
-
-		public void SetPlayerName(string playerName)
-		{
-			if(!HasStateAuthority) return;
-			
-			PlayerName = playerName;
 		}
 	}
 }

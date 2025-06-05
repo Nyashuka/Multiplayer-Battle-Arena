@@ -21,9 +21,6 @@ namespace Networking
         
         private int _playersToStart;
         private string _currentRoomName;
-        private string _playerName;
-        
-        public string PlayerName => _playerName;
 
         public void Awake()
         {
@@ -44,6 +41,8 @@ namespace Networking
         private FindMatchStarter _findMatchStarter;
         private MatchStateEnum _matchState;
         private NetworkRunner _networkRunner;
+        
+        public MatchStateEnum MatchState => _matchState;
         
         private void Start()
         {
@@ -74,7 +73,6 @@ namespace Networking
             if (args is StartMatchSearchEventArgs startMatchSearchArgs)
             {
                 _playersToStart = startMatchSearchArgs.PlayersCount;
-                _playerName = startMatchSearchArgs.PlayerName;
             }
             else
             {
@@ -215,6 +213,11 @@ namespace Networking
 
         public void OnSceneLoadStart(NetworkRunner runner)
         {
-        } 
+        }
+
+        public void LeftMatch()
+        {
+            _networkRunner.Shutdown();
+        }
     }
 }

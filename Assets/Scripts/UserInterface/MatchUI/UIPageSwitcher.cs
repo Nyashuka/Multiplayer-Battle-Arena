@@ -13,6 +13,8 @@ namespace UserInterface.MatchUI
 
         private UIPage _currentPage;
 
+        public bool IsPageOpened => _currentPage.Opened;
+        
         private T GetPage<T>()
         {
             return uiPages.OfType<T>().FirstOrDefault();
@@ -39,6 +41,11 @@ namespace UserInterface.MatchUI
             
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+        }
+
+        public bool CheckPageOpen<T>() where T : UIPage
+        {
+            return _currentPage.GetType() == typeof(T) && _currentPage.Opened;
         }
     }
 }

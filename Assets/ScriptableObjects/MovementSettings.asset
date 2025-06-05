@@ -21,3 +21,6 @@ MonoBehaviour:
     GroundDeceleration: 25
     AirAcceleration: 25
     AirDeceleration: 1.3
+  dashDistance: 5
+  dashCooldown: 2
+  doubleTapThreshold: 0.2

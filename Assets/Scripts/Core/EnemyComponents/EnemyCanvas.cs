@@ -1,5 +1,7 @@
 using Core.PlayerComponents;
 using Core.PlayerComponents.HealthComponent;
+using Fusion;
+using TMPro;
 using UnityEngine;
 
 namespace Core.EnemyComponents
@@ -8,10 +10,12 @@ namespace Core.EnemyComponents
     {
         [SerializeField] private Transform cameraTransformForFollow;
         [SerializeField] private EnemyHealthBar healthBar;
+        [SerializeField] private TMP_Text playerNameText;
 
-        public void Initialize(Transform cameraTransform, IHealthSource health)
+        public void Initialize(Transform cameraTransform, IHealthSource health, PlayerRef playerRef)
         {
             cameraTransformForFollow = cameraTransform;
+            playerNameText.text = playerRef.ToString();
             InitializeHealthBar(health);
         }
 

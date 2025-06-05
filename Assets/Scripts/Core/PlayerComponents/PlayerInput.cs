@@ -132,6 +132,7 @@ namespace Core.PlayerComponents
 			// This results to the player not being incorrectly rotated (by using rotation delta from last known input) in case of missing input on state authority, followed by a correction on the input authority.
 			GameplayInput currentInput = _currentInput;
 			currentInput.LookRotationDelta = default;
+			currentInput.MoveDirection = default;
 			_currentInput = currentInput;
 
 			if (Object.InputAuthority != PlayerRef.None)

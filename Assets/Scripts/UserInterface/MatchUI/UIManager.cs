@@ -1,5 +1,6 @@
 using System;
 using Core.MatchmakingComponents.MatchStates;
+using Networking;
 using Services.EventBus;
 using Services.EventBus.EventBusArguments;
 using UnityEngine;
@@ -34,6 +35,23 @@ namespace UserInterface.MatchUI
         public void OpenInitialPage()
         {
             pageSwitcher.SwitchPage<MainMenu>();
+        }
+
+        public void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (MainNetworkRunnerHandler.Instance.MatchState == Data.MatchStateEnum.Matching)
+                {
+                    if (pageSwitcher.IsPageOpened)
+                    {
+                        pageSwitcher.ClosePage();
+                        return;
+                    }
+                    
+                    pageSwitcher.SwitchPage<EscMatchMenu>();
+                }
+            }
         }
 
         public void OnEnable()

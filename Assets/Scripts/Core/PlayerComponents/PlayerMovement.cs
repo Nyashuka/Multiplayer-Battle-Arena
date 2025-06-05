@@ -79,10 +79,8 @@ namespace Core.PlayerComponents
                 ? (kcc.IsGrounded ? _config.GroundDeceleration : _config.AirDeceleration)
                 : (kcc.IsGrounded ? _config.GroundAcceleration : _config.AirAcceleration);
         
-        
         private readonly Dictionary<Vector2, float> _lastKeyPressTime = new();
-        private const float DoubleTapThreshold = 0.3f;
-
+        
         private void Dash(Vector3 direction)
         {
             kcc.SetPosition(kcc.Position + direction * movementSettings.DashDistance);
@@ -90,6 +88,8 @@ namespace Core.PlayerComponents
         
         private void CheckDash()
         {
+            if(!_runner.IsServer) return;
+            
             var directions = new[]
             {
                 (Vector2.up,    kcc.TransformRotation * Vector3.forward),
@@ -97,23 +97,23 @@ namespace Core.PlayerComponents
                 (Vector2.left,  kcc.TransformRotation * Vector3.left),
                 (Vector2.right, kcc.TransformRotation * Vector3.right),
             };
-
+        
             foreach (var (inputDir, worldDir) in directions)
             {
                 if (_input.CurrentInput.MoveDirection == inputDir &&
                     _input.PreviousInput.MoveDirection != inputDir)
                 {
                     float currentTime = Time.time;
-
+        
                     if (_lastKeyPressTime.TryGetValue(inputDir, out float lastTime))
                     {
-                        if (currentTime - lastTime <= DoubleTapThreshold && _dashCooldownTimer.ExpiredOrNotRunning(_runner))
+                        if (currentTime - lastTime <= movementSettings.DoubleTapThreshold && _dashCooldownTimer.ExpiredOrNotRunning(_runner))
                         {
                             Dash(worldDir.normalized);
                             _dashCooldownTimer = TickTimer.CreateFromSeconds(_runner, movementSettings.DashCooldown);
                         }
                     }
-
+        
                     _lastKeyPressTime[inputDir] = currentTime;
                 }
             }
