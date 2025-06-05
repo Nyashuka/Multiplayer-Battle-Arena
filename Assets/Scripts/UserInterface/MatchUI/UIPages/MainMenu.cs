@@ -59,7 +59,7 @@ namespace UserInterface.MatchUI.UIPages
         {
             _isSearching = true;
             GameEventBus.Instance.RaiseEvent(GameEventDefinitions.StartMatchSearchRequested,
-                new StartMatchSearchEventArgs(Convert.ToInt32(playerCountInputField.text)));
+                new StartMatchSearchEventArgs(Convert.ToInt32(playerCountInputField.text), playerNameInputField.text));
             StartCoroutine(CalcMatchTime());
             findMatchButton.SetText("Stop");
         }

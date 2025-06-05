@@ -17,6 +17,13 @@ namespace Networking
     public class MainNetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
     {
         public static MainNetworkRunnerHandler Instance { get; private set; }
+        [SerializeField] private MatchStartConfig startConfig;
+        
+        private int _playersToStart;
+        private string _currentRoomName;
+        private string _playerName;
+        
+        public string PlayerName => _playerName;
 
         public void Awake()
         {
@@ -31,11 +38,6 @@ namespace Networking
             }
         }        
         
-        [SerializeField] private MatchStartConfig startConfig;
-        
-        private int _playersToStart;
-        
-        private string _currentRoomName;
         
         [Networked] private MatchBootstrapper MatchBootstrapper { get; set; }
         
@@ -72,6 +74,7 @@ namespace Networking
             if (args is StartMatchSearchEventArgs startMatchSearchArgs)
             {
                 _playersToStart = startMatchSearchArgs.PlayersCount;
+                _playerName = startMatchSearchArgs.PlayerName;
             }
             else
             {

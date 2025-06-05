@@ -27,7 +27,8 @@ namespace Core.PlayerComponents
             if (_input == null)
                 return;
 
-            if (_input.CurrentInput.Actions.WasPressed(_input.PreviousInput.Actions, GameplayInput.FIRE_BUTTON))
+            // if (_input.CurrentInput.Actions.WasPressed(_input.PreviousInput.Actions, GameplayInput.FIRE_BUTTON))
+            if(_input.CurrentInput.Actions.IsSet(GameplayInput.FIRE_BUTTON))
             {
                 _playerCamera.GetAim(out var origin, out var dir);
                 weaponHandler.Fire(origin, dir);

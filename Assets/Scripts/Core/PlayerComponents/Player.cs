@@ -5,6 +5,7 @@ using Core.UtilityItems;
 using Data;
 using Fusion;
 using Fusion.Addons.SimpleKCC;
+using Networking;
 using Services.EventBus;
 using Services.EventBus.EventBusArguments;
 using UnityEngine;
@@ -14,6 +15,8 @@ namespace Core.PlayerComponents
 	[DefaultExecutionOrder(-5)]
 	public sealed class Player : NetworkBehaviour
 	{
+		[Networked] public string PlayerName { get; private set; }
+		
 		[Header("Player Modules")] 
 		[SerializeField] private PlayerMovement playerMovement;
 		[SerializeField] private PlayerCamera playerCamera;
@@ -28,7 +31,7 @@ namespace Core.PlayerComponents
 		[SerializeField] private Transform mainWeaponTransform;
 		[SerializeField] private GameObject[] playerVisualParts;
 		[SerializeField] private LayerMask playerVisualLayer;
-
+		
 		public NetworkHealth NetworkHealth => networkHealth;
 		public Transform MainWeaponTransform => mainWeaponTransform;
 		
@@ -46,6 +49,16 @@ namespace Core.PlayerComponents
 			playerCamera.Init(input);
 
 			LocalPlayerSetup();
+			if (HasInputAuthority)
+			{
+				Rpc_SetPlayerName(MainNetworkRunnerHandler.Instance.PlayerName);
+			}
+		}
+
+		[Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+		private void Rpc_SetPlayerName(string instancePlayerName)
+		{
+			SetPlayerName(instancePlayerName);
 		}
 
 		private void LocalPlayerSetup()
@@ -107,6 +120,13 @@ namespace Core.PlayerComponents
 			if(!HasStateAuthority) return;
 			
 			playerLifecycle.Respawn(spawnPoint);
+		}
+
+		public void SetPlayerName(string playerName)
+		{
+			if(!HasStateAuthority) return;
+			
+			PlayerName = playerName;
 		}
 	}
 }
