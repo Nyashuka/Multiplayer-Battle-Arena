@@ -37,7 +37,7 @@ namespace Infrastructure
             InitializeMatchManager(); 
             
             // all clients
-            InitializeUI();
+            InitializeHUD();
         }
 
         private void RegisterServices()
@@ -56,6 +56,8 @@ namespace Infrastructure
         {
             ServiceLocator.Instance.UnRegister<WeaponDatabaseService>();
             ServiceLocator.Instance.UnRegister<UtilityItemsDatabaseService>();
+            ServiceLocator.Instance.UnRegister<VFXService>();
+            ServiceLocator.Instance.UnRegister<IPlayersListContext>();
         }
 
         private void InitializeMatchTimer()
@@ -108,7 +110,7 @@ namespace Infrastructure
             player.SetWeapon(playerWeapon);
         }
 
-        private void InitializeUI()
+        private void InitializeHUD()
         {
             var hudFactory = new HUDFactory(matchBootstrapperConfig.GameHUDPrefab);
             var hud = hudFactory.Create();
@@ -125,7 +127,6 @@ namespace Infrastructure
 
                 var weaponDealerFactory = new WeaponDealerFactory(Runner, matchBootstrapperConfig.WeaponDealerPrefab);
                 WeaponDealer = weaponDealerFactory.Create();     
-                
             }            
             
             MatchManager.Initialize(Players, MatchTimer, _map, WeaponDealer);

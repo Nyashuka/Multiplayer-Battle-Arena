@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f6c1280f4a14e46b8c3b2c8d0438c39, type: 3}
+  m_Name: Shield
+  m_EditorClassIdentifier: 
+  id: shield-reduc
+  icon: {fileID: 21300000, guid: 4e51dd99739c98e4697a9bab9b78e45b, type: 3}
+  ability: {fileID: 11400000, guid: e29f0f7b48742194098644a78b8a091f, type: 2}
+  damageReductionMultiplier: 0.5
+  duration: 5
+  shieldPrefab:
+    RawGuidValue: b521dcfaac9f913488eb12fd4e1b422c
+  shieldEffect: {fileID: 1432503776327017652, guid: ccf28ea29cf499744ac31bab90073aba, type: 3}

@@ -12,6 +12,7 @@ namespace UserInterface.MatchUI
         [SerializeField] private UIPageSwitcher pageSwitcher;
         
         private GameHUD _gameHud;
+        public GameHUD GameHUD => _gameHud;
         
         public static UIManager Instance { get; private set; }
 

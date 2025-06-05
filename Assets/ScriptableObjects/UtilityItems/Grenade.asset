@@ -17,7 +17,7 @@ MonoBehaviour:
   ability: {fileID: 11400000, guid: 5a100bf42e68a3f408dc787192e2109d, type: 2}
   grenadePrefab:
     RawGuidValue: 37324c3fa633de441b18a64eceb8669c
-  damage: 80
+  damage: 100
   range: 5
   throwForce: 20
   explodeDelay: 1.3

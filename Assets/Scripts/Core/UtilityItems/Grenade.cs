@@ -15,7 +15,6 @@ namespace Core.UtilityItems
     public class Grenade : UtilityItem
     {
         private GrenadeItemConfig _config;
-        [Networked] private string Id { get; set; }
         private float _timer;
         public PlayerRef Owner { get; private set; }
 
@@ -23,7 +22,7 @@ namespace Core.UtilityItems
         {
             if (HasStateAuthority)
             {
-                Id = grenadeConfig.Id;
+                ItemId = grenadeConfig.Id;
             }
             Owner = owner;
             _config = grenadeConfig;
@@ -60,10 +59,8 @@ namespace Core.UtilityItems
                     damagable = rootHit;
                 }
 
-                if (damagable != null && !damagedTargets.Contains(damagable))
+                if (damagable != null && damagedTargets.Add(damagable))
                 {
-                    damagedTargets.Add(damagable);
-
                     var damageData = new DamageData()
                     {
                         Attacker = Owner,
@@ -85,7 +82,7 @@ namespace Core.UtilityItems
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
             var itemConfig = 
-                (GrenadeItemConfig)ServiceLocator.Instance.GetService<UtilityItemsDatabaseService>().GetById(Id);
+                (GrenadeItemConfig)ServiceLocator.Instance.GetService<UtilityItemsDatabaseService>().GetById(ItemId);
             
             ServiceLocator.Instance.GetService<AudioService>()
                 .PlaySfx(itemConfig.ExplodeSound, transform.position);

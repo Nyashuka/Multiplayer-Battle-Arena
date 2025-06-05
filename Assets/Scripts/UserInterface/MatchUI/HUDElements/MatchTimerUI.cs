@@ -14,12 +14,17 @@ namespace UserInterface.MatchUI.HUDElements
         [SerializeField] private TMP_Text timerText;
         
         private MatchTimer _matchTimer;
-
+        
         private void OnEnable()
         {
             GameEventBus.Instance.Subscribe(GameEventDefinitions.MatchTimerChanged, OnMatchTimerChanged, true);
         }
 
+        private void OnDisable()
+        {
+            GameEventBus.Instance.Unsubscribe(GameEventDefinitions.MatchTimerChanged, OnMatchTimerChanged);
+        }
+        
         private void OnMatchTimerChanged(IEventBusArgs args)
         {
             if (args is MatchTimerChangedEventArgs timer)

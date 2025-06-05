@@ -4,5 +4,7 @@ namespace Core.Modifiers
     {
         T Modify(T value);
         bool IsExpired { get; }
+
+        void SetExpired();
     }
 }

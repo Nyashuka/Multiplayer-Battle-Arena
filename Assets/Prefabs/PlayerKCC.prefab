@@ -736,10 +736,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f630372c2e8b441c8fbed0cc9a6d43c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemConfigs:
-  - {fileID: 11400000, guid: dbb8e4265e2bfe04e9703746fb58d0c5, type: 2}
-  - {fileID: 11400000, guid: cba8399d90f4aae44b7c63a0ae79ea31, type: 2}
-  itemCooldown: 15
+  itemConfigs: []
+  itemCooldown: 3
 --- !u!114 &8325408206188637467
 MonoBehaviour:
   m_ObjectHideFlags: 0

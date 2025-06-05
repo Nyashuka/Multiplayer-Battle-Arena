@@ -5,6 +5,7 @@ using Core.UtilityItems.Abstract;
 using Data;
 using Fusion;
 using ScriptableObjects.AdditionWeapons;
+using Services;
 using Services.EventBus;
 using Services.EventBus.EventBusArguments;
 using Services.ServiceLocatorModule;
@@ -16,7 +17,6 @@ namespace Core.UtilityItems
     {
         [Networked] private string EquippedItemId { get; set; }
         
-        [SerializeField] private List<UtilityItemConfig> itemConfigs;
         [SerializeField] private float itemCooldown;
         
         private Dictionary<string, UtilityItemConfig> _itemDatabase;
@@ -26,7 +26,8 @@ namespace Core.UtilityItems
 
         public void Awake()
         {
-            _itemDatabase = itemConfigs.ToDictionary(c => c.Id);
+            var utilities = ServiceLocator.Instance.GetService<UtilityItemsDatabaseService>().GetAll();
+            _itemDatabase = utilities.ToDictionary(c => c.Id);
         }
 
         public void UseItem(UtilityItemUseContext utilityItemUseContext)

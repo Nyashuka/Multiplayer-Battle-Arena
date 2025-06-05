@@ -20,7 +20,7 @@ namespace Infrastructure
                 var gameBootstrapper = ServiceLocator.Instance.GetService<GameBootstrapper>();
                 gameBootstrapper.Run();
             }
-            catch (ArgumentException e)
+            catch (ArgumentException)
             {
                 ServiceLocator.Instance.Register(this);
                 Run();

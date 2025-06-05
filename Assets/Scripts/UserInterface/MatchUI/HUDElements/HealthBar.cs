@@ -1,3 +1,4 @@
+using System;
 using Core.PlayerComponents.HealthComponent;
 using Services.EventBus;
 using Services.EventBus.EventBusArguments;
@@ -15,6 +16,11 @@ namespace UserInterface.MatchUI.HUDElements
         public void OnEnable()
         {
             GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerInitialSpawned, OnPlayerSpawned, true);            
+        }
+
+        private void OnDisable()
+        {
+            GameEventBus.Instance.Unsubscribe(GameEventDefinitions.PlayerInitialSpawned, OnPlayerSpawned);            
         }
 
         private void OnPlayerSpawned(IEventBusArgs args)

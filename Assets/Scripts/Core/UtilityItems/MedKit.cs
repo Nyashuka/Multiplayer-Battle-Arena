@@ -1,3 +1,4 @@
+using Core.UtilityItems.Abstract;
 using Fusion;
 using ScriptableObjects.AdditionWeapons;
 using Services;
@@ -8,15 +9,13 @@ using UnityEngine;
 
 namespace Core.UtilityItems
 {
-    public class MedKit : NetworkBehaviour
+    public class MedKit : UtilityItem
     {
-        [Networked] private string Id { get; set; }
-
         public void Initialize(string id, Transform parent)
         {
             if (HasStateAuthority)
             {
-                Id = id;
+                ItemId = id;
             }
             
             transform.SetParent(parent, false);
@@ -27,7 +26,7 @@ namespace Core.UtilityItems
 
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
-            var config = (MedKitItemConfig)ServiceLocator.Instance.GetService<UtilityItemsDatabaseService>().GetById(Id);
+            var config = (MedKitItemConfig)ServiceLocator.Instance.GetService<UtilityItemsDatabaseService>().GetById(ItemId);
             ServiceLocator.Instance.GetService<VFXService>()
                 .PlayLocalVFX(config.MedKitEffect, transform.position + transform.up, transform.rotation, transform.parent);
             if (HasInputAuthority)

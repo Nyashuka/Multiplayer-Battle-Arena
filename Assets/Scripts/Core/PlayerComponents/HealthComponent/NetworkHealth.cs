@@ -29,8 +29,8 @@ namespace Core.PlayerComponents.HealthComponent
         public int CurrentLives => NetworkLivesValue;
         public int MaxHealth => maxHealth;
         
-        public event Action<DeathData> DeathEvent;
         public event Action<int> HealthChanged;
+        public event Action<DeathData> DeathEvent; 
 
         public override void Spawned()
         {
@@ -75,9 +75,16 @@ namespace Core.PlayerComponents.HealthComponent
             };
             
             DeathEvent?.Invoke(deathData);
-            
-            ServiceLocator.Instance.GetService<VFXService>()
-                .PlayLocalVFX(deathEffectPrefab, transform.position + transform.up, transform.rotation);
+
+            if (deathEffectPrefab != null)
+            {
+                ServiceLocator.Instance.GetService<VFXService>()
+                    .PlayLocalVFX(deathEffectPrefab, transform.position + transform.up, transform.rotation);
+            }
+            else
+            {
+                Debug.LogWarning($"[NetworkHealth] {gameObject.name} has no death effect");
+            }
             
             Debug.Log("RPC Notify Death Event");
             
