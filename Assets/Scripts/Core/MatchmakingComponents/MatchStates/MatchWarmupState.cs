@@ -7,7 +7,7 @@ namespace Core.MatchmakingComponents.MatchStates
     public class MatchWarmupState : IMatchState, IDisposable
     {
         private readonly MatchManager _manager;
-        private readonly float _warmupDuration = 5f;
+        private readonly float _warmupDuration = 10f;
 
         public MatchWarmupState(MatchManager manager)
         {

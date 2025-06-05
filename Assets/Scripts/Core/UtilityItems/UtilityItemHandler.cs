@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Core.MatchmakingComponents;
-using Core.UtilityItems.Abstract;
 using Data;
 using Fusion;
 using ScriptableObjects.AdditionWeapons;
@@ -24,11 +23,13 @@ namespace Core.UtilityItems
         [Networked] private TickTimer TimerCooldownServer { get; set; }
         private TickTimer TimerCooldownClient { get; set; }
 
-        public void Awake()
+        public override void Spawned()
         {
-            var utilities = ServiceLocator.Instance.GetService<UtilityItemsDatabaseService>().GetAll();
+            var utilities = 
+                ServiceLocator.Instance.GetService<UtilityItemsDatabaseService>().GetAll();
             _itemDatabase = utilities.ToDictionary(c => c.Id);
         }
+
 
         public void UseItem(UtilityItemUseContext utilityItemUseContext)
         {
@@ -84,6 +85,20 @@ namespace Core.UtilityItems
                 GameEventBus.Instance.RaiseEvent(GameEventDefinitions.UtilityItemReceived, 
                     new UtilityItemReceivedEventArgs(EquippedItemId), true); 
             }
+        }
+
+        public void Reset()
+        {
+            if(!HasStateAuthority) return;
+
+            Rpc_ResetCooldown();
+            TimerCooldownServer = default;
+        }
+
+        [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+        private void Rpc_ResetCooldown()
+        {
+            TimerCooldownClient = default;
         }
     }
 }

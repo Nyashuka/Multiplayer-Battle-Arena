@@ -109,5 +109,15 @@ namespace Core.PlayerComponents
 			
 			playerLifecycle.Respawn(spawnPoint);
 		}
+
+		public void FullReset()
+		{
+			if(!HasStateAuthority) return;
+			
+			networkHealth.ResetHealth();
+			networkHealth.ResetLives();
+			
+			utilityItemHandler.Reset();
+		}
 	}
 }

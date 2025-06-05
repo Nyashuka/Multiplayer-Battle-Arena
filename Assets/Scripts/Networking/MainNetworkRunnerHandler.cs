@@ -21,6 +21,8 @@ namespace Networking
         
         private int _playersToStart;
         private string _currentRoomName;
+        
+        public int LobbySize => _playersToStart;
 
         public void Awake()
         {

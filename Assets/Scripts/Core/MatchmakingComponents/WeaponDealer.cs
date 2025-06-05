@@ -29,6 +29,12 @@ namespace Core.MatchmakingComponents
             _utilityDatabase = ServiceLocator.Instance.GetService<UtilityItemsDatabaseService>();
         }
 
+        public override void Despawned(NetworkRunner runner, bool hasState)
+        {
+            GameEventBus.Instance.Unsubscribe(GameEventDefinitions.WeaponRequested, OnWeaponRequested);
+            GameEventBus.Instance.Unsubscribe(GameEventDefinitions.UtilityItemRequested, OnUtilityItemsRequested);
+        }
+
         private void OnUtilityItemsRequested(IEventBusArgs args)
         {
             if (args is UtilityItemRequestedEventArgs utilityItemRequestedEventArgs)

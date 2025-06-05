@@ -64,7 +64,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!114 &346294432470197651
 MonoBehaviour:
@@ -592,10 +592,18 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6875900421475880481, guid: 0c6de93d1062fbd4ba8db28b4f24f344, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7291928451914732505, guid: 0c6de93d1062fbd4ba8db28b4f24f344, type: 3}
       propertyPath: canvasGroup
       value: 
       objectReference: {fileID: 2356879676186793249}
+    - target: {fileID: 7879110594799595220, guid: 0c6de93d1062fbd4ba8db28b4f24f344, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8771165020044180480, guid: 0c6de93d1062fbd4ba8db28b4f24f344, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0

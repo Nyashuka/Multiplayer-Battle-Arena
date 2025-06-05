@@ -5,6 +5,7 @@ using Services.EventBus;
 using Services.EventBus.EventBusArguments;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UserInterface.MatchUI.UIPages
 {
@@ -13,6 +14,7 @@ namespace UserInterface.MatchUI.UIPages
         [SerializeField] private TMP_InputField playerCountInputField;
         [SerializeField] private TMP_Text timer;
         [SerializeField] private SmartButton findMatchButton;
+        [SerializeField] private Button exitGameButton;
 
         private float _searchingTime;
         private bool _isSearching;
@@ -26,14 +28,21 @@ namespace UserInterface.MatchUI.UIPages
             timer.text = "";
         }
 
+        private void OnExitGame()
+        {
+            Application.Quit();
+        }
+        
         private void OnEnable()
         {
             OnCloseEvent += OnClose;
+            exitGameButton.onClick.AddListener(OnExitGame);
         }
 
         private void OnDisable()
         {
             OnCloseEvent -= OnClose;
+            exitGameButton.onClick.RemoveListener(OnExitGame);
         }
 
         private void Start()

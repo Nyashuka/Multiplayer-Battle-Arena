@@ -43,13 +43,14 @@ namespace UserInterface.MatchUI
             {
                 if (MainNetworkRunnerHandler.Instance.MatchState == Data.MatchStateEnum.Matching)
                 {
-                    if (pageSwitcher.IsPageOpened)
+                    if (pageSwitcher.CheckPageOpen<EscMatchMenu>())
                     {
                         pageSwitcher.ClosePage();
                         return;
                     }
                     
-                    pageSwitcher.SwitchPage<EscMatchMenu>();
+                    if(!pageSwitcher.IsPageOpened)
+                        pageSwitcher.SwitchPage<EscMatchMenu>();
                 }
             }
         }
@@ -91,7 +92,11 @@ namespace UserInterface.MatchUI
         {
             if (e is MatchStateChangedEventArgs matchStateChangedEventArgs)
             {
-                if (matchStateChangedEventArgs.State != MatchStateEnum.Ending)
+                if (matchStateChangedEventArgs.State == MatchStateEnum.Warmup)
+                {
+                    pageSwitcher.SwitchPage<StartMatchScreen>().Initialize();
+                }
+                if (matchStateChangedEventArgs.State == MatchStateEnum.Playing)
                 {
                     pageSwitcher.ClosePage();
                 }

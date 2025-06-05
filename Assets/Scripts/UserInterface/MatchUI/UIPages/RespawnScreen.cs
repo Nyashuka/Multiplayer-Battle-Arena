@@ -1,28 +1,21 @@
-using System.Collections.Generic;
 using Fusion;
-using Services;
 using Services.EventBus;
 using Services.EventBus.EventBusArguments;
-using Services.ServiceLocatorModule;
 using TMPro;
 using UnityEngine;
+using UserInterface.MatchUI.Components;
 
 namespace UserInterface.MatchUI.UIPages
 {
     public class RespawnScreen : UIPage
     {
-        [SerializeField] private SelectWeaponButton selectWeaponButtonPrefab;
-        
-        [SerializeField] private RectTransform mainWeaponsParent;
-        [SerializeField] private RectTransform utilityItemsParent;
+        [SerializeField] private MainWeaponSelectionUIComponent weaponSelectionComponent;
+        [SerializeField] private UtilityItemSelectionUIComponent utilityItemSelectionComponent;
         [SerializeField] private TMP_Text timerText;
 
         private bool _timeIsExpired = true;
         private float _respawnAt;
         private NetworkRunner _networkRunner;
-
-        private readonly List<SelectWeaponButton> _selectWeaponButtons = new();
-        private readonly List<SelectWeaponButton> _selectUtilityItemButtons = new();
 
         private void OnEnable()
         {
@@ -41,29 +34,8 @@ namespace UserInterface.MatchUI.UIPages
                 _networkRunner = startRespawnEventArgs.Runner;
                 SetRespawnTime(startRespawnEventArgs.RespawnAt);
 
-                if (_selectWeaponButtons.Count == 0)
-                {
-                    var weapons = ServiceLocator.Instance.GetService<WeaponDatabaseService>().GetAll();
-                    foreach (var weapon in weapons)
-                    {
-                        var weaponButton = Instantiate(selectWeaponButtonPrefab, mainWeaponsParent);
-                        _selectWeaponButtons.Add(weaponButton);
-                        weaponButton.SetWeapon(weapon.Icon, weapon.ID);
-                        weaponButton.OnClick += OnWeaponSelected;
-                    }
-                }
-
-                if (_selectUtilityItemButtons.Count == 0)
-                {
-                    var utilities = ServiceLocator.Instance.GetService<UtilityItemsDatabaseService>().GetAll();
-                    foreach (var utilityItem in utilities)
-                    {
-                        var weaponButton = Instantiate(selectWeaponButtonPrefab, utilityItemsParent);
-                        _selectUtilityItemButtons.Add(weaponButton);
-                        weaponButton.SetWeapon(utilityItem.Icon, utilityItem.Id);
-                        weaponButton.OnClick += OnUtilityItemSelected;
-                    }
-                }
+                weaponSelectionComponent.Initialize();
+                utilityItemSelectionComponent.Initialize(); 
             }
         }
 
@@ -71,12 +43,6 @@ namespace UserInterface.MatchUI.UIPages
         {
             GameEventBus.Instance.RaiseEvent(GameEventDefinitions.UtilityItemRequested, new UtilityItemRequestedEventArgs(id));
             Debug.Log("Raised request utility " + id);
-        }
-
-        private void OnWeaponSelected(string id)
-        {
-            GameEventBus.Instance.RaiseEvent(GameEventDefinitions.WeaponRequested, new WeaponRequestedEventArgs(id));
-            Debug.Log("Raised request weapon " + id);
         }
 
         private void SetRespawnTime(float respawnAt)

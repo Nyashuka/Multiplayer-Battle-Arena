@@ -29,6 +29,7 @@ namespace Core.PlayerComponents.HealthComponent
         public int CurrentLives => NetworkLivesValue;
         public int MaxHealth => maxHealth;
         
+        public event Action<int> LivesChanged;
         public event Action<int> HealthChanged;
         public event Action<DeathData> DeathEvent; 
 
@@ -46,12 +47,13 @@ namespace Core.PlayerComponents.HealthComponent
             NetworkHealthValue = maxHealth;
             OnHealthChanged();
         }
-        
-        private void ResetLives()
+
+        public void ResetLives()
         {
             if(!HasStateAuthority) return;
             
             NetworkLivesValue = maxlives;
+            Rpc_NotifyLivesChanged();
         }
 
         public void AddIncomingDamageModifier(IModifier<int> modifier)
@@ -66,6 +68,12 @@ namespace Core.PlayerComponents.HealthComponent
         } 
         
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void Rpc_NotifyLivesChanged()
+        {
+            LivesChanged?.Invoke(NetworkLivesValue);
+        } 
+        
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         private void Rpc_NotifyDeathEvent()
         {
             var deathData = new DeathData()
@@ -75,6 +83,7 @@ namespace Core.PlayerComponents.HealthComponent
             };
             
             DeathEvent?.Invoke(deathData);
+            LivesChanged?.Invoke(NetworkLivesValue);
 
             if (deathEffectPrefab != null)
             {
@@ -135,8 +144,8 @@ namespace Core.PlayerComponents.HealthComponent
         {
             if (!HasStateAuthority || !IsAlive || amount <= 0)
                 return;
-
-            NetworkHealthValue += amount;
+            
+            NetworkHealthValue = (Mathf.Min(maxHealth, NetworkHealthValue + amount));
             OnHealthChanged();
         }
 

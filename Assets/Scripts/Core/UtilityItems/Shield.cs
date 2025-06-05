@@ -12,15 +12,11 @@ namespace Core.UtilityItems
 {
     public class Shield : UtilityItem
     {
-        private Player _ownerPlayer;
+        [Networked] private Player OwnerPlayer { get; set; }
         private TickTimer _shieldTimer;
         private IModifier<int> _modifier;
         private ShieldItemConfig _config;
         private bool _isStarted;
-
-        public override void Spawned()
-        {
-        }
 
         public void Initialize(string itemId, Player ownerPlayer)
         {
@@ -29,9 +25,7 @@ namespace Core.UtilityItems
                 ItemId = itemId;
             }
             
-            _ownerPlayer = ownerPlayer;
-            transform.SetParent(ownerPlayer.transform);
-            transform.localPosition = Vector3.zero;
+            OwnerPlayer = ownerPlayer;
             
             _config = (ShieldItemConfig)ServiceLocator.Instance.GetService<UtilityItemsDatabaseService>()
                 .GetById(ItemId);
@@ -42,11 +36,17 @@ namespace Core.UtilityItems
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         private void Rpc_SpawnFX()
         {
+            transform.SetParent(OwnerPlayer.transform);
+            transform.localPosition = Vector3.zero;
+            
             _config = (ShieldItemConfig)ServiceLocator.Instance.GetService<UtilityItemsDatabaseService>()
                 .GetById(ItemId);
             
             ServiceLocator.Instance.GetService<VFXService>()
-                .PlayLocalVFX(_config.ShieldEffect, transform.position + transform.up, Quaternion.identity, transform.parent);
+                .PlayLocalVFX(_config.ShieldEffect, 
+                    transform.position + transform.up, 
+                    Quaternion.identity, 
+                    transform.parent);
         }
 
         private void ActivateShield()
@@ -57,7 +57,7 @@ namespace Core.UtilityItems
             _modifier = new ShieldModifier(_config.DamageReductionMultiplier);
             _shieldTimer = TickTimer.CreateFromSeconds(Runner, _config.Duration);
             _isStarted = true;
-            _ownerPlayer.NetworkHealth.AddIncomingDamageModifier(_modifier);
+            OwnerPlayer.NetworkHealth.AddIncomingDamageModifier(_modifier);
         }
 
         public override void FixedUpdateNetwork()

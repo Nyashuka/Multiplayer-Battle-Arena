@@ -25,7 +25,7 @@ namespace ScriptableObjects.Abilities
                     user.Object.InputAuthority)
                     .GetComponent<MedKit>();
                 
-                medKit.Initialize(medKitConfig.Id, user.transform);
+                medKit.Initialize(medKitConfig.Id, user);
             }
         }
     }

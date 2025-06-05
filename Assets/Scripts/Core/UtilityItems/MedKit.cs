@@ -1,3 +1,4 @@
+using Core.PlayerComponents;
 using Core.UtilityItems.Abstract;
 using Fusion;
 using ScriptableObjects.AdditionWeapons;
@@ -11,25 +12,34 @@ namespace Core.UtilityItems
 {
     public class MedKit : UtilityItem
     {
-        public void Initialize(string id, Transform parent)
+        [Networked] private Player OwnerPlayer { get; set; }
+        
+        public void Initialize(string id, Player ownerPlayer)
         {
             if (HasStateAuthority)
             {
                 ItemId = id;
             }
             
-            transform.SetParent(parent, false);
-            transform.localPosition = Vector3.zero;
+            OwnerPlayer = ownerPlayer;
             
-            Runner.Despawn(Object);
+            Rpc_SpawnFX();
         }
 
-        public override void Despawned(NetworkRunner runner, bool hasState)
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void Rpc_SpawnFX()
         {
+            transform.SetParent(OwnerPlayer.transform, false);
+            transform.localPosition = Vector3.zero;
+            
             var config = (MedKitItemConfig)ServiceLocator.Instance.GetService<UtilityItemsDatabaseService>().GetById(ItemId);
             ServiceLocator.Instance.GetService<VFXService>()
-                .PlayLocalVFX(config.MedKitEffect, transform.position + transform.up, transform.rotation, transform.parent);
-            if (HasInputAuthority)
+                .PlayLocalVFX(config.MedKitEffect,
+                transform.position + transform.up, 
+                transform.rotation,
+                transform.parent);
+            
+            if (Runner.LocalPlayer == OwnerPlayer.Object.InputAuthority)
             {
                 ServiceLocator.Instance.GetService<AudioService>()
                     .PlaySfx(config.MedKitSound, transform.position + transform.up);

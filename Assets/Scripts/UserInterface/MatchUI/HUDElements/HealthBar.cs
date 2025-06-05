@@ -2,6 +2,7 @@ using System;
 using Core.PlayerComponents.HealthComponent;
 using Services.EventBus;
 using Services.EventBus.EventBusArguments;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,7 @@ namespace UserInterface.MatchUI.HUDElements
     public class HealthBar : HUDElement
     {
         [SerializeField] private Slider healthSlider;
+        [SerializeField] private TMP_Text livesText;
         
         private NetworkHealth _networkHealth;
 
@@ -38,9 +40,17 @@ namespace UserInterface.MatchUI.HUDElements
             healthSlider.value = health.CurrentHealth;
             healthSlider.minValue = 0;
 
+            livesText.text = health.CurrentLives.ToString();
+
             health.HealthChanged += OnHealthChanged;
+            health.LivesChanged += OnLivesChanged;            
             
             _networkHealth = health;
+        }
+
+        private void OnLivesChanged(int lives)
+        {
+            livesText.text = lives.ToString();
         }
 
         private void OnHealthChanged(int newHealth)

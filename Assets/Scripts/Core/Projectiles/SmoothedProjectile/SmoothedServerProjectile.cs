@@ -13,13 +13,14 @@ namespace Core.Projectiles.SmoothedProjectile
     {
         public SimpleKinematicWeapon weapon;
         private ProjectileParams _projectileParams;
+        private Vector3 _direction;
 
         private float _timer;
         
         public void Init(ProjectileParams projectileParams)
         {
             _projectileParams = projectileParams;
-            _projectileParams.Direction = (projectileParams.Target - projectileParams.VisualStart).normalized;
+            _direction = (projectileParams.Target - projectileParams.VisualStart).normalized;
         }
 
         public override void FixedUpdateNetwork()
@@ -27,10 +28,10 @@ namespace Core.Projectiles.SmoothedProjectile
             if (!HasStateAuthority || weapon == null) return;
 
             Vector3 currentPosition = transform.position;
-            Vector3 displacement = _projectileParams.Direction * (_projectileParams.Speed * Runner.DeltaTime);
+            Vector3 displacement = _direction * (_projectileParams.Speed * Runner.DeltaTime);
             Vector3 nextPosition = currentPosition + displacement;
             
-            if (Runner.GetPhysicsScene().Raycast(currentPosition, _projectileParams.Direction, out var hit, displacement.magnitude))
+            if (Runner.GetPhysicsScene().Raycast(currentPosition, _direction, out var hit, displacement.magnitude))
             {
                 IDamagable damagable = null;
                 
