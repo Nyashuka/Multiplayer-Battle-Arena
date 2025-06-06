@@ -17,11 +17,17 @@ namespace Networking
     public class MainNetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
     {
         public static MainNetworkRunnerHandler Instance { get; private set; }
+        [Networked] private MatchBootstrapper MatchBootstrapper { get; set; }
+        
         [SerializeField] private MatchStartConfig startConfig;
         
+        private FindMatchStarter _findMatchStarter;
+        private MatchStateEnum _matchState;
+        private NetworkRunner _networkRunner;
         private int _playersToStart;
         private string _currentRoomName;
         
+        public MatchStateEnum MatchState => _matchState;
         public int LobbySize => _playersToStart;
 
         public void Awake()
@@ -37,21 +43,17 @@ namespace Networking
             }
         }        
         
-        
-        [Networked] private MatchBootstrapper MatchBootstrapper { get; set; }
-        
-        private FindMatchStarter _findMatchStarter;
-        private MatchStateEnum _matchState;
-        private NetworkRunner _networkRunner;
-        
-        public MatchStateEnum MatchState => _matchState;
-        
         private void Start()
         {
-            DontDestroyOnLoad(gameObject);
             Reset();
             GameEventBus.Instance.Subscribe(GameEventDefinitions.StartMatchSearchRequested, OnStartSearchMatchRequested);
             GameEventBus.Instance.Subscribe(GameEventDefinitions.StopMatchSearchRequested, OnStopSearchMatchRequested);
+        }
+        
+        private void OnDisable()
+        {
+            GameEventBus.Instance.Unsubscribe(GameEventDefinitions.StartMatchSearchRequested, OnStartSearchMatchRequested);
+            GameEventBus.Instance.Unsubscribe(GameEventDefinitions.StopMatchSearchRequested, OnStopSearchMatchRequested);
         }
 
         private void Reset()
@@ -72,6 +74,8 @@ namespace Networking
             if(_matchState == MatchStateEnum.Matching || _matchState == MatchStateEnum.Searching)
                 return;
             
+            _matchState = MatchStateEnum.Searching;
+            
             if (args is StartMatchSearchEventArgs startMatchSearchArgs)
             {
                 _playersToStart = startMatchSearchArgs.PlayersCount;
@@ -81,7 +85,6 @@ namespace Networking
                 _playersToStart = startConfig.PlayersInMatch;
             }
             
-            _matchState = MatchStateEnum.Searching;
             _networkRunner = InstantiateNetworkRunner();
             _networkRunner.AddCallbacks(this);
             _findMatchStarter.FindMatchAsync(_networkRunner, _playersToStart);
@@ -89,9 +92,6 @@ namespace Networking
 
         private void OnStopSearchMatchRequested(IEventBusArgs args)
         {
-            if(_matchState == MatchStateEnum.Matching || _matchState == MatchStateEnum.Lobby)
-                return;
-            
             _networkRunner.Shutdown();
             _matchState = MatchStateEnum.Lobby;
         }
@@ -122,12 +122,17 @@ namespace Networking
 
         private void StartMatch()
         {
+            if(_matchState == MatchStateEnum.Matching)
+                return;
+            
             _matchState = MatchStateEnum.Matching;
 
             if (_networkRunner.IsServer)
             {
                 var runnerSimulatePhysics3D = _networkRunner.gameObject.AddComponent<RunnerSimulatePhysics3D>();
                 runnerSimulatePhysics3D.ClientPhysicsSimulation = ClientPhysicsSimulation.SimulateAlways;
+
+                _networkRunner.SessionInfo.IsOpen = false;
             }
             
             if (_networkRunner.IsSceneAuthority) 
@@ -151,6 +156,11 @@ namespace Networking
 
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
         {
+            if (runner.IsServer)
+            {
+                GameEventBus.Instance.RaiseEvent(GameEventDefinitions.PlayerLeft, new PlayerLeftMatchEventArgs(player));
+                
+            }
         }
 
         public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)

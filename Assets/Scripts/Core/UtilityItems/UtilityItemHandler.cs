@@ -22,15 +22,15 @@ namespace Core.UtilityItems
         
         [Networked] private TickTimer TimerCooldownServer { get; set; }
         private TickTimer TimerCooldownClient { get; set; }
-
+        
         public override void Spawned()
         {
             var utilities = 
                 ServiceLocator.Instance.GetService<UtilityItemsDatabaseService>().GetAll();
             _itemDatabase = utilities.ToDictionary(c => c.Id);
         }
-
-
+        
+        
         public void UseItem(UtilityItemUseContext utilityItemUseContext)
         {
             if (HasInputAuthority)
@@ -42,7 +42,7 @@ namespace Core.UtilityItems
                 }
             }
         }
-
+        
         [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
         private void Rpc_UseItem(UtilityItemUseContext utilityItemUseContext, RpcInfo info = default)
         {
@@ -59,24 +59,24 @@ namespace Core.UtilityItems
             TimerCooldownClient = TickTimer.CreateFromSeconds(Runner, itemCooldown);
             
             if (!_itemDatabase.TryGetValue(EquippedItemId, out var config)) return;
-
+        
             utilityItemUseContext.Owner = owner;
-
+        
             var playersContext = ServiceLocator.Instance.GetService<IPlayersListContext>();
             if (playersContext!= null && playersContext.Players.TryGetValue(owner, out var user))
             {
                 config.Ability.Use(Runner, user, config, utilityItemUseContext);
             } 
         }
-
+        
         public void SetItem(string id)
         {
             if(!HasStateAuthority) return;
-
+        
             EquippedItemId = id;
             Rpc_LocalSetupItem();
         }
-
+        
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         private void Rpc_LocalSetupItem()
         {
@@ -86,19 +86,20 @@ namespace Core.UtilityItems
                     new UtilityItemReceivedEventArgs(EquippedItemId), true); 
             }
         }
-
+        
         public void Reset()
         {
             if(!HasStateAuthority) return;
-
+        
             Rpc_ResetCooldown();
             TimerCooldownServer = default;
         }
-
+        
         [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
         private void Rpc_ResetCooldown()
         {
             TimerCooldownClient = default;
         }
-    }
+        
+    } 
 }

@@ -16,7 +16,7 @@ namespace Core.MatchmakingComponents.MatchStates
     
         public void Enter()
         {
-            _context.MatchTimer.StartMatchTimer(180);
+            _context.MatchTimer.StartMatchTimer(_context.MatchConfig.MatchDuration);
             _context.MatchTimer.TimerEndedEvent += OnTimerEnded;
 
             foreach (var player in _context.Players)

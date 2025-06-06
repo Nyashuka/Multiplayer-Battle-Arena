@@ -19,6 +19,8 @@ namespace UserInterface.MatchUI.UIPages
         private void OnConfirmButtonClicked()
         {
             Close();
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
 
         public void Initialize()

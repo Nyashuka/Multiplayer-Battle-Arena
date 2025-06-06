@@ -20,10 +20,7 @@ namespace Core.UtilityItems
 
         public void Initialize(GrenadeItemConfig grenadeConfig, PlayerRef owner)
         {
-            if (HasStateAuthority)
-            {
-                ItemId = grenadeConfig.Id;
-            }
+            ItemId = grenadeConfig.Id;
             Owner = owner;
             _config = grenadeConfig;
             _timer = _config.ExplodeDelay;

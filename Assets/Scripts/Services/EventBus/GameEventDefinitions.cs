@@ -3,6 +3,7 @@ namespace Services.EventBus
     public static class GameEventDefinitions
     {
         public static string PlayerDeath => "PlayerDeath";
+        public static string PlayerLeft => "PlayerLeft";
         public static string PlayerMatchStatsChanged => "PlayerMatchStatsChanged";
         public static string StartMatchSearchRequested => "StartMatchSearchRequested";
         public static string StopMatchSearchRequested => "StopMatchSearchRequested";

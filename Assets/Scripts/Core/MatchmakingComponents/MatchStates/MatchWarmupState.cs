@@ -7,7 +7,6 @@ namespace Core.MatchmakingComponents.MatchStates
     public class MatchWarmupState : IMatchState, IDisposable
     {
         private readonly MatchManager _manager;
-        private readonly float _warmupDuration = 10f;
 
         public MatchWarmupState(MatchManager manager)
         {
@@ -16,7 +15,7 @@ namespace Core.MatchmakingComponents.MatchStates
 
         public void Enter()
         {
-            _manager.MatchTimer.StartMatchTimer(_warmupDuration);
+            _manager.MatchTimer.StartMatchTimer(_manager.MatchConfig.WarmupDuration);
             _manager.MatchTimer.TimerEndedEvent += OnTimerEnded;
         }
 

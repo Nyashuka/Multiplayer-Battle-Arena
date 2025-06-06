@@ -8,7 +8,7 @@ using UserInterface.MatchUI.HUDElements;
 
 namespace ScriptableObjects
 {
-    [CreateAssetMenu(menuName = "Game/MatchConfig")]
+    [CreateAssetMenu(menuName = "Game/MatchBootstrapperConfig")]
     public class MatchBootstrapperConfig : ScriptableObject
     {
         [Header("Network Prefabs")]

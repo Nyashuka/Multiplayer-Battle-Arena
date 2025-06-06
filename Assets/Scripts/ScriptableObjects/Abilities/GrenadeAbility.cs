@@ -7,14 +7,14 @@ using UnityEngine;
 
 namespace ScriptableObjects.Abilities
 {
-    [CreateAssetMenu(menuName = "UtilityAbilities/Grenade Ability")] 
+    [CreateAssetMenu(menuName = "UtilityAbilities/Grenade Ability")]
     public class GrenadeAbility : UtilityItemAbilityBase
     {
         public override void Use(NetworkRunner runner, Player user, UtilityItemConfig config, UtilityItemUseContext utilityItemUseContext)
         {
             var grenadeItemConfig = (GrenadeItemConfig)config;
             var spawnPoint = utilityItemUseContext.ThrowFrom;
-
+        
             var prefab = grenadeItemConfig.GrenadePrefab;
             var instance = runner.Spawn(prefab, spawnPoint, Quaternion.identity, 
                 onBeforeSpawned: (runner, obj) =>
@@ -24,7 +24,8 @@ namespace ScriptableObjects.Abilities
                 });
             
             var rigid = instance.GetComponent<Rigidbody>();
-            rigid.AddForce(utilityItemUseContext.AimDirection.normalized * grenadeItemConfig.ThrowForce, ForceMode.Impulse);
+            rigid.AddForce(utilityItemUseContext.AimDirection.normalized * grenadeItemConfig.ThrowForce, 
+                ForceMode.Impulse);
         }
     }
 }

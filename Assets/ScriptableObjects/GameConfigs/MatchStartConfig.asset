@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   matchBootstrapperPrefab: {fileID: 6361803122456692904, guid: c7b32fdf3daa5f742a57d869a8eea2a8, type: 3}
   networkRunnerPrefab: {fileID: 7363954350380854075, guid: 00e7ad302b00bfc4eb15a56f8b543acf, type: 3}
-  playersInMatch: 3
+  playersInMatch: 2
   gameScene:
     RawValue: 3

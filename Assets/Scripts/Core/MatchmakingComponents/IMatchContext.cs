@@ -4,6 +4,7 @@ using Core.PlayerComponents;
 using Environment;
 using Fusion;
 using Infrastructure.MatchStates;
+using ScriptableObjects;
 
 namespace Core.MatchmakingComponents
 {
@@ -15,6 +16,7 @@ namespace Core.MatchmakingComponents
         Map Map { get; }
         MatchScore MatchScore { get; }
         MatchStatistic MatchStatistic { get; }
+        MatchConfig MatchConfig { get; }
 
         void SetState(IMatchState newState);
         void RespawnPlayer(PlayerRef playerRef);

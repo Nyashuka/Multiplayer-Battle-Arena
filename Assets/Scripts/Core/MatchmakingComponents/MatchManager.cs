@@ -7,6 +7,7 @@ using Data;
 using Environment;
 using Fusion;
 using Infrastructure.MatchStates;
+using ScriptableObjects;
 using Services.EventBus;
 using Services.EventBus.EventBusArguments;
 using UnityEngine;
@@ -16,32 +17,24 @@ namespace Core.MatchmakingComponents
 {
     public class MatchManager : NetworkBehaviour, IMatchContext, IPlayersListContext
     {
+        // config
+        [SerializeField] private MatchConfig config;
+        public MatchConfig MatchConfig => config;
+        
+        // match data
         public Dictionary<PlayerRef, Player> Players { get; private set; }
         public List<PlayerRef> AlivePlayers { get; private set; }
+        
+        // match components
         public MatchTimer MatchTimer { get; private set; }
         public Map Map { get; private set; }
         public MatchScore MatchScore { get; private set; }
         public MatchStatistic MatchStatistic { get; private set; }
-
-        private WeaponDealer _weaponDealer;
-        private PlayersRespawner _playersRespawner;
-
         private IMatchState CurrentState { get; set; }
 
-        public override void Spawned()
-        {
-            MatchScore = new MatchScore();
-            MatchStatistic = new MatchStatistic();
-            _playersRespawner = new PlayersRespawner(this);
-        }
-
-        public override void FixedUpdateNetwork()
-        {
-            if (!HasStateAuthority) return;
-
-            CurrentState?.Update();
-            _playersRespawner?.Update(Runner);
-        }
+        // match utilities
+        private WeaponDealer _weaponDealer;
+        private PlayersRespawner _playersRespawner;
 
         public void Initialize(Dictionary<PlayerRef, Player> players, MatchTimer matchTimer, Map map,
             WeaponDealer weaponDealer)
@@ -57,7 +50,49 @@ namespace Core.MatchmakingComponents
             if (HasStateAuthority)
             {
                 SetState(new MatchWarmupState(this));
+            }
+        }
+
+        public override void Spawned()
+        {
+            MatchScore = new MatchScore();
+            MatchStatistic = new MatchStatistic();
+            _playersRespawner = new PlayersRespawner(this);
+            
+            if (HasStateAuthority)
+            {
                 GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerDeath, OnPlayerDeath);
+                GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerLeft, OnPlayerLeft);
+            }
+        }
+        
+        public override void Despawned(NetworkRunner runner, bool hasState)
+        {
+            GameEventBus.Instance.Unsubscribe(GameEventDefinitions.PlayerDeath, OnPlayerDeath);
+            GameEventBus.Instance.Unsubscribe(GameEventDefinitions.PlayerLeft, OnPlayerLeft);
+        }
+        
+        public override void FixedUpdateNetwork()
+        {
+            if (!HasStateAuthority) return;
+
+            CurrentState?.Update();
+            _playersRespawner?.Update(Runner);
+        }
+
+        private void OnPlayerLeft(IEventBusArgs e)
+        {
+            if(!HasStateAuthority) return;
+
+            if (e is PlayerLeftMatchEventArgs playerLeftMatchEventArgs)
+            {
+                if(Players.TryGetValue(playerLeftMatchEventArgs.PlayerRef, out var player))
+                {
+                    Runner.Despawn(player.Object);
+                    Players.Remove(playerLeftMatchEventArgs.PlayerRef);
+                }
+                
+                AlivePlayers.Remove(playerLeftMatchEventArgs.PlayerRef);
             }
         }
 
