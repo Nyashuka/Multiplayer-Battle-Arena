@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8570752020084288795}
   - component: {fileID: 640963728787274012}
   - component: {fileID: 6392515151891680247}
+  - component: {fileID: -7841831602728931959}
   m_Layer: 0
   m_Name: NetworkRunner
   m_TagString: Untagged
@@ -213,3 +214,17 @@ MonoBehaviour:
   useOnAudioFilterRead: 0
   useMicrophoneTypeFallback: 1
   recordWhenJoined: 1
+--- !u!114 &-7841831602728931959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7428283523963772532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90873294d0a34d24a45d3bf43376b5e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  recorder: {fileID: 6392515151891680247}
+  keyCode: 99

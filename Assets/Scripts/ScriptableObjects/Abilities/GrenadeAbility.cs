@@ -23,8 +23,8 @@ namespace ScriptableObjects.Abilities
                     grenade.Initialize(grenadeItemConfig, utilityItemUseContext.Owner);
                 });
             
-            var rigid = instance.GetComponent<Rigidbody>();
-            rigid.AddForce(utilityItemUseContext.AimDirection.normalized * grenadeItemConfig.ThrowForce, 
+            var rigidbody = instance.GetComponent<Rigidbody>();
+            rigidbody.AddForce(utilityItemUseContext.AimDirection.normalized * grenadeItemConfig.ThrowForce, 
                 ForceMode.Impulse);
         }
     }
