@@ -9,6 +9,8 @@ using Infrastructure.Factories;
 using Services.Audio;
 using Services.ServiceLocatorModule;
 using UnityEngine;
+using UnityEngine.Rendering;
+using Utils.ObjectPoolUtil;
 
 namespace Core.MainWeapons
 {
@@ -16,11 +18,13 @@ namespace Core.MainWeapons
     {
         [SerializeField] private Transform firePoint;
 
-        private readonly Dictionary<Guid, VisualProjectileBase> _spawnedProjectiles = new();
-        private ServerProjectileFactory _serverProjectileFactory;
-
-        [Networked] private TickTimer CooldownTimer { get; set; }
+        // client
         private TickTimer LocalCooldownTimer { get; set; }
+        private readonly Dictionary<Guid, VisualProjectileBase> _spawnedProjectiles = new();
+        
+        // host
+        [Networked] private TickTimer CooldownTimer { get; set; }
+        private ServerProjectileFactory _serverProjectileFactory;
         
         public override void Spawned()
         {
@@ -40,45 +44,54 @@ namespace Core.MainWeapons
             {
                 Id = Guid.NewGuid(),
                 VisualStart = firePoint.position,
-                ServerStart = start,
+                CameraStart = start,
                 Direction = direction,
                 Speed = _config.MuzzleVelocity,
                 LifeTime = _config.BulletLifeTime,
                 Owner = Object.InputAuthority
             };
+            
             if (LocalCooldownTimer.ExpiredOrNotRunning(Runner) && CooldownTimer.ExpiredOrNotRunning(Runner))
             {
                 StartFire(projectileParams);
             }
         }
 
+        private Vector3 GetTargetPosition(Vector3 start, Vector3 direction, float distance)
+        {
+            if (Physics.Raycast(start, direction, out RaycastHit hit,
+                    _config.MaxDistance))
+            {
+                return hit.point;
+            }
+            
+            return start + direction * _config.MaxDistance;
+        }
+
+        private VisualProjectileBase SpawnVisualProjectile(ProjectileParams projectileParams)
+        {
+            var visualProjectile = _dummyProjectilesPool.Get(firePoint.position, firePoint.rotation); //Instantiate(visualPrefab, firePoint.position, firePoint.rotation);
+            visualProjectile.Init(projectileParams);
+            visualProjectile.Launch();
+            
+            return visualProjectile;
+        }
+        
         private void StartFire(ProjectileParams projectileParams)
         {
             LocalCooldownTimer = TickTimer.CreateFromSeconds(Runner, _config.FireRate);
             
-            if (Physics.Raycast(projectileParams.ServerStart, projectileParams.Direction, out RaycastHit hit,
-                    _config.MaxDistance))
-            {
-                projectileParams.Target = hit.point;
-            }
-            else
-            {
-                projectileParams.Target =
-                    projectileParams.ServerStart + projectileParams.Direction * _config.MaxDistance;
-            }
+            projectileParams.Target = 
+                GetTargetPosition(projectileParams.CameraStart, projectileParams.Direction, _config.MaxDistance);
  
-            var visualPrefab = _config.ProjectileConfig.DummyProjectilePrefab;
-            var visualProjectile = Instantiate(visualPrefab, firePoint.position, firePoint.rotation);
-            visualProjectile.Init(projectileParams);
-            visualProjectile.Launch();
-
             if (HasInputAuthority)
             {
                 ServiceLocator.Instance.GetService<AudioService>()
                     .PlaySfx(_config.FireSound, firePoint.position);
             }
 
-            _spawnedProjectiles[projectileParams.Id] = visualProjectile;   
+            _spawnedProjectiles[projectileParams.Id] = SpawnVisualProjectile(projectileParams);
+   
             Rpc_ServerFire(projectileParams);
         }
         
@@ -101,13 +114,8 @@ namespace Core.MainWeapons
         private void RPC_SpawnDummyProjectileInOthers(ProjectileParams projectileParams)
         {
             if(HasInputAuthority) return;
-            
-            var visualPrefab = _config.ProjectileConfig.DummyProjectilePrefab;
-            var visualProjectile = Instantiate(visualPrefab, firePoint.position, firePoint.rotation);
-            visualProjectile.Init(projectileParams);
-            visualProjectile.Launch();
-            
-            _spawnedProjectiles[projectileParams.Id] = visualProjectile;
+
+            _spawnedProjectiles[projectileParams.Id] = SpawnVisualProjectile(projectileParams);
         }
         
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -118,7 +126,7 @@ namespace Core.MainWeapons
             if (visualProjectile)
             {
                 visualProjectile.Explode(position);
-                Destroy(visualProjectile.gameObject);
+                _dummyProjectilesPool.Return(visualProjectile);
             }
 
             _spawnedProjectiles.Remove(id);

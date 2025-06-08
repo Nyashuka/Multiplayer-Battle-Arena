@@ -23,7 +23,7 @@ namespace Infrastructure.Factories
             projectileParams.Damage = _config.Damage;
             projectileParams.LifeTime = _config.BulletLifeTime;
 
-            if (Physics.Raycast(projectileParams.ServerStart, projectileParams.Direction, out RaycastHit hit,
+            if (Physics.Raycast(projectileParams.CameraStart, projectileParams.Direction, out RaycastHit hit,
                     _config.MaxDistance))
             {
                 projectileParams.Target = hit.point;
@@ -31,7 +31,7 @@ namespace Infrastructure.Factories
             else
             {
                 projectileParams.Target =
-                    projectileParams.ServerStart + projectileParams.Direction * _config.MaxDistance;
+                    projectileParams.CameraStart + projectileParams.Direction * _config.MaxDistance;
             }
 
             var serverPrefab = _config.ProjectileConfig.ServerProjectilePrefab;

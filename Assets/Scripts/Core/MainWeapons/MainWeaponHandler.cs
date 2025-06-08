@@ -50,7 +50,10 @@ namespace Core.MainWeapons
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         private void Rpc_LocalSetup()
         {
-            EquippedWeapon.Initialize(arsenal.Find(x => x.ID == EquippedWeaponId));
+            if(!HasStateAuthority)
+            {
+                EquippedWeapon.Initialize(arsenal.Find(x => x.ID == EquippedWeaponId));
+            }
             EquippedWeapon.transform.SetParent(gunHolder);
             EquippedWeapon.transform.localPosition = new Vector3(0, 0, 0.5f);
             EquippedWeapon.transform.localRotation = Quaternion.identity;

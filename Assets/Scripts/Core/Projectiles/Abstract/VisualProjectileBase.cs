@@ -1,11 +1,12 @@
 using Core.Projectiles.Data;
 using Services.VFXs;
 using UnityEngine;
+using Utils.ObjectPoolUtil;
 using VFX;
 
 namespace Core.Projectiles.Abstract
 {
-    public abstract class VisualProjectileBase : MonoBehaviour, IProjectileInitialize
+    public abstract class VisualProjectileBase : PoolableObject, IProjectileInitialize
     {
         [SerializeField] protected ParticleSystem burstEffectPrefab;
         protected VFXService _vfxService;

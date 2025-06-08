@@ -38,7 +38,8 @@ namespace Core.Projectiles.SmoothedProjectile
             _timer += Time.deltaTime;
             if (_timer > _projectileParams.LifeTime)
             {
-                Destroy(gameObject);
+                _running = false;
+                _timer = 0f;
             }
         }
     }

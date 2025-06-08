@@ -9,7 +9,7 @@ namespace Core.Projectiles.Data
         public Guid Id;
         public float Speed;
         public Vector3 Direction;
-        public Vector3 ServerStart;
+        public Vector3 CameraStart;
         public Vector3 VisualStart;
         public Vector3 Target;
         public int Damage;
