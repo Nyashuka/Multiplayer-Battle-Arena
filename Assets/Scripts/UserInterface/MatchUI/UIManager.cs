@@ -17,6 +17,11 @@ namespace UserInterface.MatchUI
         
         public static UIManager Instance { get; private set; }
 
+        public void OpenInitialPage()
+        {
+            pageSwitcher.SwitchPage<MainMenu>();
+        }
+        
         public void Awake()
         {
             if (Instance != null && Instance != this)
@@ -32,9 +37,21 @@ namespace UserInterface.MatchUI
             OpenInitialPage();
         }
 
-        public void OpenInitialPage()
+        public void OnEnable()
         {
-            pageSwitcher.SwitchPage<MainMenu>();
+            GameEventBus.Instance.Subscribe(GameEventDefinitions.MatchStateChanged, OnMatchStateChanged);
+            GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerRespawnStarted, OnStartRespawn);
+            GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerRespawned, OnPlayerRespawned);
+            GameEventBus.Instance.Subscribe(GameEventDefinitions.LeaderboardDataAvailable, OnShowLeaderboard);
+            GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerLost, OnPlayerLost);
+        }
+
+        public void OnDisable()
+        {
+            GameEventBus.Instance.Unsubscribe(GameEventDefinitions.MatchStateChanged, OnMatchStateChanged);
+            GameEventBus.Instance.Unsubscribe(GameEventDefinitions.PlayerRespawnStarted, OnStartRespawn);
+            GameEventBus.Instance.Unsubscribe(GameEventDefinitions.PlayerRespawned, OnPlayerRespawned);
+            GameEventBus.Instance.Unsubscribe(GameEventDefinitions.LeaderboardDataAvailable, OnShowLeaderboard);
         }
 
         public void Update()
@@ -54,15 +71,12 @@ namespace UserInterface.MatchUI
                 }
             }
         }
-
-        public void OnEnable()
+        
+        private void OnPlayerLost(IEventBusArgs e)
         {
-            GameEventBus.Instance.Subscribe(GameEventDefinitions.MatchStateChanged, OnMatchStateChanged);
-            GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerRespawnStarted, OnStartRespawn);
-            GameEventBus.Instance.Subscribe(GameEventDefinitions.PlayerRespawned, OnPlayerRespawned);
-            GameEventBus.Instance.Subscribe(GameEventDefinitions.LeaderboardDataAvailable, OnShowLeaderboard);
+            pageSwitcher.SwitchPage<LoosingScreen>();
         }
-
+        
         private void OnShowLeaderboard(IEventBusArgs e)
         {
             Debug.Log("LeaderBoard event");

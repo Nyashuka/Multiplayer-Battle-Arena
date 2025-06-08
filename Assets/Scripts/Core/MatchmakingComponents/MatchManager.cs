@@ -153,6 +153,7 @@ namespace Core.MatchmakingComponents
             {
                 if (player.NetworkHealth.CurrentLives <= 0)
                 {
+                    Rpc_NotifyPlayerLost(victim);
                     AlivePlayers.Remove(victim);
                     return;
                 }
@@ -230,6 +231,15 @@ namespace Core.MatchmakingComponents
             foreach (var stat in statsData) 
             {
                 Debug.Log($"{stat.Owner} - Kills: {stat.Kills}, Deaths: {stat.Deaths}");
+            }
+        }
+
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void Rpc_NotifyPlayerLost(PlayerRef playerRef)
+        {
+            if (Runner.LocalPlayer == playerRef)
+            {
+                GameEventBus.Instance.RaiseEvent(GameEventDefinitions.PlayerLost, new EmptyEventArgs());
             }
         }
     }
