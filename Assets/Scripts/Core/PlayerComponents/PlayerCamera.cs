@@ -7,6 +7,7 @@ namespace Core.PlayerComponents
     {
         [SerializeField] private Transform cameraHandle;
         [SerializeField] private Transform gunTarget;
+        [SerializeField] private Transform fireFrom;
         [SerializeField] private SimpleKCC kcc;
 
         private Camera _camera;
@@ -36,27 +37,24 @@ namespace Core.PlayerComponents
             Ray ray = new Ray(_mainCam.position, _mainCam.forward);
             Vector3 hitPoint = ray.GetPoint(_maxDistance);
             
-            if (Physics.Raycast(ray, out var hit, _maxDistance, ~LayerMask.GetMask("Projectile")))
+            if (Physics.Raycast(ray, out var hit, _maxDistance, ~LayerMask.GetMask("Player")))
             {
                 if (hit.distance < minDistance) return;
                 
                 hitPoint = hit.point;
             }
-
+            
             gunTarget.rotation = Quaternion.LookRotation((hitPoint - gunTarget.position).normalized);
         }
         
         public void GetAim(out Vector3 origin, out Vector3 direction)
         {
             Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-    
-            int mask = ~LayerMask.GetMask("Player");
+            // int mask = ~LayerMask.GetMask("Player");
 
-            Vector3 cameraHit = Vector3.zero;
-            if (Physics.Raycast(ray, out RaycastHit hit, 100f, mask))
+            if (Physics.Raycast(ray, out RaycastHit hit, _maxDistance))
             {
                 origin = ray.origin;
-                cameraHit = hit.point;
                 direction = (hit.point - origin).normalized;
             }
             else
@@ -65,7 +63,7 @@ namespace Core.PlayerComponents
                 direction = ray.direction;
             }
             
-            Debug.DrawRay(ray.origin, cameraHit, Color.red, 2f);
+            Debug.DrawRay(ray.origin, direction * _maxDistance, Color.red, 2f);
         }
     }
 }

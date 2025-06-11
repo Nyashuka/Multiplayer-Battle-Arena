@@ -487,6 +487,7 @@ GameObject:
   - component: {fileID: 4282971843036753778}
   - component: {fileID: 8325408206188637467}
   - component: {fileID: 7678491000565604077}
+  - component: {fileID: 2618863879937702537}
   m_Layer: 0
   m_Name: PlayerKCC
   m_TagString: Untagged
@@ -537,6 +538,7 @@ MonoBehaviour:
   - {fileID: 4282971843036753778}
   - {fileID: 8325408206188637467}
   - {fileID: 7678491000565604077}
+  - {fileID: 2618863879937702537}
   ForceRemoteRenderTimeframe: 0
 --- !u!54 &5501855737433633615
 Rigidbody:
@@ -657,6 +659,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraHandle: {fileID: 3225618391890603553}
   gunTarget: {fileID: 6015483494481926346}
+  fireFrom: {fileID: 0}
   kcc: {fileID: 2051969095714818444}
   minDistance: 2
 --- !u!114 &7998170421048873409
@@ -768,6 +771,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   networkHealth: {fileID: 6705351624214254461}
   enemyCanvasPrefab: {fileID: 123717014050820840, guid: b10bdfa519bf5cc4a840d0ebfff3b14d, type: 3}
+--- !u!114 &2618863879937702537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6485119306318585325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce813e02f1944372beed7813ec04f8db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &6583056719686401792
 GameObject:
   m_ObjectHideFlags: 0

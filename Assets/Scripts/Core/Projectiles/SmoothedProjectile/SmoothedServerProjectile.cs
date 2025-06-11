@@ -20,7 +20,7 @@ namespace Core.Projectiles.SmoothedProjectile
         public void Init(ProjectileParams projectileParams)
         {
             _projectileParams = projectileParams;
-            _direction = (projectileParams.Target - projectileParams.VisualStart).normalized;
+            _direction = projectileParams.Direction; //(projectileParams.Target - projectileParams.VisualStart).normalized;
         }
 
         public override void FixedUpdateNetwork()

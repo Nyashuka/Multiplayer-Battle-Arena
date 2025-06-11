@@ -18,7 +18,7 @@ namespace Core.Projectiles.SmoothedProjectile
         {
             _vfxService = ServiceLocator.Instance.GetService<VFXService>();
             _projectileParams = projectileParams;
-            _direction = (projectileParams.Target - projectileParams.VisualStart).normalized;
+            _direction = projectileParams.Direction; //(projectileParams.Target - projectileParams.VisualStart).normalized;
         }
 
         public override void Launch()

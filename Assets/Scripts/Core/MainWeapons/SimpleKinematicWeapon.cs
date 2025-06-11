@@ -39,7 +39,7 @@ namespace Core.MainWeapons
         public override void Fire(Vector3 start, Vector3 direction)
         {
             if (!HasInputAuthority) return;
-
+            
             var projectileParams = new ProjectileParams
             {
                 Id = Guid.NewGuid(),
@@ -59,8 +59,9 @@ namespace Core.MainWeapons
 
         private Vector3 GetTargetPosition(Vector3 start, Vector3 direction, float distance)
         {
+            int layerMask = ~LayerMask.GetMask("Player");
             if (Physics.Raycast(start, direction, out RaycastHit hit,
-                    _config.MaxDistance))
+                    distance, layerMask))
             {
                 return hit.point;
             }
@@ -70,7 +71,10 @@ namespace Core.MainWeapons
 
         private VisualProjectileBase SpawnVisualProjectile(ProjectileParams projectileParams)
         {
-            var visualProjectile = _dummyProjectilesPool.Get(firePoint.position, firePoint.rotation); //Instantiate(visualPrefab, firePoint.position, firePoint.rotation);
+            
+            var visualProjectile = _dummyProjectilesPool.Get(firePoint.position, 
+                Quaternion.LookRotation(projectileParams.Direction)); //Instantiate(visualPrefab, firePoint.position, firePoint.rotation);
+            Debug.DrawRay(firePoint.position, projectileParams.Direction * 10f, Color.green, 2f); 
             visualProjectile.Init(projectileParams);
             visualProjectile.Launch();
             
@@ -82,8 +86,14 @@ namespace Core.MainWeapons
             LocalCooldownTimer = TickTimer.CreateFromSeconds(Runner, _config.FireRate);
             
             projectileParams.Target = 
-                GetTargetPosition(projectileParams.CameraStart, projectileParams.Direction, _config.MaxDistance);
+                GetTargetPosition(
+                    projectileParams.CameraStart, 
+                    projectileParams.Direction, 
+                    _config.MaxDistance
+                    );
  
+            projectileParams.Direction = (projectileParams.Target - projectileParams.VisualStart).normalized;
+            
             if (HasInputAuthority)
             {
                 ServiceLocator.Instance.GetService<AudioService>()
